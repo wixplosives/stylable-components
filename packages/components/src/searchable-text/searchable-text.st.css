@@ -1,0 +1,11 @@
+.root{
+
+}
+
+.textSpan{
+  -st-states: isHighlighted;
+}
+
+.textSpan:isHighlighted{
+  font-weight: 700;
+}
