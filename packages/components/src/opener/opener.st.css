@@ -1,0 +1,8 @@
+.root{
+  --referenceX: 0;
+  --referenceY: 0;
+  --referenceWidth: 0;
+  --referenceHeight:0;
+  --stageWidth:0;
+  --stageHeight: 0;
+}

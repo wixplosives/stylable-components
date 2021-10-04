@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 export function getElementWithId(node: Element, scope: Element): { id: string; element: Element } | null {
   let current: Element | null = node;
@@ -12,9 +12,11 @@ export function getElementWithId(node: Element, scope: Element): { id: string; e
   return null;
 }
 
-export function useIdListener(idSetter: (id: string | undefined, element?: Element) => void): (ev: MouseEvent) => void {
+export function useIdListener<EVType extends React.KeyboardEvent | React.MouseEvent>(
+  idSetter: (id: string | undefined, element?: Element) => void
+): (ev: EVType) => any {
   return useCallback(
-    (ev: MouseEvent) => {
+    (ev: EVType) => {
       if (!ev.currentTarget || !ev.target) {
         return;
       }

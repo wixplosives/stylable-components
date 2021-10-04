@@ -2,8 +2,28 @@ import React, { useCallback, useRef } from 'react';
 import { KeyCodes } from '../keycodes';
 import { useIdListener } from '../hooks/use-id-based-event';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
-import { useTemporaryStateControls } from '../hooks/use-temporary-state';
 import { searchStringContext } from '../searchable-text/searchable-text';
+import { callInternalFirst, createElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
+import { ElementSlot, elementSlot } from '../common/types';
+
+export type ListRootMinimalProps = Pick<
+  React.DOMAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
+  'children' | 'onClick' | 'onMouseMove' | 'onKeyPress' | 'ref'
+>;
+export const ListRootPropMapping = {
+  style: mergeObjectInternalWins,
+  onClick: callInternalFirst,
+  onmousemove: callInternalFirst,
+  onKeyPress: callInternalFirst,
+};
+export const createListRoot = elementSlot<ListRootMinimalProps, typeof ListRootPropMapping>();
+const useListRootElement = createElementSlot<ListRootMinimalProps>(
+  {
+    el: 'div',
+    props: {},
+  },
+  ListRootPropMapping
+);
 
 export interface ListItemProps<T> {
   data: T;
@@ -17,20 +37,16 @@ export interface ListItemProps<T> {
   focus: (id?: string) => void;
   select: (id?: string) => void;
 }
-export interface ListProps<T, EL = HTMLDivElement> extends React.HTMLAttributes<EL> {
+export interface ListProps<T, EL = HTMLDivElement> {
+  root?: ElementSlot<ListRootMinimalProps>;
   getId: (t: T) => string;
   items: Array<T>;
   ItemRenderer: React.ComponentType<ListItemProps<T>>;
-  rootElementType?: string;
-  focusControl: StateControls<string | undefined>;
-  selectionControl: StateControls<string | undefined>;
-  searchControl: StateControls<string | undefined>;
+  focusControl?: StateControls<string | undefined>;
+  selectionControl?: StateControls<string | undefined>;
+  searchControl?: StateControls<string | undefined>;
   ref?: React.RefObject<EL>;
   isHorizontal?: boolean;
-  virtualization?: {
-    maxFirstRenderItems: number;
-    itemSize?: ((t: T) => number) | number;
-  };
 }
 
 function itemIndex<T>(getId: (t: T) => string, items: Array<T>, currentId?: string) {
@@ -50,9 +66,11 @@ function prevItem<T>(getId: (t: T) => string, items: Array<T>, currentId?: strin
 
   return items[idx - 1];
 }
+
 export type List<T, EL = HTMLDivElement> = (props: ListProps<T, EL>) => JSX.Element;
-export function List<T, EL = HTMLDivElement>({
-  rootElementType = 'div',
+
+export function List<T, EL extends HTMLElement = HTMLDivElement>({
+  root,
   selectionControl,
   focusControl,
   getId,
@@ -61,23 +79,23 @@ export function List<T, EL = HTMLDivElement>({
   ref,
   isHorizontal,
   searchControl,
-  ...props
 }: ListProps<T, EL>): JSX.Element {
-  const [selectedId, setSelectedId] = useStateControls(selectionControl);
-  const [focusedId, setFocusedId] = useStateControls(focusControl);
-  const [searchText, setSearchText] = useTemporaryStateControls(searchControl);
+  const [selectedId, setSelectedId] = useStateControls(selectionControl || undefined);
+  const [focusedId, setFocusedId] = useStateControls(focusControl || undefined);
+  const [searchText, setSearchText] = useStateControls(searchControl || undefined);
   const defaultRef = useRef<EL>();
   const actualRef = ref || defaultRef;
   const onMouseMove = useIdListener(setFocusedId);
   const onClick = useIdListener(setSelectedId);
 
   const onKeyPress = useCallback(
-    (ev: KeyboardEvent) => {
+    (ev: React.KeyboardEvent) => {
       const moveToItem = (item: T | undefined) => {
         if (item) {
           setFocusedId(getId(item));
         }
       };
+      console.log(ev.code)
       switch (ev.code) {
         case KeyCodes.ArrowLeft:
           if (isHorizontal) {
@@ -115,21 +133,28 @@ export function List<T, EL = HTMLDivElement>({
     },
     [focusedId, getId, isHorizontal, items, searchText, setFocusedId, setSearchText, setSelectedId]
   );
-  return React.createElement(
-    rootElementType,
-    { ...props, ref: actualRef, onMouseMove, onClick, onKeyPress },
+  return useListRootElement(
+    root,
+    {
+      ref: actualRef as React.RefObject<EL>,
+      onMouseMove,
+      onClick,
+      onKeyPress,
+    },
     <searchStringContext.Provider value={searchText || ''}>
       {items.map((item) => {
         const id = getId(item);
-        <ItemRenderer
-          key={id}
-          id={id}
-          data={item}
-          focus={setFocusedId}
-          isFocused={focusedId === id}
-          isSelected={selectedId === id}
-          select={setSelectedId}
-        />;
+        return (
+          <ItemRenderer
+            key={id}
+            id={id}
+            data={item}
+            focus={setFocusedId}
+            isFocused={focusedId === id}
+            isSelected={selectedId === id}
+            select={setSelectedId}
+          />
+        );
       })}
     </searchStringContext.Provider>
   );
