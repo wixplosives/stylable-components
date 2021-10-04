@@ -1,4 +1,4 @@
-import { createContext, useMemo, useContext } from 'react';
+import React, { createContext, useMemo, useContext } from 'react';
 import { classes, style } from './searchable-text.st.css';
 export const matchTextFuzzy = (searchString: string, inString: string): boolean => {
   while (searchString.length) {

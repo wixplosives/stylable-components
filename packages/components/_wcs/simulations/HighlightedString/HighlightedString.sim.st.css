@@ -1,0 +1,10 @@
+:import {
+  -st-from: "../../../src/searchable-text/searchable-text.st.css";
+  -st-default: SearchText;
+}
+.root{
+  -st-extends: SearchText;
+}
+.root::textSpan:isHighlighted{
+  color: blue;
+}

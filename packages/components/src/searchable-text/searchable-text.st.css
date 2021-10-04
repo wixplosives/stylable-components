@@ -1,11 +1,9 @@
-.root{
+.root {}
 
+.textSpan {
+    -st-states: isHighlighted;
 }
 
-.textSpan{
-  -st-states: isHighlighted;
-}
-
-.textSpan:isHighlighted{
-  font-weight: 700;
+.textSpan:isHighlighted {
+    font-weight: 700;
 }
