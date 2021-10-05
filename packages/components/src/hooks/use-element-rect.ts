@@ -1,10 +1,50 @@
 import type React from 'react';
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 export interface WatchedSize {
   width: null | number;
   height: null | number;
 }
+export interface SizesById {
+  [id: string]: WatchedSize;
+}
+
+export const useElementDimension = (
+  dim: React.RefObject<HTMLElement>,
+  isVertical = true,
+  watchSize: number | boolean = false
+) => {
+  const startDim = useMemo(() => {
+    if (typeof watchSize === 'number') {
+      return watchSize;
+    }
+    return rectToDim(isVertical, dim?.current?.getBoundingClientRect());
+  }, [dim]);
+  const [dimension, updateDimension] = useState(startDim);
+  useLayoutEffect(() => {
+    let observer: ResizeObserver;
+    if (typeof watchSize === 'number') {
+      return;
+    }
+    updateDimension(rectToDim(isVertical, dim?.current?.getBoundingClientRect()));
+    if (dim?.current && watchSize) {
+      observer = new ResizeObserver(() => {
+        updateDimension(rectToDim(isVertical, dim.current?.getBoundingClientRect()));
+      });
+      observer.observe(dim.current);
+      return () => {
+        observer.disconnect();
+      };
+    }
+    return undefined;
+  }, [startDim]);
+  return dimension;
+};
+
+const rectToDim = (isVertical: boolean, rect?: DOMRect): number => {
+  return rect ? (isVertical ? rect.height : rect.width) : 0;
+};
+
 const rectToSize = (rect?: DOMRect): WatchedSize => {
   return rect
     ? {
@@ -15,6 +55,10 @@ const rectToSize = (rect?: DOMRect): WatchedSize => {
         width: null,
         height: null,
       };
+};
+const elementToSize = (element?: Element): WatchedSize => {
+  const rect = element?.getBoundingClientRect();
+  return rectToSize(rect);
 };
 
 export const useElementSize = (element: React.RefObject<HTMLElement>, watchSize: boolean | WatchedSize) => {
@@ -43,3 +87,84 @@ export const useElementSize = (element: React.RefObject<HTMLElement>, watchSize:
   }, [element.current]);
   return rect;
 };
+
+export function useIdBasedRects<T, EL extends HTMLElement>(
+  ref: React.RefObject<EL>,
+  data: T[],
+  getId: (t: T) => string,
+  size: WatchedSize | ((t: T) => WatchedSize) | boolean
+): SizesById {
+  const shouldMeasure = typeof size === 'boolean';
+  const shouldWatchSize = size === true;
+  const precomputed = typeof size === 'boolean' ? undefined : size;
+  const [sizes, updateSizes] = useState(getSizes(ref, data, precomputed, getId, false));
+  useLayoutEffect(() => {
+    let observer: ResizeObserver;
+    if (!shouldMeasure || typeof size === 'function') {
+      return;
+    }
+    updateSizes(getSizes(ref, data, precomputed, getId, true));
+    if (!ref?.current || shouldWatchSize === false) {
+      return;
+    }
+    observer = new ResizeObserver(() => {
+      updateSizes(getSizes(ref, data, precomputed, getId, true));
+    });
+    observer.observe(ref.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, [ref.current, data, precomputed, getId]);
+  return sizes;
+}
+
+export const unMeasured: WatchedSize = {
+  width: null,
+  height: null,
+};
+export function getSizes<T, EL extends HTMLElement>(
+  ref: React.RefObject<EL>,
+  data: T[],
+  size: WatchedSize | ((t: T) => WatchedSize) | undefined,
+  getId: (t: T) => string,
+  meassure: boolean
+) {
+  if (typeof size === 'function') {
+    return data.reduce((acc, item) => {
+      acc[getId(item)] = size(item);
+      return acc;
+    }, {} as SizesById);
+  }
+  if (typeof size !== 'undefined') {
+    return data.reduce((acc, item) => {
+      acc[getId(item)] = size;
+      return acc;
+    }, {} as SizesById);
+  }
+  if (!meassure || !ref.current) {
+    return data.reduce((acc, item) => {
+      acc[getId(item)] = unMeasured;
+      return acc;
+    }, {} as SizesById);
+  }
+  const elements = elementsById(ref.current);
+  return data.reduce((acc, item) => {
+    const id = getId(item);
+    const element = elements[id];
+    if (element) {
+      acc[getId(item)] = elementToSize(element);
+    }
+    acc[getId(item)] = unMeasured;
+    return acc;
+  }, {} as SizesById);
+}
+
+export function elementsById(scope: Element) {
+  const results = scope.querySelectorAll('[data-id]');
+  const res: Record<string, Element> = {};
+  results.forEach((el) => {
+    const id = el.getAttribute('data-id')!;
+    res[id] = el;
+  });
+  return res;
+}

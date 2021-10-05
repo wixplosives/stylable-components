@@ -3,7 +3,7 @@ import { KeyCodes } from '../keycodes';
 import { useIdListener } from '../hooks/use-id-based-event';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import { searchStringContext } from '../searchable-text/searchable-text';
-import { callInternalFirst, createElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
+import { callInternalFirst, createElementSlot, defaultRoot, mergeObjectInternalWins } from '../hooks/use-element-slot';
 import { ElementSlot, elementSlot } from '../common/types';
 
 export type ListRootMinimalProps = Pick<
@@ -17,13 +17,8 @@ export const ListRootPropMapping = {
   onKeyPress: callInternalFirst,
 };
 export const createListRoot = elementSlot<ListRootMinimalProps, typeof ListRootPropMapping>();
-const useListRootElement = createElementSlot<ListRootMinimalProps>(
-  {
-    el: 'div',
-    props: {},
-  },
-  ListRootPropMapping
-);
+
+const useListRootElement = createElementSlot<ListRootMinimalProps>(defaultRoot, ListRootPropMapping);
 
 export interface ListItemProps<T> {
   data: T;
@@ -37,7 +32,7 @@ export interface ListItemProps<T> {
   focus: (id?: string) => void;
   select: (id?: string) => void;
 }
-export interface ListProps<T, EL = HTMLDivElement> {
+export interface ListProps<T> {
   root?: ElementSlot<ListRootMinimalProps>;
   getId: (t: T) => string;
   items: Array<T>;
@@ -45,7 +40,6 @@ export interface ListProps<T, EL = HTMLDivElement> {
   focusControl?: StateControls<string | undefined>;
   selectionControl?: StateControls<string | undefined>;
   searchControl?: StateControls<string | undefined>;
-  ref?: React.RefObject<EL>;
   isHorizontal?: boolean;
 }
 
@@ -67,7 +61,7 @@ function prevItem<T>(getId: (t: T) => string, items: Array<T>, currentId?: strin
   return items[idx - 1];
 }
 
-export type List<T, EL = HTMLDivElement> = (props: ListProps<T, EL>) => JSX.Element;
+export type List<T> = (props: ListProps<T>) => JSX.Element;
 
 export function List<T, EL extends HTMLElement = HTMLDivElement>({
   root,
@@ -76,15 +70,14 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
   getId,
   ItemRenderer,
   items,
-  ref,
   isHorizontal,
   searchControl,
-}: ListProps<T, EL>): JSX.Element {
+}: ListProps<T>): JSX.Element {
   const [selectedId, setSelectedId] = useStateControls(selectionControl || undefined);
   const [focusedId, setFocusedId] = useStateControls(focusControl || undefined);
   const [searchText, setSearchText] = useStateControls(searchControl || undefined);
   const defaultRef = useRef<EL>();
-  const actualRef = ref || defaultRef;
+  const actualRef = root?.props.ref || defaultRef;
   const onMouseMove = useIdListener(setFocusedId);
   const onClick = useIdListener(setSelectedId);
 
@@ -95,7 +88,6 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
           setFocusedId(getId(item));
         }
       };
-      console.log(ev.code)
       switch (ev.code) {
         case KeyCodes.ArrowLeft:
           if (isHorizontal) {
