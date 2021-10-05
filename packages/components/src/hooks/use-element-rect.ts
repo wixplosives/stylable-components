@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 
 export interface WatchedSize {
   width: null | number;

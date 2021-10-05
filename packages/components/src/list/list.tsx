@@ -88,6 +88,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
           setFocusedId(getId(item));
         }
       };
+      console.log(ev.code);
       switch (ev.code) {
         case KeyCodes.ArrowLeft:
           if (isHorizontal) {
