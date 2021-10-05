@@ -1,0 +1,19 @@
+
+.root{
+    -st-states: focused, selected;
+}
+.root:focused{
+    color: blue
+}
+
+.root:selected{
+    background:blue;
+}
+
+.text{
+
+}
+
+.root:selected .itemText{
+    color: white;
+}

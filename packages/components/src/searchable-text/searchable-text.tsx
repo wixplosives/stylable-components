@@ -1,5 +1,6 @@
 import React, { createContext, useMemo, useContext } from 'react';
 import { classes, style } from './searchable-text.st.css';
+
 export const matchTextFuzzy = (searchString: string, inString: string): boolean => {
   while (searchString.length) {
     const char = searchString[0];
@@ -49,10 +50,15 @@ export const splitFuzzySearchText = (
 };
 
 export const searchStringContext = createContext('');
+export const searchMethodContext = createContext({
+  match: matchTextFuzzy,
+  split: splitFuzzySearchText,
+});
+
 export const HighlightedString = (props: { text: string; className?: string }): JSX.Element => {
   const searchString = useContext(searchStringContext);
-
-  const sections = useMemo(() => splitFuzzySearchText(props.text, searchString), [props.text, searchString]);
+  const { split } = useContext(searchMethodContext);
+  const sections = useMemo(() => split(props.text, searchString), [props.text, searchString, split]);
   return (
     <div className={style(classes.root, props.className)}>
       {sections.map(({ text, isHighlighted }, idx) => {

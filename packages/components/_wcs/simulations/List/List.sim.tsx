@@ -1,8 +1,6 @@
 import { createSimulation } from '@wixc3/wcs-core';
 import { List } from './../../../src/list/list';
-import { classes, st } from './list.sim.st.css';
-
-import React from 'react';
+import { ItemRenderer } from '../common/item-renderer';
 interface ItemData {
   title: string;
   id: string;
@@ -12,19 +10,7 @@ export default createSimulation<List<ItemData>>({
   name: 'List',
   componentType: List,
   props: {
-    ItemRenderer: (item) => {
-      return (
-        <div
-          className={st(classes.item, {
-            selected: item.isSelected,
-            focused: item.isFocused,
-          })}
-          data-id={item.id}
-        >
-          <span className={classes.itemText}>{item.data.title}</span>
-        </div>
-      );
-    },
+    ItemRenderer,
     items: [
       {
         id: 'a',

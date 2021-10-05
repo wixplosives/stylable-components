@@ -1,7 +1,13 @@
 import React, { useMemo } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
-export const a = ()=><div></div>
 
+// here bacause in issue with ts transformers in WCS
+export const a = () => <div></div>;
+
+export const defaultRoot: ElementSlot<{}, 'div'> = {
+  el: 'div',
+  props: {},
+};
 export const createElementSlot = <MinimalProps, Mapping extends PropMapping<MinimalProps> = {}>(
   defaultSlot: ElementSlot<MinimalProps, any, any>,
   propsMapping: Mapping = {} as Mapping
@@ -23,15 +29,46 @@ export const createElementSlot = <MinimalProps, Mapping extends PropMapping<Mini
     }, [slot, props, children]);
   };
 };
-
-export const mergeObjectInternalWins = <T extends Record<string, unknown>>(internal: T, external: T) => ({
-  ...external,
-  ...internal,
-});
-export const mergeObjectExternalWins = <T extends Record<string, unknown>>(internal: T, external: T) => ({
-  ...internal,
-  ...external,
-});
+export function useForwardElementSlot<
+  MinimalProps,
+  Slot extends ElementSlot<MinimalProps>,
+  Mapping extends PropMapping<MinimalProps>
+>(defaultSlot: Slot, slot?: Slot, props?: Partial<MinimalProps>, mergeMap?: Mapping): Slot {
+  const usedSlot = slot || defaultSlot;
+  return useMemo(() => {
+    if (!props) {
+      return usedSlot;
+    }
+    return {
+      el: usedSlot.el,
+      props: mergeWithMap(usedSlot.props, props as MinimalProps, mergeMap || {}),
+    } as Slot;
+  }, [usedSlot, props, mergeMap]);
+}
+export const mergeObjectInternalWins = <T extends any>(internal: T, external: T) => {
+  if (typeof internal === 'object') {
+    if (typeof external === 'object') {
+      return {
+        ...(external as any),
+        ...(internal as any),
+      };
+    }
+    return internal;
+  }
+  return external;
+};
+export const mergeObjectExternalWins = <T extends any>(internal: T, external: T) => {
+  if (typeof external === 'object') {
+    if (typeof internal === 'object') {
+      return {
+        ...(internal as any),
+        ...(external as any),
+      };
+    }
+    return external;
+  }
+  return internal;
+};
 export const callExternal =
   <T extends (...args: unknown[]) => any>(_internal: T, external: T) =>
   (...args: unknown[]) =>
