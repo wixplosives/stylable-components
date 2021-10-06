@@ -1,6 +1,5 @@
 import { createSimulation } from '@wixc3/wcs-core';
 import { ItemData, ItemRenderer } from '../common/item-renderer';
-import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../common/scenario';
 import { ScrollList } from './../../../src/scoll-list/scroll-list';
 
 const items = new Array(1000).fill(0).map(
@@ -12,7 +11,7 @@ const items = new Array(1000).fill(0).map(
 );
 
 export default createSimulation<ScrollList<ItemData, HTMLElement>>({
-    name: 'ScrollList',
+    name: 'scroll-list-load-more.ts',
     componentType: ScrollList,
     props: {
         ItemRenderer,
@@ -21,12 +20,6 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
     },
     environmentProps: {
         canvasWidth: 560,
-        windowHeight: 300,
-        windowWidth: 500
+        windowHeight: 621,
     },
-    plugins: [
-        scenarioMixin.use({
-            events: [hoverAction('[data-id="a8"]'), clickAction('[data-id="a8"]'), scrollAction(-1), scrollAction(0)],
-        }),
-    ],
 });

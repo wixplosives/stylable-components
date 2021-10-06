@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { ReactNode, ReactNodeArray, useMemo } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
 
 // here bacause in issue with ts transformers in WCS
@@ -15,7 +15,7 @@ export const createElementSlot = <MinimalProps, Mapping extends PropMapping<Mini
   return (
     slot: ElementSlot<MinimalProps, any, any> | undefined,
     props: MinimalProps,
-    children?: React.ReactChildren | React.ReactChild
+    children?: ReactNodeArray | ReactNode
   ) => {
     const usedSlot = slot || defaultSlot;
 

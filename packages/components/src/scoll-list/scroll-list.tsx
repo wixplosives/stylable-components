@@ -1,6 +1,6 @@
-import React, { createRef, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { elementSlot, ElementSlot, PropMapping } from '../common/types';
-import { unMeasured, useElementDimension, useIdBasedRects, WatchedSize } from '../hooks/use-element-rect';
+import { useElementDimension, useIdBasedRects, WatchedSize } from '../hooks/use-element-rect';
 
 import {
   createElementSlot,
@@ -9,6 +9,7 @@ import {
   mergeObjectInternalWins,
   useForwardElementSlot,
 } from '../hooks/use-element-slot';
+import { useScroll } from '../hooks/use-scroll';
 import { List, ListProps, ListRootMinimalProps } from '../list/list';
 
 export type ScrollListRootMinimalProps = Pick<
@@ -23,7 +24,10 @@ export const createListRoot = elementSlot<ScrollListRootMinimalProps, typeof Scr
 const useScrollListRootElement = createElementSlot<ScrollListRootMinimalProps>(defaultRoot, ScrollListRootPropMapping);
 
 export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T> {
-  scrollWindow: React.RefObject<EL>;
+  /**
+   * element to watch for scroll and size updates, if omitted will use the window
+   */
+  scrollWindow?: React.RefObject<EL>;
   /*
    *   false: no remeasure,
    *   true: measure on changes,
@@ -79,7 +83,7 @@ const rootMergeMap: PropMapping<PropsWithStyle> = {
 export type ScrollList<T, EL extends HTMLElement = HTMLDivElement> = (props: ScrollListProps<T, EL>) => JSX.Element;
 export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   items,
-  isHorizontal,
+  isHorizontal = false,
   scrollWindow,
   watchScrollWindoSize,
   itemCount,
@@ -88,7 +92,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   estimatedItemSize = 50,
   focusControl,
   loadMore,
-  initialScrollOffset,
+  initialScrollOffset = 0,
   itemSize = false,
   root,
   searchControl,
@@ -96,10 +100,9 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   extraRenderedItems = 0.5,
   unmountItems,
 }: ScrollListProps<T, EL>): JSX.Element {
-  debugger;
   const listRef = useRef<HTMLElement>(null);
   const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
-  const currentScroll = (isHorizontal ? scrollWindow.current?.scrollLeft : scrollWindow.current?.scrollTop) || 0;
+  const currentScroll = useScroll(isHorizontal, scrollWindow);
   const itemCountForCalc = itemCount === undefined ? items.length : itemCount === -1 ? items.length + 50 : itemCount;
   const rectOptions = dimToSize(itemSize);
   const sizes = useIdBasedRects(listRef, items, getId, rectOptions);
@@ -119,16 +122,18 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     }
   );
   const avgSize = totalMeasured > 0 ? totalSize / totalMeasured : estimatedItemSize;
-  const renderEndIndex = Math.ceil((scrollWindowSize * (1 + extraRenderedItems) - currentScroll) / avgSize);
+  const renderEndIndex = Math.ceil(
+    (scrollWindowSize * (1 + extraRenderedItems) + currentScroll - initialScrollOffset) / avgSize
+  );
 
-  const maxScrollSize = avgSize * itemCountForCalc;
+  const maxScrollSize = avgSize * itemCountForCalc + initialScrollOffset;
   const style: React.CSSProperties = {
     position: 'relative',
   };
   if (isHorizontal) {
-    style.width = maxScrollSize + 'px';
+    style.minWidth = maxScrollSize + 'px';
   } else {
-    style.height = maxScrollSize + 'px';
+    style.minHeight = maxScrollSize + 'px';
   }
 
   const rendereredItems = useMemo(() => items.slice(0, renderEndIndex), [items, renderEndIndex]);
