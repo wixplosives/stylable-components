@@ -9,8 +9,24 @@ export interface SizesById {
   [id: string]: WatchedSize;
 }
 
+const elementOrWindowSize = (dim?: React.RefObject<HTMLElement>): WatchedSize => {
+  if (dim) {
+    if (dim.current) {
+      return rectToSize(dim?.current?.getBoundingClientRect());
+    }
+    return unMeasured;
+  }
+  if (typeof window === 'undefined') {
+    return unMeasured;
+  }
+  return {
+    height: window.innerHeight,
+    width: window.innerWidth,
+  };
+};
+
 export const useElementDimension = (
-  dim: React.RefObject<HTMLElement>,
+  dim?: React.RefObject<HTMLElement>,
   isVertical = true,
   watchSize: number | boolean = false
 ) => {
@@ -18,7 +34,7 @@ export const useElementDimension = (
     if (typeof watchSize === 'number') {
       return watchSize;
     }
-    return rectToDim(isVertical, dim?.current?.getBoundingClientRect());
+    return watchedSizeToDim(isVertical, elementOrWindowSize(dim))
   }, [dim]);
   const [dimension, updateDimension] = useState(startDim);
   useLayoutEffect(() => {
@@ -26,10 +42,10 @@ export const useElementDimension = (
     if (typeof watchSize === 'number') {
       return;
     }
-    updateDimension(rectToDim(isVertical, dim?.current?.getBoundingClientRect()));
+    updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(dim)));
     if (dim?.current && watchSize) {
       observer = new ResizeObserver(() => {
-        updateDimension(rectToDim(isVertical, dim.current?.getBoundingClientRect()));
+        updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(dim)));
       });
       observer.observe(dim.current);
       return () => {
@@ -43,6 +59,10 @@ export const useElementDimension = (
 
 const rectToDim = (isVertical: boolean, rect?: DOMRect): number => {
   return rect ? (isVertical ? rect.height : rect.width) : 0;
+};
+
+const watchedSizeToDim = (isVertical: boolean, size: WatchedSize): number => {
+  return (isVertical ? size.height : size.width) || 0;
 };
 
 const rectToSize = (rect?: DOMRect): WatchedSize => {
@@ -97,9 +117,10 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
   const shouldMeasure = typeof size === 'boolean';
   const shouldWatchSize = size === true;
   const precomputed = typeof size === 'boolean' ? undefined : size;
-  const [sizes, updateSizes] = useState(getSizes(ref, data, precomputed, getId, false));
+  const emptySizes = useMemo(() => getSizes(ref, data, precomputed, getId, false), []);
+  const [sizes, updateSizes] = useState(emptySizes);
   useLayoutEffect(() => {
-    let observer: ResizeObserver;
+    let observer: MutationObserver;
     if (!shouldMeasure || typeof size === 'function') {
       return;
     }
@@ -107,7 +128,7 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
     if (!ref?.current || shouldWatchSize === false) {
       return;
     }
-    observer = new ResizeObserver(() => {
+    observer = new MutationObserver(() => {
       updateSizes(getSizes(ref, data, precomputed, getId, true));
     });
     observer.observe(ref.current);
@@ -153,8 +174,9 @@ export function getSizes<T, EL extends HTMLElement>(
     const element = elements[id];
     if (element) {
       acc[getId(item)] = elementToSize(element);
+    } else {
+      acc[getId(item)] = unMeasured;
     }
-    acc[getId(item)] = unMeasured;
     return acc;
   }, {} as SizesById);
 }
