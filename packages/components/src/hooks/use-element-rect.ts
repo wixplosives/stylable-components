@@ -34,7 +34,7 @@ export const useElementDimension = (
     if (typeof watchSize === 'number') {
       return watchSize;
     }
-    return watchedSizeToDim(isVertical, elementOrWindowSize(dim))
+    return watchedSizeToDim(isVertical, elementOrWindowSize(dim));
   }, [dim]);
   const [dimension, updateDimension] = useState(startDim);
   useLayoutEffect(() => {
@@ -55,10 +55,6 @@ export const useElementDimension = (
     return undefined;
   }, [startDim]);
   return dimension;
-};
-
-const rectToDim = (isVertical: boolean, rect?: DOMRect): number => {
-  return rect ? (isVertical ? rect.height : rect.width) : 0;
 };
 
 const watchedSizeToDim = (isVertical: boolean, size: WatchedSize): number => {
