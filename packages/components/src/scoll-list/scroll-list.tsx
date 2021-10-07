@@ -23,6 +23,8 @@ export const createListRoot = elementSlot<ScrollListRootMinimalProps, typeof Scr
 
 const useScrollListRootElement = createElementSlot<ScrollListRootMinimalProps>(defaultRoot, ScrollListRootPropMapping);
 
+const useScrollListPreloaderElement = createElementSlot<{}>(defaultRoot);
+
 export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T> {
   /**
    * element to watch for scroll and size updates, if omitted will use the window
@@ -43,7 +45,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
   /**
    * if provided the list will request more items when reaching the scroll length and show the preloader
    */
-  loadMore?: (count: number) => Promise<void>;
+  loadMore?: (count: number) => void | Promise<void>;
 
   /**
    * Total number of items in the list. Note that only a few items will be rendered and displayed at a time.

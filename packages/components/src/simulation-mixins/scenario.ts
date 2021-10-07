@@ -4,6 +4,7 @@ import { classes } from './scenario.st.css';
 export interface Action {
   execute: () => void | Promise<void>;
   title: string;
+  highlightSelector?: string;
 }
 
 export const scenarioMixin = createPlugin<IReactSimulation>()(
@@ -29,9 +30,41 @@ export const scenarioMixin = createPlugin<IReactSimulation>()(
             btn.innerText = props.events[0]!.title;
             modifiable = [...props.events];
           }
+          setHighlightedElement(modifiable[0]?.highlightSelector);
         });
+        btn.addEventListener('mousemove', () => {
+          const current = modifiable[0];
+
+          if (current?.highlightSelector) {
+            setHighlightedElement(current.highlightSelector);
+          } else {
+            clearHighlight();
+          }
+        });
+        const clearHighlight = () => {
+          highlight.removeAttribute('style');
+          highlight.removeAttribute('class');
+        };
+        const setHighlightedElement = (selector?: string) => {
+          if (!selector) {
+            clearHighlight();
+            return;
+          }
+          const target = actionTarget(selector);
+          if (target && target instanceof Element) {
+            const rect = target.getBoundingClientRect();
+            highlight.setAttribute(
+              'style',
+              `position: absolute; top: ${rect.top}px; left: ${rect.left}px; height:${rect.height}px; width:${rect.width}px;`
+            );
+            highlight.setAttribute('class', classes.item!);
+          }
+        };
+        btn.addEventListener('mouseout', clearHighlight);
         btn.innerText = props.events[0]!.title;
+        const highlight = window.document.createElement('div');
         document.body.appendChild(btn);
+        document.body.appendChild(highlight);
       }
     },
   }
@@ -71,6 +104,7 @@ export const scrollAction = (pos: number, isVertical = true, selector?: string):
         }
       }
     },
+    highlightSelector: selector,
   };
 };
 
@@ -88,6 +122,7 @@ export const hoverAction = (selector?: string): Action => {
         );
       }
     },
+    highlightSelector: selector,
   };
 };
 
@@ -117,5 +152,6 @@ export const clickAction = (selector?: string): Action => {
         );
       }
     },
+    highlightSelector: selector,
   };
 };

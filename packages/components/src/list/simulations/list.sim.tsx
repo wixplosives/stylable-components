@@ -1,6 +1,6 @@
 import { createSimulation } from '@wixc3/wcs-core';
-import { List } from './../../../src/list/list';
-import { ItemRenderer } from '../common/item-renderer';
+import { ItemRenderer } from '../../simulation-assets/item-renderer';
+import { List } from '../list';
 interface ItemData {
   title: string;
   id: string;

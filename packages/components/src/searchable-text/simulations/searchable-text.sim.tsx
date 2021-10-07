@@ -1,6 +1,6 @@
 import { createSimulation } from '@wixc3/wcs-core';
-import { HighlightedString, searchStringContext } from './../../../src/searchable-text/searchable-text';
-import { classes } from './HighlightedString.sim.st.css';
+import { HighlightedString, searchStringContext } from '../searchable-text';
+import { classes } from './searchable-text.sim.st.css';
 import React from 'react';
 export default createSimulation({
   name: 'HighlightedString',
