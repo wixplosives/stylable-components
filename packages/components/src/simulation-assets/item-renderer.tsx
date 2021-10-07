@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ListItemProps } from '../../../src';
+import type { ListItemProps } from '../list/list';
 import { classes, st } from './item-renderer.st.css';
 export interface ItemData {
   title: string;

@@ -1,0 +1,13 @@
+
+@st-import CirclePreloader  from "../preloader/variants/circle-preloader.st.css";
+
+@st-scope white {
+  CirclePreloader{
+    border-top: 2px solid blue;
+    border-right: 2px solid blue;
+    box-shadow: -3.28px -2.29px 11px -3px #96ECEA;
+  }
+
+}
+
+
