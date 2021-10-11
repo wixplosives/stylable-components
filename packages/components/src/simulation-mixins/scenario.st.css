@@ -1,15 +1,5 @@
 .root{
-  background-color: cornflowerblue;
-  color: white;
-  border-radius: 5px;
-  padding: 5px;
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  cursor: pointer;
-}
-.root:hover{
-  background-color: cadetblue;
+
 }
 
 .item{

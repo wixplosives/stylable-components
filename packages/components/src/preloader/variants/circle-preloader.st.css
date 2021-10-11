@@ -1,17 +1,17 @@
-
-@st-import Preloader  from "../preloader.st.css";
+@st-import Preloader from "../preloader.st.css";
 
 .root {
     -st-extends: Preloader;
     padding: 25%;
     box-sizing: border-box;
-    height: 100%;
     width: 100%;
+    text-align: center;
 }
 
 ::inner {
     height: 100%;
     width: 100%;
+    aspect-ratio: 1 / 1;
 
     border-radius: 50%;
     animation: autoProgress 1s infinite;

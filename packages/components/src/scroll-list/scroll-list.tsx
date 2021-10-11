@@ -1,7 +1,7 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useLayoutEffect, useMemo, useRef } from 'react';
 import { elementSlot, ElementSlot, PropMapping } from '../common/types';
 import { useElementDimension, useIdBasedRects, WatchedSize } from '../hooks/use-element-rect';
-
+import { classes } from '../preloader/variants/circle-preloader.st.css';
 import {
   createElementSlot,
   defaultRoot,
@@ -11,7 +11,14 @@ import {
 } from '../hooks/use-element-slot';
 import { useScroll } from '../hooks/use-scroll';
 import { List, ListProps, ListRootMinimalProps } from '../list/list';
+import { Preloader } from '../preloader/preloader';
 
+const defaultPreloader: ElementSlot<{}> = {
+  el: Preloader,
+  props: {
+    className: classes.root,
+  },
+};
 export type ScrollListRootMinimalProps = Pick<
   React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
   'children' | 'style' | 'ref'
@@ -23,7 +30,7 @@ export const createListRoot = elementSlot<ScrollListRootMinimalProps, typeof Scr
 
 const useScrollListRootElement = createElementSlot<ScrollListRootMinimalProps>(defaultRoot, ScrollListRootPropMapping);
 
-const useScrollListPreloaderElement = createElementSlot<{}>(defaultRoot);
+const useScrollListPreloaderElement = createElementSlot<{}>(defaultPreloader);
 
 export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T> {
   /**
@@ -45,7 +52,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
   /**
    * if provided the list will request more items when reaching the scroll length and show the preloader
    */
-  loadMore?: (count: number) => void | Promise<void>;
+  loadMore?: (count: number) => void;
 
   /**
    * Total number of items in the list. Note that only a few items will be rendered and displayed at a time.
@@ -75,6 +82,8 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
    * @default true
    */
   unmountItems?: boolean;
+
+  preloader?: ElementSlot<{}>;
 }
 interface PropsWithStyle {
   style: React.CSSProperties;
@@ -100,11 +109,13 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   searchControl,
   selectionControl,
   extraRenderedItems = 0.5,
-  unmountItems,
+  // unmountItems,
+  preloader,
 }: ScrollListProps<T, EL>): JSX.Element {
   const listRef = useRef<HTMLElement>(null);
   const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
   const currentScroll = useScroll(isHorizontal, scrollWindow);
+
   const itemCountForCalc = itemCount === undefined ? items.length : itemCount === -1 ? items.length + 50 : itemCount;
   const rectOptions = dimToSize(itemSize);
   const sizes = useIdBasedRects(listRef, items, getId, rectOptions);
@@ -137,6 +148,18 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   } else {
     style.minHeight = maxScrollSize + 'px';
   }
+  const calledLoadMore = useMemo(() => {
+    return {
+      value: false,
+    };
+  }, [items]);
+
+  useLayoutEffect(() => {
+    if (!calledLoadMore.value && renderEndIndex > items.length && loadMore) {
+      loadMore(items.length - renderEndIndex + scrollWindowSize / avgSize);
+      calledLoadMore.value = true;
+    }
+  }, [calledLoadMore, items]);
 
   const rendereredItems = useMemo(() => items.slice(0, renderEndIndex), [items, renderEndIndex]);
 
@@ -156,9 +179,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     { style: innerStyle, ref: listRef },
     rootMergeMap
   );
-  return useScrollListRootElement(
-    root,
-    { style },
+  return useScrollListRootElement(root, { style }, [
     <List<T, EL>
       isHorizontal={isHorizontal}
       getId={getId}
@@ -168,8 +189,16 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
       focusControl={focusControl}
       searchControl={searchControl}
       selectionControl={selectionControl}
-    />
-  );
+    />,
+    <div
+      style={{
+        position: 'relative',
+        top: maxScrollSize + 'px',
+      }}
+    >
+      {useScrollListPreloaderElement(preloader, {})}
+    </div>,
+  ]);
 }
 
 export function dimToSize<T>(

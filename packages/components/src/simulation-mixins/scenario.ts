@@ -1,6 +1,7 @@
 import { createPlugin } from '@wixc3/simulation-core';
 import type { IReactSimulation } from '@wixc3/react-simulation';
 import { classes } from './scenario.st.css';
+import { getMixinControls } from './mixin-controls';
 export interface Action {
   execute: () => void | Promise<void>;
   title: string;
@@ -14,7 +15,8 @@ export const scenarioMixin = createPlugin<IReactSimulation>()(
   },
   {
     beforeRender(props) {
-      const existing = window.document.querySelector('#scenario-mixin-button');
+      const canvas = getMixinControls();
+      const existing = canvas.querySelector('#scenario-mixin-button');
       if (!existing) {
         let modifiable = [...props.events];
         const btn = window.document.createElement('button');
@@ -63,7 +65,7 @@ export const scenarioMixin = createPlugin<IReactSimulation>()(
         btn.addEventListener('mouseout', clearHighlight);
         btn.innerText = props.events[0]!.title;
         const highlight = window.document.createElement('div');
-        document.body.appendChild(btn);
+        canvas.appendChild(btn);
         document.body.appendChild(highlight);
       }
     },
