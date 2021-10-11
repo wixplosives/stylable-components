@@ -1,10 +1,65 @@
 @st-import CirclePreloader from "../preloader/variants/circle-preloader.st.css";
+@st-import Btn from "../button/button.st.css";
+@st-import [icon] from "../common/common.st.css";
+@st-import [cancel,
+emphasis] from "../button/variants.st.css";
 
-.white {}
 
-.white .CirclePreloader::inner {
-    border-top: 2px solid blue;
-    border-right: 2px solid blue;
+
+:vars {
+  primary: #000624;
+  secondary: white;
+  outlines: #e7eaff;
+  primaryFocused: #6a6ae7;
+  primaryCancel: rgb(79, 79, 153);
+  secondaryDisabled: rgb(207, 194, 194);
+  secondaryEmphasis: rgb(228, 181, 94);
+  primaryEmphasis: purple;
+}
+
+@st-scope .white {
+  .CirclePreloader::inner {
+    border-top: 2px solid value(outlines);
+    border-right: 2px solid value(outlines);
     box-shadow: -3.28px -2.29px 11px -3px #96ECEA;
     margin-bottom: 14px;
+  }
+
+  .Btn {
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+    white-space: nowrap;
+    padding: 5px 11px;
+    min-width: 80px;
+    border-radius: 4px;
+    border: 1px solid value(outlines);
+    color: value(primary);
+    background: white;
+  }
+
+  .Btn:hover {
+    color: value(primaryFocused);
+  }
+
+  .cancel {
+    color: value(primaryCancel);
+    background: value(secondaryDisabled);
+  }
+
+  .emphasis {
+    color: value(primaryEmphasis);
+    background: value(secondaryEmphasis);
+  }
+
+  .Btn .icon {
+    aspect-ratio: 1/1;
+    height: 1rem;
+    padding-inline-end: 5px;
+  }
 }

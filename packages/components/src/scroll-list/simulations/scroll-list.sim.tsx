@@ -24,8 +24,8 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
     },
     environmentProps: {
         canvasWidth: 560,
-        windowHeight: 300,
-        windowWidth: 748,
+        windowHeight: 635,
+        windowWidth: 904,
     },
     plugins: [
         scenarioMixin.use({
