@@ -127,7 +127,10 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
     observer = new MutationObserver(() => {
       updateSizes(getSizes(ref, data, precomputed, getId, true));
     });
-    observer.observe(ref.current);
+    observer.observe(ref.current, {
+      attributes: true,
+      childList: true,
+    });
     return () => {
       observer.disconnect();
     };
