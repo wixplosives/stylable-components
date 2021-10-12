@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ListItemProps } from '../list/list';
+import { SearchableText } from '../searchable-text/searchable-text';
 import { classes, st } from './item-renderer.st.css';
 export interface ItemData {
   title: string;
@@ -15,7 +16,7 @@ export const ItemRenderer = (props: ListItemProps<ItemData>) => {
       })}
       data-id={props.id}
     >
-      <span className={classes.text}>{props.data.title}</span>
+      <SearchableText className={classes.text} text={props.data.title} />
     </div>
   );
 };
