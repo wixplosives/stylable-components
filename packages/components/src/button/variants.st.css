@@ -1,0 +1,9 @@
+@st-import Btn from "./button.st.css";
+
+.emphasis{
+  -st-extends: Btn;
+}
+
+.cancel{
+  -st-extends: Btn;
+}

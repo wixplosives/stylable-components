@@ -24,6 +24,6 @@
   "dependencies": {
     "@stylable/runtime": "^4.6.0",
     "@wixc3/wcs-core": "^2.4.2",
-    "@zeejs/react": "^0.1.1"
+    "@zeejs/react": "^0.2.0"
   }
 }

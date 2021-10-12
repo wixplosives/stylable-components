@@ -1,0 +1,12 @@
+@st-import Area from "../area/area.st.css";
+@st-import [floating] from "../area/variants.st.css";
+
+.root {}
+
+.input {}
+
+.popover {}
+
+.area {
+  -st-extends: floating;
+}

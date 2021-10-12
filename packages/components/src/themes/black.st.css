@@ -1,0 +1,15 @@
+@st-import CirclePreloader from "../preloader/variants/circle-preloader.st.css";
+
+.black {
+
+}
+
+.black .CirclePreloader{
+  background: black;
+}
+.black .CirclePreloader::inner {
+    border-top: 2px solid rgb(203, 203, 212);
+    border-right: 2px solid rgb(233, 233, 240);
+    box-shadow: -3.28px -2.29px 11px -3px #96ECEA;
+    margin-bottom: 14px;
+}

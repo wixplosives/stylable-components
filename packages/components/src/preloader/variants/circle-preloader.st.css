@@ -1,0 +1,30 @@
+@st-import Preloader from "../preloader.st.css";
+
+.root {
+    -st-extends: Preloader;
+    padding: 25%;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;
+}
+
+::inner {
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+
+    border-radius: 50%;
+    animation: autoProgress 1s infinite;
+    animation-timing-function: linear;
+}
+
+
+@keyframes autoProgress {
+    from {
+        transform: rotate(0deg)
+    }
+
+    to {
+        transform: rotate(360deg)
+    }
+}
