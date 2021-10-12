@@ -1,9 +1,7 @@
 import { createSimulation } from '@wixc3/wcs-core';
-import { themeMixin } from '../../simulation-mixins/theme-mixin';
 import { Preloader } from '../preloader';
 import { classes } from '../variants/circle-preloader.st.css';
-import { classes as white } from '../../themes/white.st.css';
-import { classes as black } from '../../themes/black.st.css';
+import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 
 export default createSimulation({
   name: 'circle-preloader',
@@ -19,18 +17,5 @@ export default createSimulation({
     windowHeight: 300,
     windowBackgroundColor: '#190101',
   },
-  plugins: [
-    themeMixin.use({
-      themes: [
-        {
-          themeTitle: 'White',
-          themeClass: white.white!,
-        },
-        {
-          themeTitle: 'Black',
-          themeClass: black.black!,
-        },
-      ],
-    }),
-  ],
+  plugins: [mixinProjectThemes],
 });

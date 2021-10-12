@@ -116,7 +116,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
   const currentScroll = useScroll(isHorizontal, scrollWindow);
 
-  const itemCountForCalc = itemCount === undefined ? items.length : itemCount === -1 ? items.length + 50 : itemCount;
+  const itemCountForCalc = itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount;
   const rectOptions = dimToSize(itemSize);
   const sizes = useIdBasedRects(listRef, items, getId, rectOptions);
   const { totalMeasured, totalSize } = items.reduce(

@@ -22,7 +22,7 @@ export default createSimulation<AutoComplete<ItemData, HTMLElement>>({
     },
     plugins: [ZeeRoot, mixinProjectThemes],
     environmentProps: {
-        canvasHeight: 20,
-        windowHeight: 575,
+        canvasHeight: 22,
+        windowHeight: 572,
     },
 });

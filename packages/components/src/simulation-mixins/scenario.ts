@@ -2,6 +2,7 @@ import { createPlugin } from '@wixc3/simulation-core';
 import type { IReactSimulation } from '@wixc3/react-simulation';
 import { classes } from './scenario.st.css';
 import { getMixinControls } from './mixin-controls';
+import { expect } from 'chai';
 export interface Action {
   execute: () => void | Promise<void>;
   title: string;
@@ -155,5 +156,65 @@ export const clickAction = (selector?: string): Action => {
       }
     },
     highlightSelector: selector,
+  };
+};
+
+export const expectElement = <EL extends Element>(
+  selector: string,
+  expectation?: (el: EL) => void,
+  title: string = 'expecting selector ' + selector
+): Action => {
+  return {
+    title,
+    execute() {
+      const el = window.document.querySelector(selector) as EL;
+      if (!el) {
+        throw new Error(title + ': element not found for selector ' + selector);
+      }
+      if (expectation) {
+        expectation(el);
+      }
+    },
+    highlightSelector: selector,
+  };
+};
+
+export const expectElementStyle = <EL extends Element>(
+  selector: string,
+  expectedStyle: Partial<Record<keyof CSSStyleDeclaration, string>>,
+  title: string = 'expectElementStyle ' + selector
+): Action => {
+  const exp = expectElement<EL>(
+    selector,
+    (el) => {
+      const style = window.getComputedStyle(el);
+      for (const [key, val] of Object.entries(expectedStyle)) {
+        expect(style[key as keyof CSSStyleDeclaration]).to.eql(val);
+      }
+    },
+    title
+  );
+  return {
+    title,
+    execute() {
+      exp.execute();
+    },
+    highlightSelector: selector,
+  };
+};
+
+export const expectElementsStyle = (
+  elements: {
+    [selector: string]: Partial<Record<keyof CSSStyleDeclaration, string>>;
+  },
+  title?: string
+): Action => {
+  return {
+    title: title || 'expectElementsStyle ' + Object.keys(elements),
+    execute() {
+      for (const [selector, styles] of Object.entries(elements)) {
+        expectElementStyle(selector, styles);
+      }
+    },
   };
 };
