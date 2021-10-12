@@ -3,7 +3,9 @@
 @st-import [icon] from "../common/common.st.css";
 @st-import [cancel,
 emphasis] from "../button/variants.st.css";
-
+@st-import Area from "../area/area.st.css";
+@st-import [floating] from "../area/variants.st.css";
+@st-import [popover, area] from "../auto-complete/auto-complete.st.css";
 
 
 :vars {
@@ -61,5 +63,33 @@ emphasis] from "../button/variants.st.css";
     aspect-ratio: 1/1;
     height: 1rem;
     padding-inline-end: 5px;
+  }
+
+  .Area {
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid value(outlines);
+  }
+
+
+  .Area {
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid value(outlines);
+  }
+
+  .area {
+    box-shadow: 1.41px 1.41px 2px 1px #0006242d;
+    margin-left: -2px;
+    margin-right: 2px;
+  }
+
+  .popover {
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-bottom: 4px;
+    max-height: 30vh;
   }
 }

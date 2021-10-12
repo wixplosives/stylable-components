@@ -937,11 +937,6 @@
   dependencies:
     "@octokit/openapi-types" "^10.1.0"
 
-"@popperjs/core@^2.4.0":
-  version "2.10.1"
-  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.10.1.tgz#728ecd95ab207aab8a9a4e421f0422db329232be"
-  integrity sha512-HnUhk1Sy9IuKrxEMdIRCxpIqPw6BFsbYSEUO9p/hNw5sMld/+3OLMWQP80F8/db9qsv3qUjs7ZR5bS/R+iinXw==
-
 "@stylable/runtime@^4.6.0":
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/@stylable/runtime/-/runtime-4.6.0.tgz#49ded956df59db4c51f8128f8679f6b47bdc69d8"
@@ -1381,27 +1376,26 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zeejs/browser@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@zeejs/browser/-/browser-0.1.0.tgz#fdc087a9f028a06a02684f18b2da4980c03485c8"
-  integrity sha512-BoRUbf1+p1kAN4OoS+jJNIrsLhR56N1ba9kOkcrD0q9rNNL1dbPtUPyUWHaVbdzI2H5EEhReqA3ANSaDohgOQw==
+"@zeejs/browser@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@zeejs/browser/-/browser-0.2.0.tgz#4cad685c0671729e764639deed57cc8717f26ef4"
+  integrity sha512-aWxXp8m+2nPCHatW+VA9VA2Ug6jt+VY3L1kZUC3PIHnI8zJgHtQKs2nl0bLGs5QjA+ozv+vdTPxY6KWjwVBk2A==
   dependencies:
-    "@popperjs/core" "^2.4.0"
-    "@zeejs/core" "^0.1.0"
-    tabbable "^4.0.0"
+    "@zeejs/core" "^0.2.0"
+    tabbable "^5.2.1"
 
-"@zeejs/core@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@zeejs/core/-/core-0.1.0.tgz#3f10fc5ca501a3e279391b19fe4ec4b895840ae6"
-  integrity sha512-hi7poUB9pK4rm0Ak1a4v9GO3zam0FzwpGfN6NOs5Cj5myhx9DtBf/vsw48QTa2fPIk9w2Vk6qo6AQOfD3ABJsA==
+"@zeejs/core@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@zeejs/core/-/core-0.2.0.tgz#8674db279dd0b81d03762dbc8dfcd7d98baf728a"
+  integrity sha512-XkkHg7PwDed57ODrk/vhq5/lOr3SGcr30pJrNtG+ytxBOuxD6OGnOjmCwgWNFu74mcXi6mlftYm1s3RTysKeAQ==
 
-"@zeejs/react@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@zeejs/react/-/react-0.1.1.tgz#ae6d632dfae7dc2ec73bd57054b764965b066fd5"
-  integrity sha512-tgYB5ex8C1cZHjQzGHW/OkiD5yFuPI6JstNmTFJ6EM+KC/FT+ok50KoDPhv9aNVjqTS+ktgCEi3quBJLcNMsBQ==
+"@zeejs/react@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@zeejs/react/-/react-0.2.0.tgz#1fac5c14ba14b4ec297d416cc536f4fe8db101e1"
+  integrity sha512-Czzeu2TfZeC9JNZJIViERbJoq98jWuPikO3z4RXy7Due6DwHGWLHvsSC1yo0U8TdDqKjk9b3b6UTDAQ5NKws4Q==
   dependencies:
-    "@zeejs/browser" "^0.1.0"
-    "@zeejs/core" "^0.1.0"
+    "@zeejs/browser" "^0.2.0"
+    "@zeejs/core" "^0.2.0"
 
 JSONStream@^1.0.4:
   version "1.3.5"
@@ -6801,10 +6795,10 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-tabbable@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-4.0.0.tgz#5bff1d1135df1482cf0f0206434f15eadbeb9261"
-  integrity sha512-H1XoH1URcBOa/rZZWxLxHCtOdVUEev+9vo5YdYhC9tCY4wnybX+VQrCYuy9ubkg69fCBxCONJOSLGfw0DWMffQ==
+tabbable@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.2.1.tgz#e3fda7367ddbb172dcda9f871c0fdb36d1c4cd9c"
+  integrity sha512-40pEZ2mhjaZzK0BnI+QGNjJO8UYx9pP5v7BGe17SORTO0OEuuaAwQTkAp8whcZvqon44wKFOikD+Al11K3JICQ==
 
 table@^6.0.9:
   version "6.7.1"

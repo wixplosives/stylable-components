@@ -73,9 +73,9 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
   isHorizontal,
   searchControl,
 }: ListProps<T>): JSX.Element {
-  const [selectedId, setSelectedId] = useStateControls(selectionControl || undefined);
-  const [focusedId, setFocusedId] = useStateControls(focusControl || undefined);
-  const [searchText, setSearchText] = useStateControls(searchControl || undefined);
+  const [selectedId, setSelectedId] = useStateControls(selectionControl);
+  const [focusedId, setFocusedId] = useStateControls(focusControl);
+  const [searchText, setSearchText] = useStateControls(searchControl);
   const defaultRef = useRef<EL>();
   const actualRef = root?.props.ref || defaultRef;
   const onMouseMove = useIdListener(setFocusedId);
