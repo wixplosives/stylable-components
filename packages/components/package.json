@@ -22,7 +22,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@stylable/runtime": "^4.6.0",
+    "@stylable/runtime": "^4.7.2",
     "@wixc3/wcs-core": "^2.4.2",
     "@zeejs/react": "^0.2.0"
   }
