@@ -55,7 +55,7 @@ export const searchMethodContext = createContext({
   split: splitFuzzySearchText,
 });
 
-export const HighlightedString = (props: { text: string; className?: string }): JSX.Element => {
+export const SearchableText = (props: { text: string; className?: string }): JSX.Element => {
   const searchString = useContext(searchStringContext);
   const { split } = useContext(searchMethodContext);
   const sections = useMemo(() => split(props.text, searchString), [props.text, searchString, split]);
