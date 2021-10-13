@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRef } from 'react';
 import { useElementSize, WatchedSize, unMeasured, useElementDimension, useIdBasedRects } from '../../use-element-rect';
-
+import { classes } from './element-rect-hook-simulator.st.css';
 export const ElementSizeHookSimulator = ({
   watchSize = unMeasured,
   height,
@@ -19,6 +19,7 @@ export const ElementSizeHookSimulator = ({
         height,
         width,
       }}
+      className={classes.root}
     >
       <div ref={ref} style={{ width: '100%', height: '100%' }}>
         <div style={{ position: 'fixed', top: '50%', left: '50%' }}>
@@ -87,7 +88,7 @@ export const IdBasedRectsHookSimulator = ({
         <pre style={{ position: 'fixed', top: '50%', left: '50%' }}>{JSON.stringify(res, null, 4)}</pre>
         {data.map((item) =>
           item.skipRender ? null : (
-            <div data-id={item.id} style={item.style}>
+            <div key={item.id} data-id={item.id} style={item.style}>
               item {item.id}
             </div>
           )

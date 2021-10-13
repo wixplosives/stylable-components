@@ -5,7 +5,7 @@
 emphasis] from "../button/variants.st.css";
 @st-import Area from "../area/area.st.css";
 @st-import [floating] from "../area/variants.st.css";
-@st-import [popover, area] from "../auto-complete/auto-complete.st.css";
+@st-import [popover, scrollListRoot] from "../auto-complete/auto-complete.st.css";
 
 
 :vars {
@@ -23,7 +23,7 @@ emphasis] from "../button/variants.st.css";
   .CirclePreloader::inner {
     border-top: 2px solid value(outlines);
     border-right: 2px solid value(outlines);
-    box-shadow: -3.28px -2.29px 11px -3px #96ECEA;
+    box-shadow: -0.28px 3.99px 2px 4px #e7eaff, -3.28px -2.29px 11px -3px #96ECEA;
     margin-bottom: 14px;
   }
 
@@ -80,16 +80,32 @@ emphasis] from "../button/variants.st.css";
     border: 1px solid value(outlines);
   }
 
-  .area {
+
+  .scrollListRoot {
+    scrollbar-width: thin;
+    scrollbar-color: gray lightgray;
+    scrollbar-gutter: stable;
     box-shadow: 1.41px 1.41px 2px 1px #0006242d;
     margin-left: -2px;
     margin-right: 2px;
+    max-height: 30vh;
+  }
+
+  .scrollListRoot::-webkit-scrollbar {
+    width: 11px;
+    background: lightgray;
+  }
+
+
+  .scrollListRoot::-webkit-scrollbar-thumb {
+    background-color: gray;
+    border-radius: 3px;
   }
 
   .popover {
     padding-left: 4px;
     padding-right: 4px;
     padding-bottom: 4px;
-    max-height: 30vh;
+
   }
 }
