@@ -23,7 +23,7 @@ export default createSimulation({
         }],
     },
     environmentProps: {
-        canvasWidth: 384,
+        canvasWidth: 522,
         canvasHeight: 208,
         windowWidth: 1190,
         windowHeight: 640,

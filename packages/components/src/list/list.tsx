@@ -2,7 +2,6 @@ import React, { useCallback, useRef } from 'react';
 import { KeyCodes } from '../keycodes';
 import { useIdListener } from '../hooks/use-id-based-event';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
-import { searchStringContext } from '../searchable-text/searchable-text';
 import { callInternalFirst, createElementSlot, defaultRoot, mergeObjectInternalWins } from '../hooks/use-element-slot';
 import { ElementSlot, elementSlot } from '../common/types';
 
@@ -39,7 +38,6 @@ export interface ListProps<T> {
   ItemRenderer: React.ComponentType<ListItemProps<T>>;
   focusControl?: StateControls<string | undefined>;
   selectionControl?: StateControls<string | undefined>;
-  searchControl?: StateControls<string | undefined>;
   isHorizontal?: boolean;
 }
 
@@ -71,11 +69,9 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
   ItemRenderer,
   items,
   isHorizontal,
-  searchControl,
 }: ListProps<T>): JSX.Element {
   const [selectedId, setSelectedId] = useStateControls(selectionControl);
   const [focusedId, setFocusedId] = useStateControls(focusControl);
-  const [searchText, setSearchText] = useStateControls(searchControl);
   const defaultRef = useRef<EL>();
   const actualRef = root?.props.ref || defaultRef;
   const onMouseMove = useIdListener(setFocusedId);
@@ -88,7 +84,6 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
           setFocusedId(getId(item));
         }
       };
-      console.log(ev.code);
       switch (ev.code) {
         case KeyCodes.ArrowLeft:
           if (isHorizontal) {
@@ -119,12 +114,9 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
           setSelectedId(focusedId);
           break;
         default:
-          if (ev.key) {
-            setSearchText(searchText || '' + ev.key);
-          }
       }
     },
-    [focusedId, getId, isHorizontal, items, searchText, setFocusedId, setSearchText, setSelectedId]
+    [focusedId, getId, isHorizontal, items, setFocusedId, setSelectedId]
   );
   return useListRootElement(
     root,
@@ -134,21 +126,19 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
       onClick,
       onKeyPress,
     },
-    <searchStringContext.Provider value={searchText || ''}>
-      {items.map((item) => {
-        const id = getId(item);
-        return (
-          <ItemRenderer
-            key={id}
-            id={id}
-            data={item}
-            focus={setFocusedId}
-            isFocused={focusedId === id}
-            isSelected={selectedId === id}
-            select={setSelectedId}
-          />
-        );
-      })}
-    </searchStringContext.Provider>
+    items.map((item) => {
+      const id = getId(item);
+      return (
+        <ItemRenderer
+          key={id}
+          id={id}
+          data={item}
+          focus={setFocusedId}
+          isFocused={focusedId === id}
+          isSelected={selectedId === id}
+          select={setSelectedId}
+        />
+      );
+    })
   );
 }
