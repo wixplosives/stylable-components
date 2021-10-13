@@ -12,7 +12,7 @@ export const useScroll = (isHorizontal?: boolean, ref?: React.RefObject<HTMLElem
     return () => {
       target?.removeEventListener('scroll', trigger);
     };
-  }, [ref]);
+  }, [ref, trigger]);
   if (!ref) {
     if (typeof window === 'undefined') {
       return 0;

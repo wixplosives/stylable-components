@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import React, { ReactNode, ReactNodeArray, useMemo } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
 
@@ -19,6 +21,7 @@ export const createElementSlot = <MinimalProps, Mapping extends PropMapping<Mini
   ) => {
     const usedSlot = slot || defaultSlot;
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const childrenArr = Array.isArray(children) ? children : [children];
     return useMemo(() => {
       return React.createElement(
@@ -26,7 +29,7 @@ export const createElementSlot = <MinimalProps, Mapping extends PropMapping<Mini
         mergeWithMap(props, usedSlot.props as unknown as MinimalProps, propsMapping),
         ...childrenArr
       );
-    }, [slot, props, children]);
+    }, [usedSlot.el, usedSlot.props, props, childrenArr]);
   };
 };
 export function useForwardElementSlot<
@@ -45,33 +48,36 @@ export function useForwardElementSlot<
     } as Slot;
   }, [usedSlot, props, mergeMap]);
 }
-export const mergeObjectInternalWins = <T extends any>(internal: T, external: T) => {
+
+export function mergeObjectInternalWins<T extends {} | undefined>(internal: T, external: T) {
   if (typeof internal === 'object') {
     if (typeof external === 'object') {
       return {
-        ...(external as any),
-        ...(internal as any),
+        ...(external),
+        ...(internal),
       };
     }
     return internal;
   }
   return external;
-};
-export const mergeObjectExternalWins = <T extends any>(internal: T, external: T) => {
+}
+
+export function mergeObjectExternalWins<T extends {} | undefined>(internal: T, external: T) {
   if (typeof external === 'object') {
     if (typeof internal === 'object') {
       return {
-        ...(internal as any),
-        ...(external as any),
+        ...(internal),
+        ...(external),
       };
     }
     return external;
   }
   return internal;
-};
+}
+
 export const callExternal =
-  <T extends (...args: unknown[]) => any>(_internal: T, external: T) =>
-  (...args: unknown[]) =>
+  <T extends (...args: any[]) => unknown>(_internal: T, external: T) =>
+  (...args: any[]) =>
     external(...args);
 export const callInternalFirst =
   <T extends (...args: any[]) => any>(internal?: T, external?: T) =>

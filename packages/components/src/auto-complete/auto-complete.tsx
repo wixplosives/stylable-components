@@ -20,9 +20,12 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
     const { searchControl, getTextContent, items, ...listProps } = props;
     const [searchText, updateSearchText] = useStateControls(searchControl);
     const { match } = useContext(searchMethodContext);
-    const onTextChange = useCallback((ev: React.ChangeEvent<HTMLInputElement>) => {
-        updateSearchText(ev.currentTarget.value);
-    }, []);
+    const onTextChange = useCallback(
+        (ev: React.ChangeEvent<HTMLInputElement>) => {
+            updateSearchText(ev.currentTarget.value);
+        },
+        [updateSearchText]
+    );
     const [isOpen, setIsOpen] = useState(false);
     const open = useCallback(() => {
         setIsOpen(true);
@@ -41,7 +44,8 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
             }
             return acc;
         }, [] as T[]);
-    }, [items, searchText]);
+    }, [getTextContent, items, match, searchText]);
+
     return (
         <div className={st(classes.root)} onClick={open}>
             <input

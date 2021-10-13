@@ -46,7 +46,7 @@ export const themeMixin = createPlugin<IReactSimulation>()(
           const theme = props.themes.find((v) => {
             return v.themeTitle === currValue;
           });
-          console.log(theme);
+          // console.log(theme);
           if (theme) {
             document.body.setAttribute('class', theme.themeClass);
           }

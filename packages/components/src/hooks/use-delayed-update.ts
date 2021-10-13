@@ -37,5 +37,5 @@ export const useDelayedUpdateState = <T>(setValue: (t: T) => void) => {
     return () => {
       window.cancelAnimationFrame(handle);
     };
-  }, []);
+  }, [setValue]);
 };

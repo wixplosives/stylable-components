@@ -1,6 +1,6 @@
 import type React from 'react';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useDelayedUpdate, useDelayedUpdateState } from './use-delayed-update';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useDelayedUpdateState } from './use-delayed-update';
 
 export interface WatchedSize {
   width: null | number;
@@ -36,7 +36,7 @@ export const useElementDimension = (
       return watchSize;
     }
     return watchedSizeToDim(isVertical, elementOrWindowSize(dim));
-  }, [dim]);
+  }, [dim, isVertical, watchSize]);
   const [dimension, updateDimension] = useState(startDim);
   useLayoutEffect(() => {
     let observer: ResizeObserver;
@@ -54,7 +54,7 @@ export const useElementDimension = (
       };
     }
     return undefined;
-  }, [startDim]);
+  }, [dim, isVertical, startDim, watchSize]);
   return dimension;
 };
 
@@ -84,7 +84,7 @@ export const useElementSize = (element: React.RefObject<HTMLElement>, watchSize:
       return watchSize;
     }
     return rectToSize(element.current?.getBoundingClientRect());
-  }, [element]);
+  }, [element, watchSize]);
   const [rect, updateRect] = useState(startRect);
   useLayoutEffect(() => {
     let observer: ResizeObserver;
@@ -101,11 +101,11 @@ export const useElementSize = (element: React.RefObject<HTMLElement>, watchSize:
     return () => {
       observer.disconnect();
     };
-  }, [element.current]);
+  }, [element, watchSize]);
   return rect;
 };
 
-const noop = () => {};
+const noop = () => undefined;
 const createSetableObserver = () => {
   let listener: ResizeObserverCallback = noop;
   const listen = (lis: ResizeObserverCallback) => (listener = lis);
@@ -125,11 +125,11 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
   const shouldMeasure = typeof size === 'boolean';
   const shouldWatchSize = size === true;
   const precomputed = typeof size === 'boolean' ? undefined : size;
-  const cache = useRef(new Map<T, WatchedSize>());
+  // const cache = useRef(new Map<T, WatchedSize>());
   const [sizes, updateSizes] = useState(() => getSizes(ref, data, precomputed, getId, false));
   const delayedUpdateSizes = useDelayedUpdateState(updateSizes);
   const { observer, listen } = useMemo(createSetableObserver, []);
-  listen((entries) => {
+  listen((_entries) => {
     // for(const { target, borderBoxSize} of entries) {
     //   sizes
     //   if (cache.current.has()) {}
@@ -138,7 +138,7 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
   });
   useEffect(() => {
     return () => observer.disconnect();
-  }, []);
+  }, [observer]);
 
   useLayoutEffect(() => {
     if (!shouldMeasure || typeof size === 'function') {
@@ -152,7 +152,7 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
     for (const el of Object.values(results)) {
       observer.observe(el);
     }
-  }, [ref.current, data, precomputed, getId]);
+  }, [data, precomputed, getId, shouldMeasure, size, ref, shouldWatchSize, observer]);
   return sizes;
 }
 

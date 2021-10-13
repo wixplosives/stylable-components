@@ -77,6 +77,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
   const [focusedId, setFocusedId] = useStateControls(focusControl);
   const [searchText, setSearchText] = useStateControls(searchControl);
   const defaultRef = useRef<EL>();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const actualRef = root?.props.ref || defaultRef;
   const onMouseMove = useIdListener(setFocusedId);
   const onClick = useIdListener(setSelectedId);
@@ -88,7 +89,8 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
           setFocusedId(getId(item));
         }
       };
-      console.log(ev.code);
+      
+      // console.log(ev.code);
       switch (ev.code) {
         case KeyCodes.ArrowLeft:
           if (isHorizontal) {
