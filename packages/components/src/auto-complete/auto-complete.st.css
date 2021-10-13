@@ -5,8 +5,13 @@
 
 .input {}
 
-.popover {}
+.popover {
+  overflow: hidden;
+}
 
-.area {
+
+.scrollListRoot {
   -st-extends: floating;
+  overflow-x: hidden;
+  overflow-y: auto;
 }

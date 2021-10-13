@@ -1,5 +1,6 @@
 import type React from 'react';
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useDelayedUpdate, useDelayedUpdateState } from './use-delayed-update';
 
 export interface WatchedSize {
   width: null | number;
@@ -104,6 +105,17 @@ export const useElementSize = (element: React.RefObject<HTMLElement>, watchSize:
   return rect;
 };
 
+const noop = () => {};
+const createSetableObserver = () => {
+  let listener: ResizeObserverCallback = noop;
+  const listen = (lis: ResizeObserverCallback) => (listener = lis);
+  const observer = new ResizeObserver((ev, obs) => listener(ev, obs));
+  return {
+    listen,
+    observer,
+  };
+};
+
 export function useIdBasedRects<T, EL extends HTMLElement>(
   ref: React.RefObject<EL>,
   data: T[],
@@ -113,27 +125,33 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
   const shouldMeasure = typeof size === 'boolean';
   const shouldWatchSize = size === true;
   const precomputed = typeof size === 'boolean' ? undefined : size;
-  const emptySizes = useMemo(() => getSizes(ref, data, precomputed, getId, false), []);
-  const [sizes, updateSizes] = useState(emptySizes);
+  const cache = useRef(new Map<T, WatchedSize>());
+  const [sizes, updateSizes] = useState(() => getSizes(ref, data, precomputed, getId, false));
+  const delayedUpdateSizes = useDelayedUpdateState(updateSizes);
+  const { observer, listen } = useMemo(createSetableObserver, []);
+  listen((entries) => {
+    // for(const { target, borderBoxSize} of entries) {
+    //   sizes
+    //   if (cache.current.has()) {}
+    // }
+    delayedUpdateSizes(() => getSizes(ref, data, precomputed, getId, true));
+  });
+  useEffect(() => {
+    return () => observer.disconnect();
+  }, []);
+
   useLayoutEffect(() => {
-    let observer: MutationObserver;
     if (!shouldMeasure || typeof size === 'function') {
       return;
     }
     updateSizes(getSizes(ref, data, precomputed, getId, true));
-    if (!ref?.current || shouldWatchSize === false) {
+    if (!ref?.current || shouldWatchSize === false || !observer) {
       return;
     }
-    observer = new MutationObserver(() => {
-      updateSizes(getSizes(ref, data, precomputed, getId, true));
-    });
-    observer.observe(ref.current, {
-      attributes: true,
-      childList: true,
-    });
-    return () => {
-      observer.disconnect();
-    };
+    const results = elementsById(ref.current);
+    for (const el of Object.values(results)) {
+      observer.observe(el);
+    }
   }, [ref.current, data, precomputed, getId]);
   return sizes;
 }

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { elementSlot, ElementSlot, PropMapping } from '../common/types';
 import { useElementDimension, useIdBasedRects, WatchedSize } from '../hooks/use-element-rect';
 import { classes } from '../preloader/variants/circle-preloader.st.css';
@@ -49,10 +49,6 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
    * For vertical lists, this affects scrollTop. For horizontal lists, this affects scrollLeft.
    */
   initialScrollOffset?: number | undefined;
-  /**
-   * if provided the list will request more items when reaching the scroll length and show the preloader
-   */
-  loadMore?: (count: number) => void;
 
   /**
    * Total number of items in the list. Note that only a few items will be rendered and displayed at a time.
@@ -84,7 +80,25 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
   unmountItems?: boolean;
 
   preloader?: ElementSlot<{}>;
+
+  /**
+   * if loading the scroll list will show the preloader
+   * if idle the scroll list will request more items using loadMore.
+   * loading state must then be changed to 'loading' to avoid additional requests
+   *
+   * 'done' signifies that there are no more items to load
+   *
+   * @default done
+   *
+   */
+  loadingState?: ScrollListLoadingState;
+  /**
+   * if provided the list will request more items when reaching the scroll length
+   * you must manage the loading state as well for loadMore to work
+   */
+  loadMore?: (count: number) => void;
 }
+export type ScrollListLoadingState = 'loading' | 'idle' | 'done';
 interface PropsWithStyle {
   style: React.CSSProperties;
 }
@@ -109,8 +123,9 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   searchControl,
   selectionControl,
   extraRenderedItems = 0.5,
-  // unmountItems,
+  // unmountItems = true,
   preloader,
+  loadingState,
 }: ScrollListProps<T, EL>): JSX.Element {
   const listRef = useRef<HTMLElement>(null);
   const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
@@ -143,28 +158,22 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   const style: React.CSSProperties = {
     position: 'relative',
   };
-  if (isHorizontal) {
-    style.minWidth = maxScrollSize + 'px';
-  } else {
-    style.minHeight = maxScrollSize + 'px';
-  }
-  const calledLoadMore = useMemo(() => {
-    return {
-      value: false,
-    };
-  }, [items]);
 
-  useLayoutEffect(() => {
-    if (!calledLoadMore.value && renderEndIndex > items.length && loadMore) {
-      loadMore(items.length - renderEndIndex + scrollWindowSize / avgSize);
-      calledLoadMore.value = true;
+  useEffect(() => {
+    if (loadingState === 'idle' && renderEndIndex > items.length && loadMore) {
+      const fetchItemsCount = Math.ceil(
+        renderEndIndex - items.length + (scrollWindowSize * (1 + extraRenderedItems)) / avgSize
+      );
+      if (fetchItemsCount > 0) {
+        loadMore(fetchItemsCount);
+      }
     }
-  }, [calledLoadMore, items]);
+  }, [loadingState, items, renderEndIndex, loadMore]);
 
   const rendereredItems = useMemo(() => items.slice(0, renderEndIndex), [items, renderEndIndex]);
 
   const innerStyle: React.CSSProperties = {
-    position: 'absolute',
+    position: 'relative',
   };
   if (isHorizontal) {
     innerStyle.top = '0px';
@@ -175,10 +184,11 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   }
   const listRootWithStyle = useForwardElementSlot(
     defaultRoot as any as ElementSlot<ListRootMinimalProps>,
-    root,
+    undefined,
     { style: innerStyle, ref: listRef },
     rootMergeMap
   );
+  const Preloader = useScrollListPreloaderElement(preloader, {});
   return useScrollListRootElement(root, { style }, [
     <List<T, EL>
       isHorizontal={isHorizontal}
@@ -196,7 +206,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         top: maxScrollSize + 'px',
       }}
     >
-      {useScrollListPreloaderElement(preloader, {})}
+      {loadingState === 'loading' ? Preloader : null}
     </div>,
   ]);
 }

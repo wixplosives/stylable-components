@@ -9,14 +9,21 @@ export default createSimulation({
         width: '100%',
         height: '100%',
         data: [{
-            id: 'a'
+            id: 'a',
+            style: {
+                background: 'blue'
+            }
         },
         {
-            id: 'b'
+            id: 'b',
+            style: {
+                background: 'red',
+                width: '50%'
+            }
         }],
     },
     environmentProps: {
-        canvasWidth: 300,
+        canvasWidth: 384,
         canvasHeight: 208,
         windowWidth: 1190,
         windowHeight: 640,
