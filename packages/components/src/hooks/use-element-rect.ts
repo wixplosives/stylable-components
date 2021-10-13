@@ -125,16 +125,21 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
   const shouldMeasure = typeof size === 'boolean';
   const shouldWatchSize = size === true;
   const precomputed = typeof size === 'boolean' ? undefined : size;
-  const cache = useRef(new Map<T, WatchedSize>());
-  const [sizes, updateSizes] = useState(() => getSizes(ref, data, precomputed, getId, false));
+  const cache = useRef(new Map<string, WatchedSize>());
+  const [sizes, updateSizes] = useState(() => getSizes(ref, data, precomputed, getId, false, cache.current));
   const delayedUpdateSizes = useDelayedUpdateState(updateSizes);
   const { observer, listen } = useMemo(createSetableObserver, []);
   listen((entries) => {
-    // for(const { target, borderBoxSize} of entries) {
-    //   sizes
-    //   if (cache.current.has()) {}
-    // }
-    delayedUpdateSizes(() => getSizes(ref, data, precomputed, getId, true));
+    for (const { target, contentRect } of entries) {
+      const id = target.getAttribute('data-id');
+      if (id) {
+        cache.current.set(id, {
+          width: contentRect.width,
+          height: contentRect.height,
+        });
+        delayedUpdateSizes(() => getSizes(ref, data, precomputed, getId, true, cache.current));
+      }
+    }
   });
   useEffect(() => {
     return () => observer.disconnect();
@@ -144,7 +149,7 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
     if (!shouldMeasure || typeof size === 'function') {
       return;
     }
-    updateSizes(getSizes(ref, data, precomputed, getId, true));
+    updateSizes(getSizes(ref, data, precomputed, getId, true, cache.current));
     if (!ref?.current || shouldWatchSize === false || !observer) {
       return;
     }
@@ -165,7 +170,8 @@ export function getSizes<T, EL extends HTMLElement>(
   data: T[],
   size: WatchedSize | ((t: T) => WatchedSize) | undefined,
   getId: (t: T) => string,
-  meassure: boolean
+  meassure: boolean,
+  sizeCache: Map<string, WatchedSize>
 ) {
   if (typeof size === 'function') {
     return data.reduce((acc, item) => {
@@ -189,10 +195,15 @@ export function getSizes<T, EL extends HTMLElement>(
   return data.reduce((acc, item) => {
     const id = getId(item);
     const element = elements[id];
-    if (element) {
-      acc[getId(item)] = elementToSize(element);
+    const cachedSize = sizeCache.get(id);
+    if (cachedSize) {
+      acc[id] = cachedSize;
+    } else if (element) {
+      const measured = elementToSize(element);
+      acc[id] = measured;
+      sizeCache.set(id, measured);
     } else {
-      acc[getId(item)] = unMeasured;
+      acc[id] = unMeasured;
     }
     return acc;
   }, {} as SizesById);
