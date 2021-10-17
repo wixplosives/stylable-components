@@ -7,7 +7,7 @@ export interface ItemData {
     id: string;
 }
 
-export const ItemRenderer = (props: ListItemProps<ItemData>) => {
+export const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     return (
         <div
             className={st(classes.root, {
@@ -16,7 +16,10 @@ export const ItemRenderer = (props: ListItemProps<ItemData>) => {
             })}
             data-id={props.id}
         >
-            <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><text y='.9em' font-size='90'>🏞</text></svg>" className={classes.icon} />
+            <img
+                src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><text y='.9em' font-size='90'>🏞</text></svg>"
+                className={classes.icon}
+            />
             <SearchableText className={classes.text} text={props.data.title} />
         </div>
     );
