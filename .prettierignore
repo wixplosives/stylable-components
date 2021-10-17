@@ -1,2 +1,3 @@
 dist
-/tsconfig.base.json
+*.st.css
+tsconfig.base.json

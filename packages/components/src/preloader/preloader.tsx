@@ -10,8 +10,9 @@ export interface PreloaderProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const Preloader = (props: PreloaderProps) => {
-  const { progress, children, className, ...divProps } = props;
-  console.log(className)
+  const { progress: _progress, children, className, ...divProps } = props;
+  
+  // console.log(className)
   return (
     <div {...divProps} className={st(classes.root, className)}>
       <div className={st(classes.inner)}></div>

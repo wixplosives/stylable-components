@@ -1,220 +1,223 @@
 import type React from 'react';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { useDelayedUpdate, useDelayedUpdateState } from './use-delayed-update';
+import { useDelayedUpdateState } from './use-delayed-update';
 
 export interface WatchedSize {
-  width: null | number;
-  height: null | number;
+    width: null | number;
+    height: null | number;
 }
 export interface SizesById {
-  [id: string]: WatchedSize;
+    [id: string]: WatchedSize;
 }
 
 const elementOrWindowSize = (dim?: React.RefObject<HTMLElement>): WatchedSize => {
-  if (dim) {
-    if (dim.current) {
-      return rectToSize(dim?.current?.getBoundingClientRect());
+    if (dim) {
+        if (dim.current) {
+            return rectToSize(dim?.current?.getBoundingClientRect());
+        }
+        return unMeasured;
     }
-    return unMeasured;
-  }
-  if (typeof window === 'undefined') {
-    return unMeasured;
-  }
-  return {
-    height: window.innerHeight,
-    width: window.innerWidth,
-  };
+    if (typeof window === 'undefined') {
+        return unMeasured;
+    }
+    return {
+        height: window.innerHeight,
+        width: window.innerWidth,
+    };
 };
 
 export const useElementDimension = (
-  dim?: React.RefObject<HTMLElement>,
-  isVertical = true,
-  watchSize: number | boolean = false
-) => {
-  const startDim = useMemo(() => {
-    if (typeof watchSize === 'number') {
-      return watchSize;
-    }
-    return watchedSizeToDim(isVertical, elementOrWindowSize(dim));
-  }, [dim]);
-  const [dimension, updateDimension] = useState(startDim);
-  useLayoutEffect(() => {
-    let observer: ResizeObserver;
-    if (typeof watchSize === 'number') {
-      return;
-    }
-    updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(dim)));
-    if (dim?.current && watchSize) {
-      observer = new ResizeObserver(() => {
+    dim?: React.RefObject<HTMLElement>,
+    isVertical = true,
+    watchSize: number | boolean = false
+): number => {
+    const startDim = useMemo(() => {
+        if (typeof watchSize === 'number') {
+            return watchSize;
+        }
+        return watchedSizeToDim(isVertical, elementOrWindowSize(dim));
+    }, [dim, isVertical, watchSize]);
+    const [dimension, updateDimension] = useState(startDim);
+    useLayoutEffect(() => {
+        let observer: ResizeObserver;
+        if (typeof watchSize === 'number') {
+            return;
+        }
         updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(dim)));
-      });
-      observer.observe(dim.current);
-      return () => {
-        observer.disconnect();
-      };
-    }
-    return undefined;
-  }, [startDim]);
-  return dimension;
+        if (dim?.current && watchSize) {
+            observer = new ResizeObserver(() => {
+                updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(dim)));
+            });
+            observer.observe(dim.current);
+            return () => {
+                observer.disconnect();
+            };
+        }
+        return undefined;
+    }, [dim, isVertical, startDim, watchSize]);
+    return dimension;
 };
 
 const watchedSizeToDim = (isVertical: boolean, size: WatchedSize): number => {
-  return (isVertical ? size.height : size.width) || 0;
+    return (isVertical ? size.height : size.width) || 0;
 };
 
 const rectToSize = (rect?: DOMRect): WatchedSize => {
-  return rect
-    ? {
-        width: rect.width,
-        height: rect.height,
-      }
-    : {
-        width: null,
-        height: null,
-      };
+    return rect
+        ? {
+              width: rect.width,
+              height: rect.height,
+          }
+        : {
+              width: null,
+              height: null,
+          };
 };
 const elementToSize = (element?: Element): WatchedSize => {
-  const rect = element?.getBoundingClientRect();
-  return rectToSize(rect);
+    const rect = element?.getBoundingClientRect();
+    return rectToSize(rect);
 };
 
-export const useElementSize = (element: React.RefObject<HTMLElement>, watchSize: boolean | WatchedSize) => {
-  const startRect = useMemo(() => {
-    if (typeof watchSize === 'object') {
-      return watchSize;
-    }
-    return rectToSize(element.current?.getBoundingClientRect());
-  }, [element]);
-  const [rect, updateRect] = useState(startRect);
-  useLayoutEffect(() => {
-    let observer: ResizeObserver;
-    updateRect(rectToSize(element.current?.getBoundingClientRect()));
-    if (typeof watchSize === 'object') {
-      return;
-    }
-    if (watchSize && element.current) {
-      observer = new ResizeObserver(() => {
+export const useElementSize = (
+    element: React.RefObject<HTMLElement>,
+    watchSize: boolean | WatchedSize
+): WatchedSize => {
+    const startRect = useMemo(() => {
+        if (typeof watchSize === 'object') {
+            return watchSize;
+        }
+        return rectToSize(element.current?.getBoundingClientRect());
+    }, [element, watchSize]);
+    const [rect, updateRect] = useState(startRect);
+    useLayoutEffect(() => {
+        let observer: ResizeObserver;
         updateRect(rectToSize(element.current?.getBoundingClientRect()));
-      });
-      observer.observe(element.current);
-    }
-    return () => {
-      observer.disconnect();
-    };
-  }, [element.current]);
-  return rect;
+        if (typeof watchSize === 'object') {
+            return;
+        }
+        if (watchSize && element.current) {
+            observer = new ResizeObserver(() => {
+                updateRect(rectToSize(element.current?.getBoundingClientRect()));
+            });
+            observer.observe(element.current);
+        }
+        return () => {
+            observer.disconnect();
+        };
+    }, [element, watchSize]);
+    return rect;
 };
 
-const noop = () => {};
+const noop = () => undefined;
 const createSetableObserver = () => {
-  let listener: ResizeObserverCallback = noop;
-  const listen = (lis: ResizeObserverCallback) => (listener = lis);
-  const observer = new ResizeObserver((ev, obs) => listener(ev, obs));
-  return {
-    listen,
-    observer,
-  };
+    let listener: ResizeObserverCallback = noop;
+    const listen = (lis: ResizeObserverCallback) => (listener = lis);
+    const observer = new ResizeObserver((ev, obs) => listener(ev, obs));
+    return {
+        listen,
+        observer,
+    };
 };
 
 export function useIdBasedRects<T, EL extends HTMLElement>(
-  ref: React.RefObject<EL>,
-  data: T[],
-  getId: (t: T) => string,
-  size: WatchedSize | ((t: T) => WatchedSize) | boolean
+    ref: React.RefObject<EL>,
+    data: T[],
+    getId: (t: T) => string,
+    size: WatchedSize | ((t: T) => WatchedSize) | boolean
 ): SizesById {
-  const shouldMeasure = typeof size === 'boolean';
-  const shouldWatchSize = size === true;
-  const precomputed = typeof size === 'boolean' ? undefined : size;
-  const cache = useRef(new Map<string, WatchedSize>());
-  const [sizes, updateSizes] = useState(() => getSizes(ref, data, precomputed, getId, false, cache.current));
-  const delayedUpdateSizes = useDelayedUpdateState(updateSizes);
-  const { observer, listen } = useMemo(createSetableObserver, []);
-  listen((entries) => {
-    for (const { target, contentRect } of entries) {
-      const id = target.getAttribute('data-id');
-      if (id) {
-        cache.current.set(id, {
-          width: contentRect.width,
-          height: contentRect.height,
-        });
-        delayedUpdateSizes(() => getSizes(ref, data, precomputed, getId, true, cache.current));
-      }
-    }
-  });
-  useEffect(() => {
-    return () => observer.disconnect();
-  }, []);
+    const shouldMeasure = typeof size === 'boolean';
+    const shouldWatchSize = size === true;
+    const precomputed = typeof size === 'boolean' ? undefined : size;
+    const cache = useRef(new Map<string, WatchedSize>());
+    const [sizes, updateSizes] = useState(() => getSizes(ref, data, precomputed, getId, false, cache.current));
+    const delayedUpdateSizes = useDelayedUpdateState(updateSizes);
+    const { observer, listen } = useMemo(createSetableObserver, []);
+    listen((entries) => {
+        for (const { target, contentRect } of entries) {
+            const id = target.getAttribute('data-id');
+            if (id) {
+                cache.current.set(id, {
+                    width: contentRect.width,
+                    height: contentRect.height,
+                });
+                delayedUpdateSizes(() => getSizes(ref, data, precomputed, getId, true, cache.current));
+            }
+        }
+    });
+    useEffect(() => {
+        return () => observer.disconnect();
+    }, [observer]);
 
-  useLayoutEffect(() => {
-    if (!shouldMeasure || typeof size === 'function') {
-      return;
-    }
-    updateSizes(getSizes(ref, data, precomputed, getId, true, cache.current));
-    if (!ref?.current || shouldWatchSize === false || !observer) {
-      return;
-    }
-    const results = elementsById(ref.current);
-    for (const el of Object.values(results)) {
-      observer.observe(el);
-    }
-  }, [ref.current, data, precomputed, getId]);
-  return sizes;
+    useLayoutEffect(() => {
+        if (!shouldMeasure || typeof size === 'function') {
+            return;
+        }
+        updateSizes(getSizes(ref, data, precomputed, getId, true, cache.current));
+        if (!ref?.current || shouldWatchSize === false || !observer) {
+            return;
+        }
+        const results = elementsById(ref.current);
+        for (const el of Object.values(results)) {
+            observer.observe(el);
+        }
+    }, [data, precomputed, getId, shouldMeasure, size, ref, shouldWatchSize, observer]);
+    return sizes;
 }
 
 export const unMeasured: WatchedSize = {
-  width: null,
-  height: null,
+    width: null,
+    height: null,
 };
 export function getSizes<T, EL extends HTMLElement>(
-  ref: React.RefObject<EL>,
-  data: T[],
-  size: WatchedSize | ((t: T) => WatchedSize) | undefined,
-  getId: (t: T) => string,
-  meassure: boolean,
-  sizeCache: Map<string, WatchedSize>
-) {
-  if (typeof size === 'function') {
-    return data.reduce((acc, item) => {
-      acc[getId(item)] = size(item);
-      return acc;
-    }, {} as SizesById);
-  }
-  if (typeof size !== 'undefined') {
-    return data.reduce((acc, item) => {
-      acc[getId(item)] = size;
-      return acc;
-    }, {} as SizesById);
-  }
-  if (!meassure || !ref.current) {
-    return data.reduce((acc, item) => {
-      acc[getId(item)] = unMeasured;
-      return acc;
-    }, {} as SizesById);
-  }
-  const elements = elementsById(ref.current);
-  return data.reduce((acc, item) => {
-    const id = getId(item);
-    const element = elements[id];
-    const cachedSize = sizeCache.get(id);
-    if (cachedSize) {
-      acc[id] = cachedSize;
-    } else if (element) {
-      const measured = elementToSize(element);
-      acc[id] = measured;
-      sizeCache.set(id, measured);
-    } else {
-      acc[id] = unMeasured;
+    ref: React.RefObject<EL>,
+    data: T[],
+    size: WatchedSize | ((t: T) => WatchedSize) | undefined,
+    getId: (t: T) => string,
+    meassure: boolean,
+    sizeCache: Map<string, WatchedSize>
+): Record<string, WatchedSize> {
+    if (typeof size === 'function') {
+        return data.reduce((acc, item) => {
+            acc[getId(item)] = size(item);
+            return acc;
+        }, {} as SizesById);
     }
-    return acc;
-  }, {} as SizesById);
+    if (typeof size !== 'undefined') {
+        return data.reduce((acc, item) => {
+            acc[getId(item)] = size;
+            return acc;
+        }, {} as SizesById);
+    }
+    if (!meassure || !ref.current) {
+        return data.reduce((acc, item) => {
+            acc[getId(item)] = unMeasured;
+            return acc;
+        }, {} as SizesById);
+    }
+    const elements = elementsById(ref.current);
+    return data.reduce((acc, item) => {
+        const id = getId(item);
+        const element = elements[id];
+        const cachedSize = sizeCache.get(id);
+        if (cachedSize) {
+            acc[id] = cachedSize;
+        } else if (element) {
+            const measured = elementToSize(element);
+            acc[id] = measured;
+            sizeCache.set(id, measured);
+        } else {
+            acc[id] = unMeasured;
+        }
+        return acc;
+    }, {} as SizesById);
 }
 
-export function elementsById(scope: Element) {
-  const results = scope.querySelectorAll('[data-id]');
-  const res: Record<string, Element> = {};
-  results.forEach((el) => {
-    const id = el.getAttribute('data-id')!;
-    res[id] = el;
-  });
-  return res;
+export function elementsById(scope: Element): Record<string, Element> {
+    const results = scope.querySelectorAll('[data-id]');
+    const res: Record<string, Element> = {};
+    results.forEach((el) => {
+        const id = el.getAttribute('data-id')!;
+        res[id] = el;
+    });
+    return res;
 }

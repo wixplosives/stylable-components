@@ -26,6 +26,7 @@ export const scenarioMixin = createPlugin<IReactSimulation>()(
         btn.addEventListener('click', () => {
           const current = modifiable.shift();
           if (current) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             current.execute();
             const next = modifiable[0];
             btn.innerText = next?.title || 'Done!';
@@ -197,6 +198,7 @@ export const expectElementStyle = <EL extends Element>(
   return {
     title,
     execute() {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       exp.execute();
     },
     highlightSelector: selector,

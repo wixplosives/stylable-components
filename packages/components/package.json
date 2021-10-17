@@ -1,8 +1,9 @@
 {
-  "name": "@sample/components",
+  "name": "stylable-components",
   "version": "1.0.0",
   "main": "dist/index.js",
   "scripts": {
+    "build:stylable": "stc --srcDir src --outDir dist --stcss --no-cjs --useNamespaceReference",
     "test": "mocha \"dist/test/**/*.spec.js\""
   },
   "peerDependencies": {
@@ -15,7 +16,7 @@
     "!dist/tsconfig.tsbuildinfo"
   ],
   "license": "MIT",
-  "repository": "git@github.com:wixplosives/sample-monorepo.git",
+  "repository": "git@github.com:wixplosives/stylable-components.git",
   "sideEffects": false,
   "private": true,
   "publishConfig": {

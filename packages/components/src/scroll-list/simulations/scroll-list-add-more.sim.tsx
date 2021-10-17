@@ -1,17 +1,18 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { createSimulation } from '@wixc3/wcs-core';
 import { useCallback, useState } from 'react';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
 import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../../simulation-mixins/scenario';
 import { ScrollList, ScrollListLoadingState } from '../scroll-list';
-import { sleep } from 'promise-assist';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
+import { sleep } from 'promise-assist';
 const createItems = (startIdx = 0, count = 100) =>
     new Array(count).fill(0).map(
         (_, idx) =>
-        ({
-            id: 'a' + (idx + startIdx),
-            title: 'item number ' + (idx + startIdx),
-        } as ItemData)
+            ({
+                id: 'a' + (idx + startIdx),
+                title: 'item number ' + (idx + startIdx),
+            } as ItemData)
     );
 
 export default createSimulation<ScrollList<ItemData, HTMLElement>>({
@@ -30,7 +31,7 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
         const loadMore = useCallback(
             async (count: number) => {
                 updateLoadingState('loading');
-                // await sleep(500);
+                await sleep(100);
                 updateItems(items.concat(createItems(items.length, count)));
                 updateLoadingState('idle');
             },

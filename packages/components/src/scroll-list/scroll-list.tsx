@@ -191,7 +191,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         loadMore(fetchItemsCount);
       }
     }
-  }, [loadingState, items, renderEndIndex, loadMore]);
+  }, [loadingState, items, renderEndIndex, loadMore, scrollWindowSize, extraRenderedItems, avgSize]);
 
   const rendereredItems = useMemo(() => items.slice(startIdx, renderEndIndex), [items, renderEndIndex, startIdx]);
 
@@ -213,6 +213,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   );
   const Preloader = useScrollListPreloaderElement(preloader, {});
   return useScrollListRootElement(root, { style }, [
+    // eslint-disable-next-line react/jsx-key
     <List<T, EL>
       isHorizontal={isHorizontal}
       getId={getId}
@@ -222,6 +223,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
       focusControl={focusControl}
       selectionControl={selectionControl}
     />,
+    // eslint-disable-next-line react/jsx-key
     <div
       style={{
         height: maxScrollSize + 'px',
