@@ -1,3 +1,3 @@
-export const reportError = (err: unknown) => {
-  throw err;
+export const reportError = (err: unknown): void => {
+    throw err;
 };

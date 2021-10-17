@@ -1,41 +1,54 @@
-import { useCallback, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 
-export const useDelayedUpdate = () => {
-  const [_, update] = useReducer((n) => ++n, 0);
-  const triggeredForUpdate = useRef(false);
-  return useCallback(() => {
-    if (triggeredForUpdate.current) {
-      return;
-    }
-    triggeredForUpdate.current = true;
-    const cb = () => {
-      triggeredForUpdate.current = false;
-      update();
-    };
-    const handle = window.requestAnimationFrame(cb);
-
-    return () => {
-      window.cancelAnimationFrame(handle);
-    };
-  }, []);
+export const useDelayedUpdate = (): (() => void) => {
+    const [_, update] = useReducer((n) => ++n, 0);
+    const triggeredForUpdate = useRef<{ handle: number | null }>({ handle: null });
+    useEffect(() => {
+        return () => {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            const handle = triggeredForUpdate.current.handle;
+            if (handle !== null) {
+                window.cancelAnimationFrame(handle);
+            }
+        };
+    }, []);
+    return useCallback(() => {
+        if (triggeredForUpdate.current.handle !== null) {
+            return;
+        }
+        const cb = () => {
+            triggeredForUpdate.current.handle = null;
+            update();
+        };
+        triggeredForUpdate.current.handle = window.requestAnimationFrame(cb);
+    }, []);
 };
 
-export const useDelayedUpdateState = <T>(setValue: (t: T) => void) => {
-  const triggeredForUpdate = useRef(false);
-  return useCallback((value: T | (() => T)) => {
-    if (triggeredForUpdate.current) {
-      return;
-    }
-    triggeredForUpdate.current = true;
-    const cb = () => {
-      triggeredForUpdate.current = false;
-      const val = typeof value === 'function' ? (value as () => T)() : value;
-      setValue(val);
-    };
-    const handle = window.requestAnimationFrame(cb);
+type DelayedUpdateState<T> = (value: T | (() => T)) => void;
 
-    return () => {
-      window.cancelAnimationFrame(handle);
-    };
-  }, [setValue]);
+export const useDelayedUpdateState = <T>(setValue: (t: T) => void): DelayedUpdateState<T> => {
+    const triggeredForUpdate = useRef<{ handle: number | null }>({ handle: null });
+    useEffect(() => {
+        return () => {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            const handle = triggeredForUpdate.current.handle;
+            if (handle !== null) {
+                window.cancelAnimationFrame(handle);
+            }
+        };
+    }, []);
+    return useCallback(
+        (value: T | (() => T)) => {
+            if (triggeredForUpdate.current.handle !== null) {
+                return;
+            }
+            const cb = () => {
+                triggeredForUpdate.current.handle = null;
+                const val = typeof value === 'function' ? (value as () => T)() : value;
+                setValue(val);
+            };
+            triggeredForUpdate.current.handle = window.requestAnimationFrame(cb);
+        },
+        [setValue]
+    );
 };

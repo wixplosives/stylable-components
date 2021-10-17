@@ -8,24 +8,12 @@ export default createSimulation({
         watchSize: true,
         width: '100%',
         height: '100%',
-        data: [{
-            id: 'a',
-            style: {
-                background: 'blue'
-            }
-        },
-        {
-            id: 'b',
-            style: {
-                background: 'red',
-                width: '50%'
-            }
-        }],
+
     },
     environmentProps: {
-        canvasWidth: 384,
+        canvasWidth: 448,
         canvasHeight: 208,
         windowWidth: 1190,
-        windowHeight: 640,
+        windowHeight: 600,
     },
 });

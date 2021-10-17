@@ -120,10 +120,9 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   initialScrollOffset = 0,
   itemSize = false,
   root,
-  searchControl,
   selectionControl,
   extraRenderedItems = 0.5,
-  // unmountItems = true,
+  unmountItems = true,
   preloader,
   loadingState,
 }: ScrollListProps<T, EL>): JSX.Element {
@@ -153,7 +152,31 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
   const renderEndIndex = Math.ceil(
     (scrollWindowSize * (1 + extraRenderedItems) + currentScroll - initialScrollOffset) / avgSize
   );
+  const calcScrollStartIndex = () => {
+    const lastWantedPixel = Math.max(currentScroll - scrollWindowSize * extraRenderedItems - initialScrollOffset, 0);
 
+    if (typeof itemSize === 'number') {
+      return {
+        px: lastWantedPixel,
+        idx: Math.ceil(lastWantedPixel / itemSize),
+      };
+    }
+    let taken = 0;
+    for (let i = 0; i < items.length; i++) {
+      const id = getId(items[i]!);
+      const itemSize = (isHorizontal ? sizes[id]?.width : sizes[id]?.height) || estimatedItemSize;
+
+      taken += itemSize;
+      if (taken > lastWantedPixel) {
+        return {
+          px: lastWantedPixel,
+          idx: i,
+        };
+      }
+    }
+    return renderStart;
+  };
+  const { idx: startIdx, px } = !unmountItems || currentScroll === 0 ? renderStart : calcScrollStartIndex();
   const maxScrollSize = avgSize * itemCountForCalc + initialScrollOffset;
   const style: React.CSSProperties = {
     position: 'relative',
@@ -170,17 +193,17 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     }
   }, [loadingState, items, renderEndIndex, loadMore, scrollWindowSize, extraRenderedItems, avgSize]);
 
-  const rendereredItems = useMemo(() => items.slice(0, renderEndIndex), [items, renderEndIndex]);
+  const rendereredItems = useMemo(() => items.slice(startIdx, renderEndIndex), [items, renderEndIndex, startIdx]);
 
   const innerStyle: React.CSSProperties = {
-    position: 'relative',
+    position: 'absolute',
   };
   if (isHorizontal) {
     innerStyle.top = '0px';
-    innerStyle.left = '0px';
+    innerStyle.left = px + 'px';
   } else {
     innerStyle.left = '0px';
-    innerStyle.top = '0px';
+    innerStyle.top = px + 'px';
   }
   const listRootWithStyle = useForwardElementSlot(
     defaultRoot as any as ElementSlot<ListRootMinimalProps>,
@@ -198,14 +221,12 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
       root={listRootWithStyle}
       items={rendereredItems}
       focusControl={focusControl}
-      searchControl={searchControl}
       selectionControl={selectionControl}
     />,
     // eslint-disable-next-line react/jsx-key
     <div
       style={{
-        position: 'relative',
-        top: maxScrollSize + 'px',
+        height: maxScrollSize + 'px',
       }}
     >
       {loadingState === 'loading' ? Preloader : null}
@@ -234,3 +255,8 @@ export function dimToSize<T>(
     };
   };
 }
+
+const renderStart = {
+  px: 0,
+  idx: 0,
+};

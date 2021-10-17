@@ -1,19 +1,24 @@
-
-.root{
+.root {
     -st-states: focused, selected;
+    display: flex;
+    justify-content: space-between;
 }
-.root:focused{
+
+.root:focused {
     color: blue
 }
 
-.root:selected{
-    background:blue;
+.root:selected {
+    background: blue;
 }
 
-.text{
+.text {}
 
-}
-
-.root:selected .itemText{
+.root:selected .itemText {
     color: white;
+}
+
+.icon {
+    aspect-ratio: 1/1;
+    height: 1.5em
 }
