@@ -1,0 +1,33 @@
+@st-import [small] from "../icons/variants.st.css";
+
+.root {
+    -st-states: focused, selected, open;
+    --indent: 0;
+    display: flex;
+    justify-content: space-between;
+    margin-left: calc(var(--indent) * 8px)
+}
+
+.root:focused {
+    color: blue
+}
+
+.root:selected {
+    text-decoration: underline;
+}
+
+.root:open .chevron {
+    transform: rotate(90deg);
+}
+
+.text {}
+
+.root:selected .itemText {
+    color: white;
+}
+
+
+.chevron {
+    -st-extends: small;
+    color: blue;
+}

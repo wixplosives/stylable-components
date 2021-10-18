@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import type { ListItemProps } from '../list/list';
 import { ScrollList, ScrollListProps } from '../scroll-list/scroll-list';
@@ -6,6 +6,10 @@ import { ScrollList, ScrollListProps } from '../scroll-list/scroll-list';
 
 export interface TreeItemProps<T> extends ListItemProps<T> {
     isOpen: boolean;
+    hasChildren: boolean;
+    open(): void;
+    close(): void;
+    indent: number;
 }
 
 export interface TreeAddedProps<T> {
@@ -13,19 +17,83 @@ export interface TreeAddedProps<T> {
     getChildren: (t: T) => T[];
     openItemsControls: StateControls<string[]>;
     openItemsByDefault: false;
+    ItemRenderer: React.ComponentType<TreeItemProps<T>>;
 }
 
-export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 'items'> & TreeAddedProps<T>;
+export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 'items' | 'ItemRenderer'> &
+    TreeAddedProps<T>;
 
 export type Tree<T, EL extends HTMLElement = HTMLDivElement> = (props: TreeProps<T, EL>) => JSX.Element;
 
 export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T, EL>): JSX.Element {
-    const { data, getChildren, openItemsControls, openItemsByDefault, getId, ...scrollListProps } = props;
-    const [openItems, _updateOpenItems] = useStateControls(openItemsControls || [[]]);
+    const { data, getChildren, openItemsControls, openItemsByDefault, getId, ItemRenderer, ...scrollListProps } = props;
+    const [openItems, updateOpenItems] = useStateControls(openItemsControls || [[]]);
 
-    const items = getItems({ data, getChildren, getId, openItems, openItemsByDefault });
+    const { items, depths } = getItems({ data, getChildren, getId, openItems, openItemsByDefault });
+    const itemRenderer = useMemo(() => TreeItemWrapper(ItemRenderer), [ItemRenderer]);
+    const wrapperContext = useMemo(
+        () => ({
+            open(id: string) {
+                if (!openItems.includes(id)) {
+                    updateOpenItems([...openItems, id]);
+                }
+            },
+            close(id: string) {
+                if (openItems.includes(id)) {
+                    updateOpenItems(openItems.filter((item) => item !== id));
+                }
+            },
+            openItems,
+            getChildren: getChildren as (t: unknown) => unknown[],
+            getDepth(id: string) {
+                return depths[id] || 0;
+            },
+        }),
+        [openItems, getChildren, updateOpenItems, depths]
+    );
+    return (
+        <treeWrapperContext.Provider value={wrapperContext}>
+            <ScrollList {...scrollListProps} getId={getId} items={items} ItemRenderer={itemRenderer} />
+        </treeWrapperContext.Provider>
+    );
+}
 
-    return <ScrollList {...scrollListProps} getId={getId} items={items} />;
+const treeWrapperContext = createContext({
+    open: (_id: string) => {
+        //
+    },
+    close: (_id: string) => {
+        //
+    },
+    openItems: [] as string[],
+    getChildren: (_t: unknown) => {
+        return [] as unknown[];
+    },
+    getDepth: (_id: string) => 0 as number,
+});
+
+export function TreeItemWrapper<T>(
+    UserRenderer: React.ComponentType<TreeItemProps<T>>
+): (props: ListItemProps<T>) => JSX.Element {
+    const Wrapper = (props: ListItemProps<T>) => {
+        const { openItems, close, open, getChildren, getDepth } = useContext(treeWrapperContext);
+        const boundClose = useCallback(() => close(props.id), [close, props.id]);
+        const boundOpen = useCallback(() => open(props.id), [open, props.id]);
+        const hasChildren = getChildren(props.data).length > 0;
+        const depth = getDepth(props.id);
+        return (
+            <UserRenderer
+                {...props}
+                isOpen={openItems.includes(props.id)}
+                open={boundOpen}
+                close={boundClose}
+                hasChildren={hasChildren}
+                indent={depth}
+            />
+        );
+    };
+    Wrapper.displayName = 'TreeItemWrapper';
+    return Wrapper;
 }
 
 export function getItems<T>({
@@ -34,27 +102,41 @@ export function getItems<T>({
     openItemsByDefault,
     getChildren,
     openItems,
+    depth = 0,
+    depths = {},
 }: {
     data: T;
     getChildren: (t: T) => T[];
     getId: (t: T) => string;
     openItems: string[];
     openItemsByDefault: false;
-}): T[] {
+    depth?: number;
+    depths?: Record<string, number>;
+}): { items: T[]; depths: Record<string, number> } {
     const id = getId(data);
+    depths[id] = depth;
     if (!openItems.includes(id)) {
-        return [data];
+        return {
+            items: [data],
+            depths,
+        };
     }
-    return [
-        data,
-        ...getChildren(data).flatMap((item) =>
-            getItems({
-                data: item,
-                getId,
-                openItemsByDefault,
-                getChildren,
-                openItems,
-            })
-        ),
-    ];
+    return {
+        items: [
+            data,
+            ...getChildren(data).flatMap(
+                (item) =>
+                    getItems({
+                        data: item,
+                        getId,
+                        openItemsByDefault,
+                        getChildren,
+                        openItems,
+                        depth: depth + 1,
+                        depths,
+                    }).items
+            ),
+        ],
+        depths,
+    };
 }
