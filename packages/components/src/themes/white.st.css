@@ -1,6 +1,6 @@
 @st-import CirclePreloader from "../preloader/variants/circle-preloader.st.css";
 @st-import Btn from "../button/button.st.css";
-@st-import [icon] from "../common/common.st.css";
+@st-import Icon from "../icons/icon.st.css";
 @st-import [cancel,
 emphasis] from "../button/variants.st.css";
 @st-import Area from "../area/area.st.css";

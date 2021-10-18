@@ -1,0 +1,7 @@
+@st-import Icon from "./icon.st.css";
+
+.small {
+    -st-extends: Icon;
+    width: 16px;
+    height: 16px;
+}

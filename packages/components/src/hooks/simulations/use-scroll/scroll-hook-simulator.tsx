@@ -10,7 +10,9 @@ export const ScrollHookSimulator: React.FC<{
     const res = useScroll(isHorizontal, useWindowScroll ? undefined : ref);
     return useWindowScroll ? (
         <div>
-            <div style={{ position: 'fixed', top: '50%', left: '50%' }}>{res}</div>
+            <div style={{ position: 'fixed', top: '50%', left: '50%' }} id="res">
+                {res}
+            </div>
         </div>
     ) : (
         <div
@@ -22,7 +24,9 @@ export const ScrollHookSimulator: React.FC<{
             ref={ref}
             id="scroll-div"
         >
-            <div style={{ position: 'fixed', top: '50%', left: '50%' }}>{res}</div>
+            <div style={{ position: 'fixed', top: '50%', left: '50%' }} id="res">
+                {res}
+            </div>
             <div style={{ position: 'relative', top: '2000px', left: '0px' }}>_____________</div>
         </div>
     );

@@ -1,0 +1,17 @@
+@st-import [floating] from "../../area/variants.st.css";
+@st-import [small]  from "../variants.st.css";
+
+.root {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 3px;
+}
+
+.area {
+    -st-extends: floating;
+}
+
+.iconSmall {
+    -st-mixin: small;
+    margin-right: 10px;
+}
