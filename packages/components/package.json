@@ -1,6 +1,6 @@
 {
   "name": "stylable-components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "scripts": {
     "build:stylable": "stc --srcDir src --outDir dist --stcss --no-cjs --useNamespaceReference",
