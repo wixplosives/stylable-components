@@ -30,7 +30,7 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
     },
     environmentProps: {
         canvasWidth: 560,
-        windowHeight: 544,
+        windowHeight: 624,
     },
     wrapper: (props) => {
         return (

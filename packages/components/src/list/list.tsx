@@ -1,19 +1,27 @@
-import React, { useCallback, useRef } from 'react';
-import { KeyCodes } from '../keycodes';
+import React, { useRef } from 'react';
 import { useIdListener } from '../hooks/use-id-based-event';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
-import { callInternalFirst, createElementSlot, defaultRoot, mergeObjectInternalWins } from '../hooks/use-element-slot';
+import {
+    callInternalFirst,
+    createElementSlot,
+    defaultRoot,
+    mergeObjectInternalWins,
+    preferExternal,
+} from '../hooks/use-element-slot';
 import { ElementSlot, elementSlot } from '../common/types';
+import { useIdBasedKeyboardNav } from '../hooks/use-keyboard-nav';
 
 export type ListRootMinimalProps = Pick<
-    React.DOMAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
-    'children' | 'onClick' | 'onMouseMove' | 'onKeyPress' | 'ref'
+    React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
+    'children' | 'onClick' | 'onMouseMove' | 'onKeyPress' | 'ref' | 'onKeyDown' | 'tabIndex'
 >;
 export const ListRootPropMapping = {
     style: mergeObjectInternalWins,
     onClick: callInternalFirst,
     onmousemove: callInternalFirst,
     onKeyPress: callInternalFirst,
+    onKeyDown: callInternalFirst,
+    tabIndex: preferExternal,
 };
 export const createListRoot = elementSlot<ListRootMinimalProps, typeof ListRootPropMapping>();
 
@@ -38,25 +46,6 @@ export interface ListProps<T> {
     ItemRenderer: React.ComponentType<ListItemProps<T>>;
     focusControl?: StateControls<string | undefined>;
     selectionControl?: StateControls<string | undefined>;
-    isHorizontal?: boolean;
-}
-
-function itemIndex<T>(getId: (t: T) => string, items: Array<T>, currentId?: string) {
-    return items.findIndex((i) => getId(i) === currentId);
-}
-
-function nextItem<T>(getId: (t: T) => string, items: Array<T>, currentId?: string) {
-    const idx = itemIndex(getId, items, currentId);
-    if (idx === -1) {
-        return undefined;
-    }
-    return items[idx + 1];
-}
-
-function prevItem<T>(getId: (t: T) => string, items: Array<T>, currentId?: string) {
-    const idx = itemIndex(getId, items, currentId);
-
-    return items[idx - 1];
 }
 
 export type List<T> = (props: ListProps<T>) => JSX.Element;
@@ -68,7 +57,6 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     getId,
     ItemRenderer,
     items,
-    isHorizontal,
 }: ListProps<T>): JSX.Element {
     const [selectedId, setSelectedId] = useStateControls(selectionControl);
     const [focusedId, setFocusedId] = useStateControls(focusControl);
@@ -78,48 +66,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     const onMouseMove = useIdListener(setFocusedId);
     const onClick = useIdListener(setSelectedId);
 
-    const onKeyPress = useCallback(
-        (ev: React.KeyboardEvent) => {
-            const moveToItem = (item: T | undefined) => {
-                if (item) {
-                    setFocusedId(getId(item));
-                }
-            };
-
-            switch (ev.code) {
-                case KeyCodes.ArrowLeft:
-                    if (isHorizontal) {
-                        const prev = prevItem(getId, items, focusedId);
-                        moveToItem(prev);
-                    }
-                    break;
-                case KeyCodes.ArrowRight:
-                    if (isHorizontal) {
-                        const next = nextItem(getId, items, focusedId);
-                        moveToItem(next);
-                    }
-                    break;
-                case KeyCodes.ArrowUp:
-                    if (!isHorizontal) {
-                        const prev = prevItem(getId, items, focusedId);
-                        moveToItem(prev);
-                    }
-                    break;
-                case KeyCodes.ArrowDown:
-                    if (isHorizontal) {
-                        const next = nextItem(getId, items, focusedId);
-                        moveToItem(next);
-                    }
-                    break;
-                case KeyCodes.Space:
-                case KeyCodes.Enter:
-                    setSelectedId(focusedId);
-                    break;
-                default:
-            }
-        },
-        [focusedId, getId, isHorizontal, items, setFocusedId, setSelectedId]
-    );
+    const onKeyPress = useIdBasedKeyboardNav(focusedId, setFocusedId, selectedId, setSelectedId);
     return useListRootElement(
         root,
         {
@@ -127,6 +74,8 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
             onMouseMove,
             onClick,
             onKeyPress,
+            onKeyDown: onKeyPress,
+            tabIndex: 0,
         },
         items.map((item) => {
             const id = getId(item);

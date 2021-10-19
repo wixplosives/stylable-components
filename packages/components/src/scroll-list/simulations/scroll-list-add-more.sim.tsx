@@ -6,14 +6,7 @@ import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../../sim
 import { ScrollList, ScrollListLoadingState } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { sleep } from 'promise-assist';
-const createItems = (startIdx = 0, count = 100) =>
-    new Array(count).fill(0).map(
-        (_, idx) =>
-            ({
-                id: 'a' + (idx + startIdx),
-                title: 'item number ' + (idx + startIdx),
-            } as ItemData)
-    );
+import { createItems } from '../../simulation-assets/create-items';
 
 export default createSimulation<ScrollList<ItemData, HTMLElement>>({
     name: 'scroll-list-add-more',
