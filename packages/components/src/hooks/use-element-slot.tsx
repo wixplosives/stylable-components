@@ -49,6 +49,12 @@ export function useForwardElementSlot<
     }, [usedSlot, props, mergeMap]);
 }
 
+export function preferExternal<T extends {} | undefined>(internal: T, external: T): T {
+    if (typeof external === 'undefined') {
+        return internal;
+    }
+    return external;
+}
 export function mergeObjectInternalWins<T extends {} | undefined>(internal: T, external: T): T {
     if (typeof internal === 'object') {
         if (typeof external === 'object') {
@@ -90,7 +96,7 @@ export function mergeWithMap<Props, MinimalProps extends Partial<Props>>(
     minProps: MinimalProps,
     mergeMap: PropMapping<MinimalProps>
 ): Props {
-    return Object.entries(minProps).reduce(
+    return Object.entries(props).reduce(
         (acc, current) => {
             const [key, value] = current as [keyof MinimalProps, MinimalProps[keyof MinimalProps]];
             const policy = mergeMap[key];
@@ -104,6 +110,6 @@ export function mergeWithMap<Props, MinimalProps extends Partial<Props>>(
             }
             return acc;
         },
-        { ...props }
+        { ...minProps } as unknown as Props
     );
 }

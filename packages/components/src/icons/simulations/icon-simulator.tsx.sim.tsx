@@ -7,4 +7,7 @@ export default createSimulation({
     componentType: IconSimulator,
     props: {},
     plugins: [mixinProjectThemes],
+    environmentProps: {
+        canvasWidth: 797
+    }
 });

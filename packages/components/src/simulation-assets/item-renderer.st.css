@@ -2,14 +2,15 @@
     -st-states: focused, selected;
     display: flex;
     justify-content: space-between;
+    color: gray;
 }
 
 .root:focused {
-    color: blue
+    background: lightblue;
 }
 
 .root:selected {
-    background: blue;
+    color: black;
 }
 
 .text {}

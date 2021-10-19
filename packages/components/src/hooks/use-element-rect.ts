@@ -1,5 +1,6 @@
 import type React from 'react';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { childrenById } from '../common/element-id-utils';
 import { useDelayedUpdateState } from './use-delayed-update';
 
 export interface WatchedSize {
@@ -156,7 +157,7 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
         if (!ref?.current || shouldWatchSize === false || !observer) {
             return;
         }
-        const results = elementsById(ref.current);
+        const results = childrenById(ref.current);
         for (const el of Object.values(results)) {
             observer.observe(el);
         }
@@ -194,7 +195,7 @@ export function getSizes<T, EL extends HTMLElement>(
             return acc;
         }, {} as SizesById);
     }
-    const elements = elementsById(ref.current);
+    const elements = childrenById(ref.current);
     return data.reduce((acc, item) => {
         const id = getId(item);
         const element = elements[id];
@@ -210,14 +211,4 @@ export function getSizes<T, EL extends HTMLElement>(
         }
         return acc;
     }, {} as SizesById);
-}
-
-export function elementsById(scope: Element): Record<string, Element> {
-    const results = scope.querySelectorAll('[data-id]');
-    const res: Record<string, Element> = {};
-    results.forEach((el) => {
-        const id = el.getAttribute('data-id')!;
-        res[id] = el;
-    });
-    return res;
 }
