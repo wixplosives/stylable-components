@@ -1,17 +1,8 @@
-import React, { memo } from 'react';
-import { st, classes } from './icon.st.css';
-import type { IconProps } from './types';
+import React from 'react';
+import { IconFactory } from './icon';
 
-export const ComponentIcon = memo<IconProps>(({ className, ...props }) => (
-    <svg
-        className={st(classes.root, className)}
-        width="18"
-        height="18"
-        viewBox="0 0 18 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-    >
+export const ComponentIcon = IconFactory(
+    <g>
         <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -36,7 +27,8 @@ export const ComponentIcon = memo<IconProps>(({ className, ...props }) => (
             d="M11.8206 13.9999C10.956 13.9999 10.3073 13.9092 9.95086 13.4666C9.64111 13.0825 9.64111 12.5584 9.64111 11.8333L10.0257 11.8204H9.64111C9.64111 10.3487 9.73393 9.64096 11.8206 9.64096C13.9073 9.64096 14.0001 10.3487 14.0001 11.8204C14.0001 12.5579 14.0001 13.0825 13.6903 13.4666C13.3339 13.9092 12.6852 13.9999 11.8206 13.9999Z"
             fill="currentColor"
         />
-    </svg>
-));
-
-ComponentIcon.displayName = 'ComponentIcon';
+    </g>,
+    'ComponentIcon',
+    18,
+    18
+);

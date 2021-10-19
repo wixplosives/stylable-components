@@ -47,7 +47,7 @@ export * from './refresh-cw';
 export * from './reference';
 export * from './resizer-size';
 export * from './seti-ui/default';
-export * from './seti-ui/react';
+export * from './react-seti';
 export * from './seti-ui/info';
 export * from './wix-ui';
 export * from './text-icon-with-border';
