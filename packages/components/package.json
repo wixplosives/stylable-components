@@ -23,7 +23,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@stylable/runtime": "^4.7.2",
+    "@stylable/runtime": "^4.7.3",
     "@zeejs/react": "^0.2.0"
   }
 }
