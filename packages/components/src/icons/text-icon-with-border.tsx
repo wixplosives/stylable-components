@@ -1,8 +1,8 @@
-import React, { memo } from 'react';
-import type { IconProps } from './types';
+import React from 'react';
+import { IconFactory } from './icon';
 
-export const TextIconWithBorder = memo<IconProps>((props) => (
-    <svg {...props} fill="currentColor" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+export const TextIconWithBorder = IconFactory(
+    <g>
         <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -15,7 +15,8 @@ export const TextIconWithBorder = memo<IconProps>((props) => (
             d="M5 5H5.72721H5.72727H12.2727V5.8H9.36367V12.2H8.63639V5.8H5.72727V7.4H5V5ZM7.1818 12.2H10.8182V13H7.1818V12.2ZM13.0001 5H12.2728V7.4H13.0001V5Z"
             fill="currentColor"
         />
-    </svg>
-));
-
-TextIconWithBorder.displayName = 'TextIconWithBorder';
+    </g>,
+    'TextIconWithBorder',
+    18,
+    18
+);

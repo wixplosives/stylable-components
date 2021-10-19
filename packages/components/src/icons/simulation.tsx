@@ -1,17 +1,8 @@
-import React, { memo } from 'react';
-import { st, classes } from './icon.st.css';
-import type { IconProps } from './types';
+import React from 'react';
+import { IconFactory } from './icon';
 
-export const SimulationIcon = memo<IconProps>(({ className, ...props }) => (
-    <svg
-        className={st(classes.root, className)}
-        width="18"
-        height="18"
-        viewBox="0 0 18 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        {...props}
-    >
+export const SimulationIcon = IconFactory(
+    <g>
         <path
             fillRule="evenodd"
             clipRule="evenodd"
@@ -36,7 +27,8 @@ export const SimulationIcon = memo<IconProps>(({ className, ...props }) => (
             d="M11.8205 10.4103C10.4102 10.4103 10.4102 10.517 10.4102 11.8206V11.8334C10.4102 12.4011 10.4102 12.8113 10.5492 12.9847C10.6851 13.1529 11.0887 13.2308 11.8205 13.2308C12.5523 13.2308 12.9559 13.1524 13.0918 12.9842C13.2307 12.8113 13.2307 12.4011 13.2307 11.8329C13.2307 10.517 13.2307 10.4103 11.8205 10.4103ZM11.8205 14C10.9559 14 10.3071 13.9093 9.95073 13.4667C9.64099 13.0826 9.64099 12.5585 9.64099 11.8334L10.0256 11.8206H9.64099C9.64099 10.3487 9.73381 9.64105 11.8205 9.64105C13.9071 9.64105 14 10.3487 14 11.8206C14 12.558 14 13.0826 13.6902 13.4667C13.3338 13.9093 12.6851 14 11.8205 14Z"
             fill="currentColor"
         />
-    </svg>
-));
-
-SimulationIcon.displayName = 'SimulationIcon';
+    </g>,
+    'SimulationIcon',
+    18,
+    18
+);
