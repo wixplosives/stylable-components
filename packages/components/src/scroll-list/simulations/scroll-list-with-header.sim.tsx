@@ -1,13 +1,13 @@
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { ScrollList } from '../scroll-list';
 import React from 'react';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
-    ({
-        id: 'a' + idx,
-        title: 'item number ' + idx,
-    } as ItemData)
+        ({
+            id: 'a' + idx,
+            title: 'item number ' + idx,
+        } as ItemData)
 );
 
 export default createSimulation<ScrollList<ItemData, HTMLElement>>({

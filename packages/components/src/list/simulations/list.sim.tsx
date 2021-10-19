@@ -1,4 +1,4 @@
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { ItemRenderer } from '../../simulation-assets/item-renderer';
 import { List } from '../list';
 interface ItemData {
@@ -25,6 +25,6 @@ export default createSimulation<List<ItemData>>({
     },
     environmentProps: {
         canvasWidth: 331,
-        canvasHeight: 138
+        canvasHeight: 138,
     },
 });

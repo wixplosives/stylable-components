@@ -1,4 +1,4 @@
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { IconSimulator } from './icon-simulator';
 
@@ -8,6 +8,6 @@ export default createSimulation({
     props: {},
     plugins: [mixinProjectThemes],
     environmentProps: {
-        canvasWidth: 797
-    }
+        canvasWidth: 797,
+    },
 });

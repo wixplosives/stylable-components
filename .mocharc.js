@@ -1,3 +1,3 @@
 module.exports = {
-  'enable-source-maps': true,
+    'enable-source-maps': true,
 };

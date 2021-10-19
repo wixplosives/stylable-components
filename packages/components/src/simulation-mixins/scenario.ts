@@ -11,20 +11,20 @@ export interface Action {
 }
 
 export interface ScenarioProps {
-    title: string;
+    title?: string;
     events: Action[];
     timeout?: number;
-    skip: boolean;
+    skip?: boolean;
 }
 
 export const scenarioMixin = createPlugin<IReactSimulation>()(
     'scenario',
     {
         title: 'scenario',
-        events: [] as Action[],
+        events: [],
         timeout: 2000,
         skip: false,
-    },
+    } as Partial<ScenarioProps>,
     {
         beforeRender(props) {
             const canvas = getMixinControls();

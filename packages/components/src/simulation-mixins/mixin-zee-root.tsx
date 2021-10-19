@@ -5,15 +5,15 @@ import type { IReactSimulation } from '@wixc3/react-simulation';
 import React from 'react';
 
 export interface ThemeItem {
-  themeClass: string;
-  themeTitle: string;
+    themeClass: string;
+    themeTitle: string;
 }
 export const ZeeRoot = createPlugin<IReactSimulation>()(
-  'ZeeRoot',
-  {},
-  {
-    wrapRender: (_1, _2, el) => {
-      return <Root>{el}</Root>;
-    },
-  }
+    'ZeeRoot',
+    {},
+    {
+        wrapRender: (_1, _2, el) => {
+            return <Root>{el}</Root>;
+        },
+    }
 ).use({});

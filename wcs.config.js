@@ -1,5 +1,5 @@
 module.exports = {
     safeMode: {
-        maxInstancesPerComponent: 10000
-    }
+        maxInstancesPerComponent: 10000,
+    },
 };
