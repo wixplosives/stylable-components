@@ -8,7 +8,6 @@ export default createSimulation({
         watchSize: true,
         width: '100%',
         height: '100%',
-
     },
     environmentProps: {
         canvasWidth: 448,

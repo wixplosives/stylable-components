@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server';
 import { Button } from '../button/button';
 
 describe('<Button />', () => {
-  it('renders to string without throwing', () => {
-    expect(() => renderToString(<Button />)).to.not.throw();
-  });
+    it('renders to string without throwing', () => {
+        expect(() => renderToString(<Button />)).to.not.throw();
+    });
 });

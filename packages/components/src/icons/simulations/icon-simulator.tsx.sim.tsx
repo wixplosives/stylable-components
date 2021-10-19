@@ -8,6 +8,6 @@ export default createSimulation({
     props: {},
     plugins: [mixinProjectThemes],
     environmentProps: {
-        canvasWidth: 797
-    }
+        canvasWidth: 797,
+    },
 });

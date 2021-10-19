@@ -24,7 +24,7 @@ export default createSimulation<Tree<TreeItemData>>({
         data: createItem(20, 5),
         getId: (item: TreeItemData) => item.id,
         getChildren: (item: TreeItemData) => item.children || [],
-        initialScrollOffset: 50
+        initialScrollOffset: 50,
     },
     plugins: [mixinProjectThemes],
     environmentProps: {
