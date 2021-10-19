@@ -2,12 +2,17 @@
   "name": "stylable-components",
   "version": "1.0.0",
   "main": "dist/index.js",
+  "private": true,
   "scripts": {
     "build:stylable": "stc --srcDir src --outDir dist --stcss --no-cjs --useNamespaceReference",
     "test": "mocha \"dist/test/**/*.spec.js\""
   },
   "peerDependencies": {
     "react": ">=17"
+  },
+  "dependencies": {
+    "@stylable/runtime": "^4.7.3",
+    "@zeejs/react": "^0.2.0"
   },
   "files": [
     "dist",
@@ -17,13 +22,7 @@
   ],
   "license": "MIT",
   "repository": "git@github.com:wixplosives/stylable-components.git",
-  "sideEffects": false,
-  "private": true,
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@stylable/runtime": "^4.7.3",
-    "@zeejs/react": "^0.2.0"
   }
 }
