@@ -14,6 +14,7 @@ export interface ScenarioProps {
     title: string;
     events: Action[];
     timeout?: number;
+    skip: boolean;
 }
 
 export const scenarioMixin = createPlugin<IReactSimulation>()(
@@ -22,6 +23,7 @@ export const scenarioMixin = createPlugin<IReactSimulation>()(
         title: 'scenario',
         events: [] as Action[],
         timeout: 2000,
+        skip: false,
     },
     {
         beforeRender(props) {
@@ -74,7 +76,7 @@ export const scenarioMixin = createPlugin<IReactSimulation>()(
                     }
                 };
                 btn.addEventListener('mouseout', clearHighlight);
-                btn.innerText = props.events[0]!.title;
+                btn.innerText = props.skip ? 'skipped ' + props.events[0]!.title : props.events[0]!.title;
                 const highlight = window.document.createElement('div');
                 canvas.appendChild(btn);
                 document.body.appendChild(highlight);

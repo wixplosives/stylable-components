@@ -1,7 +1,10 @@
 @st-import [floating] from "../../area/variants.st.css";
-@st-import [small]  from "../variants.st.css";
+@st-import [small, medium, large]  from "../variants.st.css";
+@st-import BTN from "../../button/button.st.css";
 
-.root {
+.root {}
+
+.icons {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 3px;
@@ -12,6 +15,28 @@
 }
 
 .iconSmall {
+    -st-extends: small;
     -st-mixin: small;
     margin-right: 10px;
+}
+
+.iconMedium {
+    -st-extends: medium;
+    -st-mixin: medium;
+    margin-right: 10px;
+}
+
+.iconLarge {
+    -st-extends: large;
+    -st-mixin: large;
+    margin-right: 10px;
+}
+
+.toggle {
+    -st-extends: BTN;
+    -st-states: selected;
+}
+
+.toggle:selected {
+    background: lightblue;
 }

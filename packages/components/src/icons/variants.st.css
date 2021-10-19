@@ -5,3 +5,15 @@
     width: 16px;
     height: 16px;
 }
+
+.medium {
+    -st-extends: Icon;
+    width: 26px;
+    height: 26px;
+}
+
+.large {
+    -st-extends: Icon;
+    width: 36px;
+    height: 36px;
+}
