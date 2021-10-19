@@ -1,4 +1,4 @@
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { createItems } from '../../simulation-assets/create-items';
 import { ItemRenderer } from '../../simulation-assets/item-renderer';
 import { List } from '../list';

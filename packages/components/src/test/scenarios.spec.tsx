@@ -9,7 +9,7 @@ for (const sim of sims) {
     describe(sim.name, () => {
         for (const plg of sim.plugins || []) {
             if (plg.key.pluginName === 'scenario') {
-                const props = plg.props as unknown as ScenarioProps;
+                const props = plg.props as Required<ScenarioProps>;
                 if (props.skip) {
                     xit(props.title);
                 } else {

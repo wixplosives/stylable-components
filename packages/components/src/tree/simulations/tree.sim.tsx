@@ -1,4 +1,4 @@
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { TreeItemData, TreeItemRenderer } from '../../text-tree-item/tree-item-renderer';
 import { Tree } from '../tree';

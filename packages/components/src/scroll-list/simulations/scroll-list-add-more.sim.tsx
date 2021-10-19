@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { useCallback, useState } from 'react';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
 import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../../simulation-mixins/scenario';

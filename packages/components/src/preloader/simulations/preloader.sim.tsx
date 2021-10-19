@@ -1,4 +1,4 @@
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { Preloader } from '../preloader';
 import { classes } from '../variants/circle-preloader.st.css';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';

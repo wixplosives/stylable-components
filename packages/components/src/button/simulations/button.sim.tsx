@@ -1,4 +1,4 @@
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { Button } from '../button';
 

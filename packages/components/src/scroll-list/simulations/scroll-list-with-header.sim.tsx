@@ -1,4 +1,4 @@
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { ScrollList } from '../scroll-list';
 import React from 'react';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';

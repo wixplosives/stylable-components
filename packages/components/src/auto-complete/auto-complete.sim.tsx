@@ -1,4 +1,4 @@
-import { createSimulation } from '@wixc3/wcs-core';
+import { createSimulation } from '@wixc3/react-simulation';
 import { ZeeRoot } from '../simulation-mixins/mixin-zee-root';
 import { AutoComplete } from './auto-complete';
 import { mixinProjectThemes } from '../simulation-mixins/mixin-project-themes';
