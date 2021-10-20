@@ -45,14 +45,22 @@ export const useElementDimension = (
             return;
         }
         updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(dim)));
-        if (dim?.current && watchSize) {
-            observer = new ResizeObserver(() => {
-                updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(dim)));
-            });
-            observer.observe(dim.current);
-            return () => {
-                observer.disconnect();
-            };
+        if (watchSize) {
+            if (!dim) {
+                const listener = () => {
+                    updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize()));
+                };
+                window.addEventListener('resize', listener);
+                return () => window.removeEventListener('resize', listener);
+            } else if (dim.current) {
+                observer = new ResizeObserver(() => {
+                    updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(dim)));
+                });
+                observer.observe(dim.current);
+                return () => {
+                    observer.disconnect();
+                };
+            }
         }
         return undefined;
     }, [dim, isVertical, startDim, watchSize]);

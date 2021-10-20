@@ -101,6 +101,13 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      * @default false
      */
     isHorizontal?: boolean;
+    /**
+     * allows replaceing the root element of the list
+     */
+    listRoot?: ElementSlot<ListRootMinimalProps>;
+
+    itemsInRow?: number;
+    itemGap?: number;
 }
 export type ScrollListLoadingState = 'loading' | 'idle' | 'done';
 interface PropsWithStyle {
@@ -124,6 +131,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     initialScrollOffset = 0,
     itemSize = false,
     root,
+    listRoot,
     selectionControl,
     extraRenderedItems = 0.5,
     unmountItems = true,
@@ -133,6 +141,15 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const listRef = useRef<HTMLElement>(null);
     const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
     const currentScroll = useScroll(isHorizontal, scrollWindow);
+    const lastRenderedItem = useRef({
+        items,
+        last: 0,
+    });
+    if (lastRenderedItem.current.items !== items) {
+        // clear last rendered item
+        lastRenderedItem.current.items = items;
+        lastRenderedItem.current.last = 0;
+    }
 
     const itemCountForCalc =
         itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount;
@@ -154,67 +171,88 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         }
     );
     const avgSize = totalMeasured > 0 ? totalSize / totalMeasured : estimatedItemSize;
-    const renderEndIndex = Math.ceil(
-        (scrollWindowSize * (1 + extraRenderedItems) + currentScroll - initialScrollOffset) / avgSize
-    );
-    const calcScrollStartIndex = () => {
-        const lastWantedPixel = Math.max(
-            currentScroll - scrollWindowSize * extraRenderedItems - initialScrollOffset,
-            0
-        );
+    const maxScrollSize = avgSize * itemCountForCalc + initialScrollOffset;
+
+    const calcScrollPosition = () => {
+        const firstWantedPixel = unmountItems
+            ? Math.max(currentScroll - scrollWindowSize * extraRenderedItems - initialScrollOffset, 0)
+            : 0;
+        const lastWantedPixel = scrollWindowSize * (1 + extraRenderedItems) + currentScroll - initialScrollOffset;
 
         if (typeof itemSize === 'number') {
+            let endIdx = Math.ceil(lastWantedPixel / itemSize);
+            if (!unmountItems) {
+                endIdx = lastRenderedItem.current.last = Math.max(endIdx, lastRenderedItem.current.last);
+            }
             return {
-                px: lastWantedPixel,
-                idx: Math.ceil(lastWantedPixel / itemSize),
+                firstWantedPixel,
+                lastWantedPixel,
+                startIdx: unmountItems ? Math.ceil(firstWantedPixel / itemSize) : 0,
+                endIdx,
             };
         }
         let taken = 0;
+        let firstTakenPixel: null | number = null;
+        let startIdx = 0;
         for (let i = 0; i < items.length; i++) {
             const id = getId(items[i]!);
-            const itemSize = (isHorizontal ? sizes[id]?.width : sizes[id]?.height) || estimatedItemSize;
+            const itemSize = (isHorizontal ? sizes[id]?.width : sizes[id]?.height) || avgSize;
 
             taken += itemSize;
+            if (unmountItems && taken > firstWantedPixel && firstTakenPixel === null) {
+                firstTakenPixel = taken - itemSize;
+                startIdx = i;
+            }
             if (taken > lastWantedPixel) {
+                let endIdx = i;
+                if (!unmountItems) {
+                    endIdx = lastRenderedItem.current.last = Math.max(endIdx, lastRenderedItem.current.last);
+                }
                 return {
-                    px: lastWantedPixel,
-                    idx: i,
+                    firstWantedPixel: firstTakenPixel || 0,
+                    lastWantedPixel: taken - itemSize,
+                    startIdx,
+                    endIdx,
                 };
             }
         }
-        return renderStart;
+        return {
+            firstWantedPixel: 0,
+            lastWantedPixel: maxScrollSize,
+            startIdx: 0,
+            endIdx: Math.max(items.length, maxScrollSize / avgSize),
+        };
     };
-    const { idx: startIdx, px } = !unmountItems || currentScroll === 0 ? renderStart : calcScrollStartIndex();
-    const maxScrollSize = avgSize * itemCountForCalc + initialScrollOffset;
+    const { endIdx, firstWantedPixel, startIdx } = calcScrollPosition();
     const style: React.CSSProperties = {
         position: 'relative',
     };
 
     useEffect(() => {
-        if (loadingState === 'idle' && renderEndIndex > items.length && loadMore) {
+        if (loadingState === 'idle' && endIdx > items.length && loadMore) {
             const fetchItemsCount = Math.ceil(
-                renderEndIndex - items.length + (scrollWindowSize * (1 + extraRenderedItems)) / avgSize
+                endIdx - items.length + (scrollWindowSize * (1 + extraRenderedItems)) / avgSize
             );
             if (fetchItemsCount > 0) {
                 loadMore(fetchItemsCount);
             }
         }
-    }, [loadingState, items, renderEndIndex, loadMore, scrollWindowSize, extraRenderedItems, avgSize]);
+    }, [loadingState, items, loadMore, scrollWindowSize, extraRenderedItems, avgSize, endIdx]);
 
-    const rendereredItems = useMemo(() => items.slice(startIdx, renderEndIndex), [items, renderEndIndex, startIdx]);
+    const rendereredItems = useMemo(() => items.slice(startIdx, endIdx), [items, endIdx, startIdx]);
 
     const innerStyle: React.CSSProperties = {
         position: 'absolute',
     };
     if (isHorizontal) {
         innerStyle.top = '0px';
-        innerStyle.left = px + 'px';
+        innerStyle.left = firstWantedPixel + 'px';
     } else {
         innerStyle.left = '0px';
-        innerStyle.top = px + 'px';
+        innerStyle.top = firstWantedPixel + 'px';
     }
     const listRootWithStyle = useForwardElementSlot(
-        defaultRoot as any as ElementSlot<ListRootMinimalProps>,
+        listRoot || (defaultRoot as any as ElementSlot<ListRootMinimalProps>),
         undefined,
         { style: innerStyle, ref: listRef },
         rootMergeMap
@@ -262,8 +300,3 @@ export function dimToSize<T>(
         };
     };
 }
-
-const renderStart = {
-    px: 0,
-    idx: 0,
-};
