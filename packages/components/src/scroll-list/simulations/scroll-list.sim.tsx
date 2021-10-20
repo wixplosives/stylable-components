@@ -1,4 +1,3 @@
-import { createSimulation } from '@wixc3/react-simulation';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
 import {
     clickAction,
@@ -10,6 +9,7 @@ import {
 } from '../../simulation-mixins/scenario';
 import { ScrollList } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
+import { createSimulation } from '@wixc3/react-simulation';
 
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
@@ -26,6 +26,7 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
         ItemRenderer,
         items,
         getId: (item: ItemData) => item.id,
+        watchScrollWindoSize: true,
     },
     environmentProps: {
         canvasWidth: 560,

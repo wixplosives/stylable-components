@@ -16,6 +16,7 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
         items: [],
         getId: (item: ItemData) => item.id,
         itemCount: -1,
+        watchScrollWindoSize: true,
     },
     wrapper: ({ renderSimulation }) => {
         const [items, updateItems] = useState(createItems(0));
