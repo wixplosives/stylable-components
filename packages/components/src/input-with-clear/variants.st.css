@@ -1,0 +1,9 @@
+@st-import Input from "./input-with-clear.st.css";
+
+.emphasis {
+  -st-extends: Input;
+}
+
+.cancel {
+  -st-extends: Input;
+}

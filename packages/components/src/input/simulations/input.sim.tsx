@@ -1,13 +1,11 @@
 import { createSimulation } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
-import { Button } from '../button';
+import { Input } from '../input';
 
 export default createSimulation({
-    name: 'Button',
-    componentType: Button,
-    props: {
-        children: 'Hellojhkj khj',
-    },
+    name: 'Input',
+    componentType: Input,
+    props: {},
     plugins: [mixinProjectThemes],
     environmentProps: {
         canvasWidth: 264,
