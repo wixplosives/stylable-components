@@ -1,0 +1,5 @@
+@st-import Area from "./new-component.st.css";
+
+.floating {
+  -st-extends: Area;
+}

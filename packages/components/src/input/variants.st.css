@@ -1,0 +1,5 @@
+@st-import Input from "./input.st.css";
+
+.error {
+  -st-extends: Input;
+}
