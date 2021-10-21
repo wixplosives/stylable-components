@@ -1,13 +1,14 @@
 @st-import CirclePreloader from "../preloader/variants/circle-preloader.st.css";
 @st-import Btn from "../button/button.st.css";
 @st-import Icon from "../icons/icon.st.css";
+@st-import [small] from "../icons/variants.st.css";
 @st-import [cancel,
 emphasis] from "../button/variants.st.css";
 @st-import Area from "../area/area.st.css";
 @st-import [floating] from "../area/variants.st.css";
 @st-import [popover,
 scrollListRoot] from "../auto-complete/auto-complete.st.css";
-
+@st-import InputWithClear from "../input-with-clear/input-with-clear.st.css";
 
 :vars {
     primary: #000624;
@@ -45,6 +46,7 @@ scrollListRoot] from "../auto-complete/auto-complete.st.css";
         border: 1px solid value(outlines);
         color: value(primary);
         background: white;
+        font-size: 18px;
     }
 
     .Btn:hover {
@@ -102,4 +104,7 @@ scrollListRoot] from "../auto-complete/auto-complete.st.css";
         padding-bottom: 4px;
 
     }
+    .InputWithClear::clear{
+        -st-mixin: small;
+    };
 }

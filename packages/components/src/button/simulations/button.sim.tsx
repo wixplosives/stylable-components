@@ -6,7 +6,7 @@ export default createSimulation({
     name: 'Button',
     componentType: Button,
     props: {
-        children: 'Hello',
+        children: 'Hellojhkj khj',
     },
     plugins: [mixinProjectThemes],
     environmentProps: {

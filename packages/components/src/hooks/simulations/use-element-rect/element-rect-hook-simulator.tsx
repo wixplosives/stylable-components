@@ -15,7 +15,7 @@ export const ElementSizeHookSimulator: React.FC<{
                 width,
             }}
         >
-            <div ref={ref} style={{ width: '100%', height: '100%' }}>
+            <div ref={ref} style={{ width: '100%', height: '100%', background: 'red' }}>
                 <div style={{ position: 'fixed', top: '50%', left: '50%' }}>
                     <div>width: ${res.width}</div>
                     <div>height: ${res.height}</div>
@@ -33,6 +33,10 @@ export const ElmentDimHookSimulator: React.FC<{
 }> = ({ isVertical, watchSize, width, height }) => {
     const ref = useRef<HTMLDivElement>(null);
     const res = useElementDimension(ref, isVertical, watchSize);
+
+    const [size, updateSize] = useState('100');
+    const usedSize = isNaN(parseInt(size)) ? 100 : parseInt(size);
+
     return (
         <div
             style={{
@@ -40,10 +44,14 @@ export const ElmentDimHookSimulator: React.FC<{
                 width,
             }}
         >
-            <div ref={ref} style={{ width: '100%', height: '100%' }}>
+            <div>
+                enter size
+                <input value={size} onChange={(ev) => updateSize(ev.target.value)}></input>
+            </div>
+            <div ref={ref} style={{ width: '100%', height: usedSize + 'px', background: 'lightblue' }}>
                 <div style={{ position: 'fixed', top: '50%', left: '50%' }}>{res}</div>
             </div>
-        </div>
+        </div >
     );
 };
 

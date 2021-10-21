@@ -29,5 +29,6 @@ export default createSimulation<Tree<TreeItemData>>({
     plugins: [mixinProjectThemes],
     environmentProps: {
         canvasWidth: 264,
+        canvasHeight: 64
     },
 });
