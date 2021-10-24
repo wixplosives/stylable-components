@@ -137,6 +137,8 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     unmountItems = true,
     preloader,
     loadingState,
+    itemGap = 0,
+    itemsInRow = 1,
 }: ScrollListProps<T, EL>): JSX.Element {
     const listRef = useRef<HTMLElement>(null);
     const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
@@ -154,7 +156,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const itemCountForCalc =
         itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount;
     const rectOptions = dimToSize(itemSize);
-    const sizes = useIdBasedRects(listRef, items, getId, rectOptions);
+    const sizes = useIdBasedRects(listRef, items, getId, rectOptions, true);
     const { totalMeasured, totalSize } = items.reduce(
         (acc, current) => {
             const id = getId(current);
@@ -170,8 +172,11 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             totalMeasured: 0,
         }
     );
-    const avgSize = totalMeasured > 0 ? totalSize / totalMeasured : estimatedItemSize;
-    const maxScrollSize = avgSize * itemCountForCalc + initialScrollOffset;
+    const avgSize = totalMeasured > 0 ? Math.ceil(totalSize / totalMeasured) : estimatedItemSize;
+    const maxScrollSize =
+        avgSize * Math.ceil(itemCountForCalc / itemsInRow) +
+        initialScrollOffset +
+        itemGap * Math.ceil((itemCountForCalc - 1) / itemsInRow);
 
     const calcScrollPosition = () => {
         const firstWantedPixel = unmountItems
@@ -191,16 +196,20 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                 endIdx,
             };
         }
-        let taken = 0;
+        let taken = -itemGap;
         let firstTakenPixel: null | number = null;
         let startIdx = 0;
-        for (let i = 0; i < items.length; i++) {
-            const id = getId(items[i]!);
-            const itemSize = (isHorizontal ? sizes[id]?.width : sizes[id]?.height) || avgSize;
+        for (let i = 0; i < items.length; i += itemsInRow) {
+            let itemMaxSize = 0;
 
-            taken += itemSize;
+            for (let z = 0; z < itemsInRow; z++) {
+                const id = getId(items[i + z]!);
+                const itemSize = (isHorizontal ? sizes[id]?.width : sizes[id]?.height) || avgSize;
+                itemMaxSize = Math.max(itemMaxSize, itemSize);
+            }
+            taken += itemMaxSize + itemGap;
             if (unmountItems && taken > firstWantedPixel && firstTakenPixel === null) {
-                firstTakenPixel = taken - itemSize;
+                firstTakenPixel = taken - itemMaxSize;
                 startIdx = i;
             }
             if (taken > lastWantedPixel) {
@@ -210,7 +219,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                 }
                 return {
                     firstWantedPixel: firstTakenPixel || 0,
-                    lastWantedPixel: taken - itemSize,
+                    lastWantedPixel: taken - itemMaxSize,
                     startIdx,
                     endIdx,
                 };
