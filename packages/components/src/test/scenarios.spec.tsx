@@ -16,7 +16,7 @@ for (const sim of sims) {
                     it(props.title, async function () {
                         this.timeout(props.timeout || 2000);
                         const { canvas, cleanup } = sim.setupStage();
-                        sim.renderer(canvas);
+                        await sim.render(canvas);
                         for (const action of props.events) {
                             try {
                                 await action.execute();
