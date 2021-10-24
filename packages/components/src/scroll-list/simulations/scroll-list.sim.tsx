@@ -27,6 +27,17 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
         items,
         getId: (item: ItemData) => item.id,
         watchScrollWindoSize: true,
+        listRoot: {
+            el: 'div',
+            props: {
+                style: {
+                    display: 'grid',
+                    gridTemplateColumns: '1fr',
+                    gridGap: '20px',
+                },
+            },
+        },
+        itemGap: 20
     },
     environmentProps: {
         canvasWidth: 560,

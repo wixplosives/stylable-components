@@ -127,12 +127,21 @@ const createSetableObserver = () => {
         observer,
     };
 };
-
+const createSetableMutationObserver = () => {
+    let listener: MutationCallback = noop;
+    const listen = (lis: MutationCallback) => (listener = lis);
+    const observer = new MutationObserver((ev, obs) => listener(ev, obs));
+    return {
+        listen,
+        observer,
+    };
+};
 export function useIdBasedRects<T, EL extends HTMLElement>(
     ref: React.RefObject<EL>,
     data: T[],
     getId: (t: T) => string,
-    size: WatchedSize | ((t: T) => WatchedSize) | boolean
+    size: WatchedSize | ((t: T) => WatchedSize) | boolean,
+    observeSubtree = false
 ): SizesById {
     const shouldMeasure = typeof size === 'boolean';
     const shouldWatchSize = size === true;
@@ -141,6 +150,22 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
     const [sizes, updateSizes] = useState(() => getSizes(ref, data, precomputed, getId, false, cache.current));
     const delayedUpdateSizes = useDelayedUpdateState(updateSizes);
     const { observer, listen } = useMemo(createSetableObserver, []);
+    const { observer: mutationObserver, listen: mutationListener } = useMemo(createSetableMutationObserver, []);
+    mutationListener(() => {
+        if (observeSubtree) {
+            delayedUpdateSizes(() => getSizes(ref, data, precomputed, getId, true, cache.current));
+        }
+    });
+    useLayoutEffect(() => {
+        if (ref.current && observeSubtree) {
+            mutationObserver.observe(ref.current, {
+                childList: true,
+            });
+        }
+        return () => {
+            mutationObserver.disconnect();
+        };
+    }, [mutationObserver, observeSubtree, ref]);
     listen((entries) => {
         for (const { target, contentRect } of entries) {
             const id = target.getAttribute('data-id');
