@@ -19,7 +19,7 @@ export const defineElementSlot = <MinimalProps, Mapping extends PropMapping<Mini
 ) => {
     return {
         use: (slot: Partial<ElementSlot<MinimalProps, any, any>> | undefined, props: MinimalProps): JSX.Element => {
-            const usedSlot = { ...(slot || {}), ...defaultSlot };
+            const usedSlot = { ...defaultSlot, ...(slot || {}) };
 
             // eslint-disable-next-line react-hooks/exhaustive-deps
             return useMemo(() => {
@@ -33,7 +33,7 @@ export const defineElementSlot = <MinimalProps, Mapping extends PropMapping<Mini
             slot: Partial<ElementSlot<MinimalProps, any, any> | undefined>,
             props: MinimalProps
         ): ElementSlot<MinimalProps, any, any> => {
-            const usedSlot = { ...(slot || {}), ...defaultSlot };
+            const usedSlot = { ...defaultSlot, ...(slot || {}) };
             // eslint-disable-next-line react-hooks/exhaustive-deps
             return useMemo(() => {
                 return {
