@@ -57,7 +57,7 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
             ></input>
             <Popover show={isOpen} matchWidth className={classes.popover}>
                 <searchStringContext.Provider value={searchText || ''}>
-                    <ScrollList items={filteredData} {...listProps} root={scrollListRoot} />
+                    <ScrollList items={filteredData} {...listProps} scrollListRoot={scrollListRoot} />
                 </searchStringContext.Provider>
             </Popover>
         </div>

@@ -1,36 +1,44 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { elementSlot, ElementSlot, PropMapping } from '../common/types';
+import type { ElementSlot, PropMapping } from '../common/types';
 import { useElementDimension, useIdBasedRects, WatchedSize } from '../hooks/use-element-rect';
-import { classes } from '../preloader/variants/circle-preloader.st.css';
-import {
-    createElementSlot,
-    defaultRoot,
-    mergeObjectExternalWins,
-    mergeObjectInternalWins,
-    useForwardElementSlot,
-} from '../hooks/use-element-slot';
+import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
+import { classes } from './scroll-list.st.css';
+import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
 import { useScroll } from '../hooks/use-scroll';
-import { List, ListProps, ListRootMinimalProps } from '../list/list';
+import { List, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
 
 const defaultPreloader: ElementSlot<{}> = {
     el: Preloader,
     props: {
-        className: classes.root,
+        className: preloaderCSS.root,
     },
 };
 export type ScrollListRootMinimalProps = Pick<
     React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
-    'children' | 'style' | 'ref'
+    'children' | 'style' | 'ref' | 'className'
 >;
 export const ScrollListRootPropMapping: PropMapping<ScrollListRootMinimalProps> = {
     style: mergeObjectInternalWins,
+    className: concatClasses,
 };
-export const createListRoot = elementSlot<ScrollListRootMinimalProps, typeof ScrollListRootPropMapping>();
+export const {
+    forward: forwardScrollListRoot,
+    slot: scrollListRoot,
+    parentSlot: scrollListRootParent,
+    use: useScrollListRootElement,
+} = defineElementSlot<ScrollListRootMinimalProps, typeof ScrollListRootPropMapping>(
+    defaultRoot,
+    ScrollListRootPropMapping
+);
 
-const useScrollListRootElement = createElementSlot<ScrollListRootMinimalProps>(defaultRoot, ScrollListRootPropMapping);
-
-const useScrollListPreloaderElement = createElementSlot<{}>(defaultPreloader);
+export const { forward: forwardListRoot, slot: listRoot } = listRootParent(defaultRoot, ScrollListRootPropMapping);
+export const {
+    forward: forwardPreloader,
+    slot: scrollListPreloader,
+    parentSlot: scrollListPreloaderParent,
+    use: useScrollListPreloaderElement,
+} = defineElementSlot(defaultPreloader, {});
 
 export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T> {
     /**
@@ -102,20 +110,15 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      */
     isHorizontal?: boolean;
     /**
-     * allows replaceing the root element of the list
+     * allows replacing the root element of the scroll list
      */
-    listRoot?: ElementSlot<ListRootMinimalProps>;
+    scrollListRoot?: typeof scrollListRoot;
 
     itemsInRow?: number;
     itemGap?: number;
+    listRoot: typeof listRoot;
 }
 export type ScrollListLoadingState = 'loading' | 'idle' | 'done';
-interface PropsWithStyle {
-    style: React.CSSProperties;
-}
-const rootMergeMap: PropMapping<PropsWithStyle> = {
-    style: mergeObjectExternalWins,
-};
 export type ScrollList<T, EL extends HTMLElement = HTMLDivElement> = (props: ScrollListProps<T, EL>) => JSX.Element;
 export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     items,
@@ -130,7 +133,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     loadMore,
     initialScrollOffset = 0,
     itemSize = false,
-    root,
+    scrollListRoot,
     listRoot,
     selectionControl,
     extraRenderedItems = 0.5,
@@ -260,32 +263,36 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         innerStyle.left = '0px';
         innerStyle.top = firstWantedPixel + 'px';
     }
-    const listRootWithStyle = useForwardElementSlot(
-        listRoot || (defaultRoot as any as ElementSlot<ListRootMinimalProps>),
-        undefined,
-        { style: innerStyle, ref: listRef },
-        rootMergeMap
-    );
+    const listRootWithStyle = forwardListRoot(listRoot || defaultRoot, {
+        style: innerStyle,
+        ref: listRef,
+    });
     const Preloader = useScrollListPreloaderElement(preloader, {});
-    return useScrollListRootElement(root, { style }, [
-        // eslint-disable-next-line react/jsx-key
-        <List<T, EL>
-            getId={getId}
-            ItemRenderer={ItemRenderer}
-            root={listRootWithStyle}
-            items={rendereredItems}
-            focusControl={focusControl}
-            selectionControl={selectionControl}
-        />,
-        // eslint-disable-next-line react/jsx-key
-        <div
-            style={{
-                height: maxScrollSize + 'px',
-            }}
-        >
-            {loadingState === 'loading' ? Preloader : null}
-        </div>,
-    ]);
+    return useScrollListRootElement(scrollListRoot, {
+        style,
+        className: classes.root,
+        children: [
+            // eslint-disable-next-line react/jsx-key
+            <List<T, EL>
+                getId={getId}
+                ItemRenderer={ItemRenderer}
+                listRoot={listRootWithStyle}
+                items={rendereredItems}
+                focusControl={focusControl}
+                selectionControl={selectionControl}
+                key="list"
+            />,
+            // eslint-disable-next-line react/jsx-key
+            <div
+                style={{
+                    height: maxScrollSize + 'px',
+                }}
+                key="end"
+            >
+                {loadingState === 'loading' ? Preloader : null}
+            </div>,
+        ],
+    });
 }
 
 export function dimToSize<T>(

@@ -3,12 +3,11 @@ import { useIdListener } from '../hooks/use-id-based-event';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import {
     callInternalFirst,
-    createElementSlot,
     defaultRoot,
+    defineElementSlot,
     mergeObjectInternalWins,
     preferExternal,
 } from '../hooks/use-element-slot';
-import { ElementSlot, elementSlot } from '../common/types';
 import { useIdBasedKeyboardNav } from '../hooks/use-keyboard-nav';
 
 export type ListRootMinimalProps = Pick<
@@ -23,10 +22,13 @@ export const ListRootPropMapping = {
     onKeyDown: callInternalFirst,
     tabIndex: preferExternal,
 };
-export const createListRoot = elementSlot<ListRootMinimalProps, typeof ListRootPropMapping>();
-
-const useListRootElement = createElementSlot<ListRootMinimalProps>(defaultRoot, ListRootPropMapping);
-
+export const {
+    slot: listRoot,
+    create: createListRoot,
+    forward: forwardListRoot,
+    parentSlot: listRootParent,
+    use: useListRootElement,
+} = defineElementSlot<ListRootMinimalProps>(defaultRoot, ListRootPropMapping);
 export interface ListItemProps<T> {
     data: T;
     /***
@@ -40,7 +42,7 @@ export interface ListItemProps<T> {
     select: (id?: string) => void;
 }
 export interface ListProps<T> {
-    root?: ElementSlot<ListRootMinimalProps>;
+    listRoot?: typeof listRoot;
     getId: (t: T) => string;
     items: Array<T>;
     ItemRenderer: React.ComponentType<ListItemProps<T>>;
@@ -51,7 +53,7 @@ export interface ListProps<T> {
 export type List<T> = (props: ListProps<T>) => JSX.Element;
 
 export function List<T, EL extends HTMLElement = HTMLDivElement>({
-    root,
+    listRoot,
     selectionControl,
     focusControl,
     getId,
@@ -62,22 +64,19 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     const [focusedId, setFocusedId] = useStateControls(focusControl);
     const defaultRef = useRef<EL>();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const actualRef = root?.props.ref || defaultRef;
+    const actualRef = listRoot?.props.ref || defaultRef;
     const onMouseMove = useIdListener(setFocusedId);
     const onClick = useIdListener(setSelectedId);
 
     const onKeyPress = useIdBasedKeyboardNav(focusedId, setFocusedId, selectedId, setSelectedId);
-    return useListRootElement(
-        root,
-        {
-            ref: actualRef as React.RefObject<EL>,
-            onMouseMove,
-            onClick,
-            onKeyPress,
-            onKeyDown: onKeyPress,
-            tabIndex: 0,
-        },
-        items.map((item) => {
+    return useListRootElement(listRoot, {
+        ref: actualRef as React.RefObject<EL>,
+        onMouseMove,
+        onClick,
+        onKeyPress,
+        onKeyDown: onKeyPress,
+        tabIndex: 0,
+        children: items.map((item) => {
             const id = getId(item);
             return (
                 <ItemRenderer
@@ -90,6 +89,6 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                     select={setSelectedId}
                 />
             );
-        })
-    );
+        }),
+    });
 }

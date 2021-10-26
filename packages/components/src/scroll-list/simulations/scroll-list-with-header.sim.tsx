@@ -17,7 +17,7 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
         ItemRenderer,
         items,
         getId: (item: ItemData) => item.id,
-        root: {
+        scrollListRoot: {
             el: 'div',
             props: {
                 style: {

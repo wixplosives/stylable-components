@@ -1,53 +1,67 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import React, { ReactNode, ReactNodeArray, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
 
 // here bacause in issue with ts transformers in WCS
 export const a = (): JSX.Element => <div></div>;
 
-export const defaultRoot: ElementSlot<{}, 'div'> = {
+export const defaultRoot: ElementSlot<React.ComponentPropsWithRef<'div'>, 'div'> = {
     el: 'div',
     props: {},
 };
-export const createElementSlot = <MinimalProps, Mapping extends PropMapping<MinimalProps> = {}>(
+
+export const defineElementSlot = <MinimalProps, Mapping extends PropMapping<MinimalProps> = {}>(
     defaultSlot: ElementSlot<MinimalProps, any, any>,
     propsMapping: Mapping = {} as Mapping
 ) => {
-    return (
-        slot: ElementSlot<MinimalProps, any, any> | undefined,
-        props: MinimalProps,
-        children?: ReactNodeArray | ReactNode
-    ): JSX.Element => {
-        const usedSlot = slot || defaultSlot;
+    return {
+        use: (slot: ElementSlot<MinimalProps, any, any> | undefined, props: MinimalProps): JSX.Element => {
+            const usedSlot = slot || defaultSlot;
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        const childrenArr = Array.isArray(children) ? children : [children];
-        return useMemo(() => {
-            return React.createElement(
-                usedSlot.el,
-                mergeWithMap(props, usedSlot.props as unknown as MinimalProps, propsMapping),
-                ...childrenArr
-            );
-        }, [usedSlot.el, usedSlot.props, props, childrenArr]);
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            return useMemo(() => {
+                return React.createElement(
+                    usedSlot.el,
+                    mergeWithMap(props, usedSlot.props as unknown as MinimalProps, propsMapping)
+                );
+            }, [usedSlot.el, usedSlot.props, props]);
+        },
+        forward: (
+            slot: ElementSlot<MinimalProps, any, any> | undefined,
+            props: MinimalProps
+        ): ElementSlot<MinimalProps, any, any> => {
+            const usedSlot = slot || defaultSlot;
+
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            return useMemo(() => {
+                return {
+                    el: usedSlot.el,
+                    props: mergeWithMap(usedSlot.props, props, propsMapping) as any,
+                };
+            }, [usedSlot.el, usedSlot.props, props]);
+        },
+        slot: defaultSlot,
+        parentSlot: function <MinProps extends MinimalProps, MAP extends PropMapping<MinProps> = PropMapping<MinProps>>(
+            defSlot?: ElementSlot<MinProps, any, any>,
+            propsMapping: PropMapping<MinProps> = {}
+        ) {
+            const usedSlot = defSlot || defaultSlot;
+            return defineElementSlot<MinProps, MAP>(usedSlot as ElementSlot<MinProps, any, any>, propsMapping as MAP);
+        },
+        create: function <Props extends MinimalProps>(
+            el: React.ComponentType<Props> | keyof React.ReactHTML,
+            props: Partial<Props>
+        ): ElementSlot<MinimalProps, React.ComponentType<Props> | keyof React.ReactHTML, Props> {
+            return {
+                el,
+                props: props as any,
+            };
+        },
     };
 };
-export function useForwardElementSlot<
-    MinimalProps,
-    Slot extends ElementSlot<MinimalProps>,
-    Mapping extends PropMapping<MinimalProps>
->(defaultSlot: Slot, slot?: Slot, props?: Partial<MinimalProps>, mergeMap?: Mapping): Slot {
-    const usedSlot = slot || defaultSlot;
-    return useMemo(() => {
-        if (!props) {
-            return usedSlot;
-        }
-        return {
-            el: usedSlot.el,
-            props: mergeWithMap(usedSlot.props, props as MinimalProps, mergeMap || {}),
-        } as Slot;
-    }, [usedSlot, props, mergeMap]);
-}
 
 export function preferExternal<T extends {} | undefined>(internal: T, external: T): T {
     if (typeof external === 'undefined') {
@@ -91,6 +105,8 @@ export const callInternalFirst =
         internal && internal(...args);
         return external && external(...args);
     };
+
+export const concatClasses = <T extends string>(internal?: T, external?: T) => `${internal || ''} ${external || ''}`;
 export function mergeWithMap<Props, MinimalProps extends Partial<Props>>(
     props: Props,
     minProps: MinimalProps,
