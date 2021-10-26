@@ -25,7 +25,7 @@ export const {
     create: createGridRoot,
     forward: forwardGridRoot,
     parentSlot: gridRootParent,
-    use: useGridRootElement,
+    Slot: GridRoot,
 } = defineElementSlot<GridRootMinimalProps>(defaultRoot, GridRootPropMapping);
 
 export interface DataGridProps<T, EL extends HTMLElement = HTMLElement> extends ScrollListProps<T, EL> {
@@ -46,36 +46,37 @@ export function DataGrid<T, EL extends HTMLElement>({
     const headerSize = useElementDimension(headerRef, isHorizontal, true);
     return (
         <columnContext.Provider value={columns}>
-            {useGridRootElement(gridRoot, {
-                className: classes.root,
-                style: {
-                    [vars.columns!]: columns.map((col) => col.size + 'px').join(' '),
-                },
-                children: [
-                    <div className={classes.header} ref={headerRef} key="header">
-                        {columns.map((col) => (
-                            <div key={col.id} className={classes.headerCell}>
-                                {col.header}
-                            </div>
-                        ))}
-                    </div>,
-                    <ScrollList
-                        {...props}
-                        ItemRenderer={DataRow}
-                        scrollListRoot={forwardScrollListRoot(scrollListRoot, {
-                            style: {
-                                height: `calc( 100% - ${headerSize}px)`,
-                                overflowY: 'auto',
-                            },
-                            ref: scrollListRef,
-                        })}
-                        isHorizontal={isHorizontal}
-                        scrollWindow={scrollListRef}
-                        watchScrollWindoSize={true}
-                        key="ScrollList"
-                    />,
-                ],
-            })}
+            <GridRoot
+                slot={gridRoot}
+                props={{
+                    className: classes.root,
+                    style: {
+                        [vars.columns!]: columns.map((col) => col.size + 'px').join(' '),
+                    },
+                }}
+            >
+                <div className={classes.header} ref={headerRef}>
+                    {columns.map((col) => (
+                        <div key={col.id} className={classes.headerCell}>
+                            {col.header}
+                        </div>
+                    ))}
+                </div>
+                <ScrollList
+                    {...props}
+                    ItemRenderer={DataRow}
+                    scrollListRoot={forwardScrollListRoot(scrollListRoot, {
+                        style: {
+                            height: `calc( 100% - ${headerSize}px)`,
+                            overflowY: 'auto',
+                        },
+                        ref: scrollListRef,
+                    })}
+                    isHorizontal={isHorizontal}
+                    scrollWindow={scrollListRef}
+                    watchScrollWindoSize={true}
+                />
+            </GridRoot>
             <div
                 style={{
                     [vars.columns!]: columns.map((col) => col.size + 'px').join(' '),

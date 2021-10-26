@@ -85,7 +85,6 @@ emphasis] from "../button/variants.st.css";
         box-shadow: 1.41px 1.41px 2px 1px #0006242d;
         margin-left: -2px;
         margin-right: 2px;
-        max-height: 30vh;
     }
 
     .ScrollList::-webkit-scrollbar {
