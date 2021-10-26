@@ -7,7 +7,8 @@ emphasis] from "../button/variants.st.css";
 @st-import Area from "../area/area.st.css";
 @st-import [floating] from "../area/variants.st.css";
 @st-import [popover,
-scrollListRoot] from "../auto-complete/auto-complete.st.css";
+] from "../auto-complete/auto-complete.st.css";
+@st-import ScrollList from "../scroll-list/scroll-list.st.css";
 @st-import InputWithClear from "../input-with-clear/input-with-clear.st.css";
 
 :vars {
@@ -77,7 +78,7 @@ scrollListRoot] from "../auto-complete/auto-complete.st.css";
     }
 
 
-    .scrollListRoot {
+    .ScrollList {
         scrollbar-width: thin;
         scrollbar-color: gray lightgray;
         scrollbar-gutter: stable;
@@ -87,13 +88,13 @@ scrollListRoot] from "../auto-complete/auto-complete.st.css";
         max-height: 30vh;
     }
 
-    .scrollListRoot::-webkit-scrollbar {
+    .ScrollList::-webkit-scrollbar {
         width: 11px;
         background: lightgray;
     }
 
 
-    .scrollListRoot::-webkit-scrollbar-thumb {
+    .ScrollList::-webkit-scrollbar-thumb {
         background-color: gray;
         border-radius: 3px;
     }
@@ -104,7 +105,10 @@ scrollListRoot] from "../auto-complete/auto-complete.st.css";
         padding-bottom: 4px;
 
     }
-    .InputWithClear::clear{
+
+    .InputWithClear::clear {
         -st-mixin: small;
-    };
+    }
+
+    ;
 }

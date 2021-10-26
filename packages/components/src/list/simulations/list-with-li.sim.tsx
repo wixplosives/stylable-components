@@ -11,7 +11,7 @@ export default createSimulation<List<ItemData>>({
     name: 'list-with-li',
     componentType: List,
     props: {
-        root: {
+        listRoot: {
             el: 'ul',
             props: {},
         },

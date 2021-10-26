@@ -10,6 +10,7 @@ import {
 import { ScrollList } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { createSimulation } from '@wixc3/react-simulation';
+import { createRef } from 'react';
 
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
@@ -18,9 +19,9 @@ const items = new Array(1000).fill(0).map(
             title: 'item number ' + idx,
         } as ItemData)
 );
-
+const elementRef = createRef<HTMLDivElement>();
 export default createSimulation<ScrollList<ItemData, HTMLElement>>({
-    name: 'many-in-row',
+    name: 'element-scroll',
     componentType: ScrollList,
     props: {
         ItemRenderer,
@@ -28,20 +29,32 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
         getId: (item: ItemData) => item.id,
         watchScrollWindoSize: true,
         listRoot: {
+            el: 'div',
             props: {
                 style: {
                     display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr',
-                    gridGap: '50px',
+                    gridTemplateColumns: '1fr',
+                    gridGap: '20px',
                 },
             },
         },
-        itemGap: 50,
-        itemsInRow: 3,
+        scrollListRoot: {
+            el: 'div',
+            props: {
+                style: {
+                    width: '200px',
+                    height: '400px',
+                    overflow: 'auto',
+                },
+                ref: elementRef,
+            },
+        },
+        scrollWindow: elementRef,
+        itemGap: 20,
     },
     environmentProps: {
         canvasWidth: 560,
-        windowHeight: 300,
+        windowHeight: 726,
         windowWidth: 600,
     },
     plugins: [

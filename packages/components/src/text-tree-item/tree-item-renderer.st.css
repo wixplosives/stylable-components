@@ -1,4 +1,5 @@
 @st-import [small] from "../icons/variants.st.css";
+@st-import Icon from "../icons/icon.st.css";
 
 .root {
     -st-states: focused, selected, open;
@@ -28,6 +29,6 @@
 
 
 .chevron {
-    -st-extends: small;
-    color: blue;
+    -st-extends: Icon;
+    -st-mixin: small;
 }

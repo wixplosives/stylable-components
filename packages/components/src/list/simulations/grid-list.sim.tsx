@@ -14,7 +14,7 @@ export default createSimulation<List<ItemData>>({
         ItemRenderer,
         items: createItems(),
         getId: (item: ItemData) => item.id,
-        root: {
+        listRoot: {
             el: 'div',
             props: {
                 style: {

@@ -1,5 +1,6 @@
 @st-import Area from "../area/area.st.css";
 @st-import [floating] from "../area/variants.st.css";
+@st-import ScrollList  from "../scroll-list/scroll-list.st.css";
 
 .root {}
 
@@ -11,7 +12,7 @@
 
 
 .scrollListRoot {
-  -st-extends: floating;
+  -st-extends: floating, ScrollList;
   overflow-x: hidden;
   overflow-y: auto;
 }

@@ -25,7 +25,7 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
         const loadMore = useCallback(
             async (count: number) => {
                 updateLoadingState('loading');
-                await sleep(100);
+                await sleep(500);
                 updateItems(items.concat(createItems(items.length, count)));
                 updateLoadingState('idle');
             },

@@ -37,7 +37,7 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
                 },
             },
         },
-        itemGap: 20
+        itemGap: 20,
     },
     environmentProps: {
         canvasWidth: 560,
