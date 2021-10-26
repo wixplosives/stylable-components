@@ -1,0 +1,17 @@
+.root {
+    --columns: 1fr 1fr 1fr;
+}
+
+.header {
+    display: grid;
+    grid-template-columns: var(--columns);
+}
+
+.headerCell {}
+
+.cell {}
+
+.row {
+    display: grid;
+    grid-template-columns: var(--columns)
+}

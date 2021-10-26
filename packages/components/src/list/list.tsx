@@ -64,7 +64,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     const [focusedId, setFocusedId] = useStateControls(focusControl);
     const defaultRef = useRef<EL>();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const actualRef = listRoot?.props.ref || defaultRef;
+    const actualRef = listRoot?.props?.ref || defaultRef;
     const onMouseMove = useIdListener(setFocusedId);
     const onClick = useIdListener(setSelectedId);
 
