@@ -1,17 +1,36 @@
 .root {
     --columns: 1fr 1fr 1fr;
+
 }
 
 .header {
+    overflow: hidden;
+}
+
+.internalHeader {
+    position: relative;
     display: grid;
     grid-template-columns: var(--columns);
 }
 
-.headerCell {}
+.headerCell {
+    position: relative;
+
+}
 
 .cell {}
 
 .row {
     display: grid;
     grid-template-columns: var(--columns)
+}
+
+.resizer {
+    position: absolute;
+    right: 1px;
+    width: 2px;
+    height: 100%;
+    top: 0px;
+    cursor: ew-resize;
+    background: black;
 }

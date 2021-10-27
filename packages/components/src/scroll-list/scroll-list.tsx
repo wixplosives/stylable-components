@@ -37,7 +37,7 @@ export const {
     forward: forwardPreloader,
     slot: scrollListPreloader,
     parentSlot: scrollListPreloaderParent,
-    Slot: PreloaderSlot
+    Slot: PreloaderSlot,
 } = defineElementSlot(defaultPreloader, {});
 
 export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T> {
@@ -229,9 +229,9 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             }
         }
         return {
-            firstWantedPixel: 0,
+            firstWantedPixel: firstTakenPixel || 0,
             lastWantedPixel: maxScrollSize,
-            startIdx: 0,
+            startIdx,
             endIdx: Math.max(items.length, maxScrollSize / avgSize),
         };
     };
@@ -288,7 +288,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                     height: maxScrollSize + 'px',
                 }}
             >
-                {loadingState === 'loading' ? <PreloaderSlot slot={preloader}/> : null}
+                {loadingState === 'loading' ? <PreloaderSlot slot={preloader} /> : null}
             </div>
         </RootSlot>
     );
