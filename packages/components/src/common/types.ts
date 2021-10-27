@@ -21,7 +21,8 @@ export type MergeWithMap<T, MAP extends PropMapping<unknown>, F extends keyof T>
 export type PropMapping<MinimalProps> = {
     [key in keyof MinimalProps]?: (
         internalProps: MinimalProps[key],
-        extenalProp: MinimalProps[key]
+        extenalProp: MinimalProps[key],
+        name: key
     ) => MinimalProps[key];
 };
 

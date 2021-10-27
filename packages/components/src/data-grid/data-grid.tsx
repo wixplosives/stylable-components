@@ -28,11 +28,11 @@ export const {
     Slot: GridRoot,
 } = defineElementSlot<GridRootMinimalProps>(defaultRoot, GridRootPropMapping);
 
-export interface DataGridProps<T, EL extends HTMLElement = HTMLElement> extends ScrollListProps<T, EL> {
+export type DataGridProps<T, EL extends HTMLElement = HTMLElement> = {
     columns: Column<T>[];
     columnSizesControl?: StateControls<number[]>;
     gridRoot?: typeof gridRoot;
-}
+} & Omit<ScrollListProps<T, EL>, 'ItemRenderer'>;
 
 export type DataGrid<T, EL extends HTMLElement = HTMLElement> = React.ComponentType<DataGridProps<T, EL>>;
 export function DataGrid<T, EL extends HTMLElement>({
