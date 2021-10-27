@@ -10,23 +10,12 @@ emphasis] from "../button/variants.st.css";
 ] from "../auto-complete/auto-complete.st.css";
 @st-import ScrollList from "../scroll-list/scroll-list.st.css";
 @st-import InputWithClear from "../input-with-clear/input-with-clear.st.css";
-
-:vars {
-    primary: #000624;
-    secondary: white;
-    outlines: #e7eaff;
-    primaryFocused: #6a6ae7;
-    primaryCancel: rgb(79, 79, 153);
-    secondaryDisabled: rgb(207, 194, 194);
-    secondaryEmphasis: rgb(228, 181, 94);
-    primaryEmphasis: purple;
-
-}
+@st-import [--primary-2, --primary-3, --primary-4, --primary-7, --reference-1, --notification-warning-1] from "./colors.st.css";
 
 @st-scope .white {
     .CirclePreloader::inner {
-        border-top: 2px solid value(outlines);
-        border-right: 2px solid value(outlines);
+        border-top: 2px solid var(--primary-2);
+        border-right: 2px solid var(--primary-2);
         box-shadow: -0.28px 3.99px 2px 4px #e7eaff, -3.28px -2.29px 11px -3px #96ECEA;
         margin-bottom: 14px;
     }
@@ -44,24 +33,24 @@ emphasis] from "../button/variants.st.css";
         padding: 5px 11px;
         min-width: 80px;
         border-radius: 4px;
-        border: 1px solid value(outlines);
-        color: value(primary);
+        border: 1px solid var(--primary-2);
+        color: var(--primary-7);
         background: white;
         font-size: 18px;
     }
 
     .Btn:hover {
-        color: value(primaryFocused);
+        color: var(--primary-6);
     }
 
     .cancel {
-        color: value(primaryCancel);
-        background: value(secondaryDisabled);
+        color: var(--primary-0);
+        background: var(--primary-5);
     }
 
     .emphasis {
-        color: value(primaryEmphasis);
-        background: value(secondaryEmphasis);
+        color: var(--reference-1);
+        background: var(--notification-warning-1);
     }
 
     .Btn .icon {
@@ -74,7 +63,7 @@ emphasis] from "../button/variants.st.css";
         background: white;
         padding: 10px;
         border-radius: 4px;
-        border: 1px solid value(outlines);
+        border: 1px solid var(--primary-2);
     }
 
 

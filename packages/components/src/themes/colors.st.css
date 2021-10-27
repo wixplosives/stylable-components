@@ -1,0 +1,56 @@
+
+:global(body) {
+    --primary-0: #ffffff;
+    --primary-1: #f5f6ff;
+    --primary-2: #e7eaff;
+    --primary-3: #c2c9fa;
+    --primary-4: #9aa4f6;
+    --primary-5: #495cef;
+    --primary-6: #4152d9;
+    --primary-7: #000624;
+
+    --secondary-0: #fcfcff;
+    --secondary-1: #f8f8fb;
+    --secondary-2: #f3f4f6;
+    --secondary-3: #e7e8ee;
+    --secondary-4: #dbdde5;
+    --secondary-5: #cfd2dd;
+    --secondary-6: #c3c6d4;
+    --secondary-7: #abafc3;
+    --secondary-8: #9fa4ba;
+    --secondary-9: #878da9;
+    --secondary-10: #7b82a0;
+    --secondary-11: #576086;
+    --secondary-12: #3f4975;
+    --secondary-13: #383a4c;
+
+    --primary-dark-0: #000000;
+    --primary-dark-1: #1c1c1e;
+    --primary-dark-2: #2a2a2d;
+    --primary-dark-3: #3b3b3e;
+    --primary-dark-4: #4a4a4d;
+    --primary-dark-5: #575759;
+    --primary-dark-6: #646466;
+
+    --disabled-0: #f3f3f3;
+    --disabled-1: #eeeeee;
+    --disabled-2: #d3d3d3;
+    --disabled-3: #b3b3b3;
+
+    --notification-alert-0: #f2c5c3;
+    --notification-alert-1: #e58a88;
+    --notification-alert-2: #d8504c;
+    --notification-alert-3: #b03f3d;
+
+    --notification-status-0: #739dd1;
+    --notification-status-1: #2d6cba;
+    --notification-status-2: #259e7e;
+
+    --notification-warning-0: #f9ecbe;
+    --notification-warning-1: #fddeb9;
+    --notification-warning-2: #fcbe74;
+    --notification-warning-3: #f6db4f;
+
+    --reference-0: #cfbdd5;
+    --reference-1: #aa4dc8;
+}
