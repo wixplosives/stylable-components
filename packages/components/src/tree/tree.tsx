@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import { KeyCodes } from '../keycodes';
 import { forwardListRoot, ListItemProps } from '../list/list';
-import { forwardScrollListRoot, ScrollList, ScrollListProps } from '../scroll-list/scroll-list';
+import { ScrollList, ScrollListProps } from '../scroll-list/scroll-list';
 // import { st, classes } from './tree.st.css';
 
 export interface TreeItemProps<T> extends ListItemProps<T> {
