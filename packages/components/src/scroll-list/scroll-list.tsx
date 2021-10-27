@@ -26,7 +26,7 @@ export const {
     forward: forwardScrollListRoot,
     slot: scrollListRoot,
     parentSlot: scrollListRootParent,
-    use: useScrollListRootElement,
+    Slot: RootSlot,
 } = defineElementSlot<ScrollListRootMinimalProps, typeof ScrollListRootPropMapping>(
     defaultRoot,
     ScrollListRootPropMapping
@@ -37,7 +37,7 @@ export const {
     forward: forwardPreloader,
     slot: scrollListPreloader,
     parentSlot: scrollListPreloaderParent,
-    use: useScrollListPreloaderElement,
+    Slot: PreloaderSlot,
 } = defineElementSlot(defaultPreloader, {});
 
 export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T> {
@@ -229,9 +229,9 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             }
         }
         return {
-            firstWantedPixel: 0,
+            firstWantedPixel: firstTakenPixel || 0,
             lastWantedPixel: maxScrollSize,
-            startIdx: 0,
+            startIdx,
             endIdx: Math.max(items.length, maxScrollSize / avgSize),
         };
     };
@@ -267,12 +267,14 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         style: innerStyle,
         ref: listRef,
     });
-    const Preloader = useScrollListPreloaderElement(preloader, {});
-    return useScrollListRootElement(scrollListRoot, {
-        style,
-        className: classes.root,
-        children: [
-            // eslint-disable-next-line react/jsx-key
+    return (
+        <RootSlot
+            slot={scrollListRoot}
+            props={{
+                style,
+                className: classes.root,
+            }}
+        >
             <List<T, EL>
                 getId={getId}
                 ItemRenderer={ItemRenderer}
@@ -280,19 +282,16 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                 items={rendereredItems}
                 focusControl={focusControl}
                 selectionControl={selectionControl}
-                key="list"
-            />,
-            // eslint-disable-next-line react/jsx-key
+            />
             <div
                 style={{
                     height: maxScrollSize + 'px',
                 }}
-                key="end"
             >
-                {loadingState === 'loading' ? Preloader : null}
-            </div>,
-        ],
-    });
+                {loadingState === 'loading' ? <PreloaderSlot slot={preloader} /> : null}
+            </div>
+        </RootSlot>
+    );
 }
 
 export function dimToSize<T>(

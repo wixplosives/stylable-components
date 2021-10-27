@@ -13,10 +13,10 @@ import { createSimulation } from '@wixc3/react-simulation';
 
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
-        ({
-            id: 'a' + idx,
-            title: 'item number ' + idx,
-        } as ItemData)
+    ({
+        id: 'a' + idx,
+        title: 'item number ' + idx,
+    } as ItemData)
 );
 
 export default createSimulation<ScrollList<ItemData, HTMLElement>>({
@@ -35,6 +35,13 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
                     gridGap: '50px',
                 },
             },
+        },
+        scrollListRoot: {
+            props: {
+                style: {
+                    height: '100%'
+                }
+            }
         },
         itemGap: 50,
         itemsInRow: 3,

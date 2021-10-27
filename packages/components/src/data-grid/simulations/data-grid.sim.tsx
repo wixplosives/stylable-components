@@ -43,23 +43,21 @@ export default createSimulation<DataGrid<GridItem>>({
         columns: [
             {
                 cellRenderer: cellRenderer<GridItem, 'firstName'>('firstName'),
-                header: <div>FIrst name</div>,
+                header: <div>First name</div>,
                 id: 'fName',
-                size: 200,
             },
             {
                 cellRenderer: cellRenderer<GridItem, 'lastName'>('lastName'),
                 header: <div>Last name</div>,
                 id: 'lastName',
-                size: 200,
             },
             {
                 cellRenderer: cellRenderer<GridItem, 'age'>('age'),
                 header: <div>Age</div>,
                 id: 'age',
-                size: 200,
             },
         ],
+        columnSizesControl: [[200, 200, 200]],
         items: createItems(),
         getId: (item) => item.id,
         gridRoot: {

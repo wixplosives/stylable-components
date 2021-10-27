@@ -12,22 +12,33 @@ export const defaultRoot: ElementSlot<React.ComponentPropsWithRef<'div'>, 'div'>
     el: 'div',
     props: {},
 };
-
 export const defineElementSlot = <MinimalProps, Mapping extends PropMapping<MinimalProps> = {}>(
     defaultSlot: ElementSlot<MinimalProps, any, any>,
     propsMapping: Mapping = {} as Mapping
 ) => {
     return {
-        use: (slot: Partial<ElementSlot<MinimalProps, any, any>> | undefined, props: MinimalProps): JSX.Element => {
+        Slot: ({
+            slot,
+            props,
+            children,
+        }: {
+            slot: Partial<ElementSlot<MinimalProps, any, any>> | undefined;
+            props?: Omit<MinimalProps, 'children'>;
+            children?: MinimalProps extends { children?: infer U } ? U : never;
+        }) => {
             const usedSlot = { ...defaultSlot, ...(slot || {}) };
-
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            return useMemo(() => {
+            if (Array.isArray(children)) {
                 return React.createElement(
                     usedSlot.el,
-                    mergeWithMap(props, usedSlot.props as unknown as MinimalProps, propsMapping)
+                    mergeWithMap(props, usedSlot.props as unknown as MinimalProps, propsMapping),
+                    ...(children as React.ReactChild[])
                 );
-            }, [usedSlot.el, usedSlot.props, props]);
+            }
+            return React.createElement(
+                usedSlot.el,
+                mergeWithMap(props, usedSlot.props as unknown as MinimalProps, propsMapping),
+                children as any
+            );
         },
         forward: (
             slot: Partial<ElementSlot<MinimalProps, any, any> | undefined>,

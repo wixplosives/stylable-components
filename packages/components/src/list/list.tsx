@@ -14,6 +14,7 @@ export type ListRootMinimalProps = Pick<
     React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
     'children' | 'onClick' | 'onMouseMove' | 'onKeyPress' | 'ref' | 'onKeyDown' | 'tabIndex'
 >;
+
 export const ListRootPropMapping = {
     style: mergeObjectInternalWins,
     onClick: callInternalFirst,
@@ -27,7 +28,7 @@ export const {
     create: createListRoot,
     forward: forwardListRoot,
     parentSlot: listRootParent,
-    use: useListRootElement,
+    Slot: RootSlot,
 } = defineElementSlot<ListRootMinimalProps>(defaultRoot, ListRootPropMapping);
 export interface ListItemProps<T> {
     data: T;
@@ -67,28 +68,33 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     const actualRef = listRoot?.props?.ref || defaultRef;
     const onMouseMove = useIdListener(setFocusedId);
     const onClick = useIdListener(setSelectedId);
-
     const onKeyPress = useIdBasedKeyboardNav(focusedId, setFocusedId, selectedId, setSelectedId);
-    return useListRootElement(listRoot, {
-        ref: actualRef as React.RefObject<EL>,
-        onMouseMove,
-        onClick,
-        onKeyPress,
-        onKeyDown: onKeyPress,
-        tabIndex: 0,
-        children: items.map((item) => {
-            const id = getId(item);
-            return (
-                <ItemRenderer
-                    key={id}
-                    id={id}
-                    data={item}
-                    focus={setFocusedId}
-                    isFocused={focusedId === id}
-                    isSelected={selectedId === id}
-                    select={setSelectedId}
-                />
-            );
-        }),
-    });
+    return (
+        <RootSlot
+            slot={listRoot}
+            props={{
+                ref: actualRef as React.RefObject<EL>,
+                onMouseMove,
+                onClick,
+                onKeyPress,
+                onKeyDown: onKeyPress,
+                tabIndex: 0,
+            }}
+        >
+            {items.map((item) => {
+                const id = getId(item);
+                return (
+                    <ItemRenderer
+                        key={id}
+                        id={id}
+                        data={item}
+                        focus={setFocusedId}
+                        isFocused={focusedId === id}
+                        isSelected={selectedId === id}
+                        select={setSelectedId}
+                    />
+                );
+            })}
+        </RootSlot>
+    );
 }
