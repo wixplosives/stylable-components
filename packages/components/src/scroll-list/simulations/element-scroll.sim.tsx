@@ -10,7 +10,6 @@ import {
 import { ScrollList } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { createSimulation } from '@wixc3/react-simulation';
-import { createRef } from 'react';
 
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
@@ -19,7 +18,9 @@ const items = new Array(1000).fill(0).map(
             title: 'item number ' + idx,
         } as ItemData)
 );
-const elementRef = createRef<HTMLDivElement>();
+const elementRef: React.RefObject<HTMLDivElement> = {
+    current: null,
+};
 export default createSimulation<ScrollList<ItemData, HTMLElement>>({
     name: 'element-scroll',
     componentType: ScrollList,

@@ -7,7 +7,7 @@ import { Root } from '@zeejs/react';
 import { classes } from '../themes/white.st.css';
 import React from 'react';
 
-const items = new Array(30).fill(0).map(
+const items = new Array(30000).fill(0).map(
     (_, idx) =>
         ({
             id: 'a' + idx,

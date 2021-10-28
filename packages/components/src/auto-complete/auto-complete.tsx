@@ -1,5 +1,5 @@
 import { Popover } from '@zeejs/react';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Area } from '../area/area';
 import { classes, st } from './auto-complete.st.css';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
@@ -21,6 +21,7 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
     const [focused, setFocused] = useStateControls(focusControl);
     const [selected, setSelected] = useStateControls(selectionControl);
 
+    const scrollListRef = useRef<HTMLDivElement>(null);
     const [searchText, updateSearchText] = useStateControls(searchControl);
     const { match } = useContext(searchMethodContext);
 
@@ -56,6 +57,10 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
     );
     const scrollListRoot = createListRoot(Area, {
         className: classes.scrollListRoot,
+        ref: scrollListRef,
+        style: {
+            height: '100%',
+        },
     });
     const onKeyDown = useCallback(
         (ev: React.KeyboardEvent<HTMLInputElement>) => {
@@ -78,12 +83,11 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
             <InputWithClear
                 valueControl={[searchText || '', updateSearchText]}
                 onFocus={open}
-                onBlur={close}
                 className={classes.input}
                 onKeyDown={onKeyDown}
             />
 
-            <Popover show={isOpen} matchWidth className={classes.popover} avoidAnchor>
+            <Popover show={isOpen} matchWidth className={classes.popover} avoidAnchor onClickOutside={close}>
                 <searchStringContext.Provider value={searchText || ''}>
                     <ScrollList
                         items={filteredData}
@@ -93,6 +97,7 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
                         selectionControl={[selected, onListSelect]}
                         getId={getId}
                         transmitKeyPress={useTransmit}
+                        scrollWindow={scrollListRef}
                     />
                 </searchStringContext.Provider>
             </Popover>
