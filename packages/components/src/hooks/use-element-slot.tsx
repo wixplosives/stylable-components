@@ -129,7 +129,8 @@ export function mergeWithMap<Props, MinimalProps extends Partial<Props>>(
             if (policy) {
                 acc[key as keyof Props] = policy(
                     value,
-                    acc[key as keyof Props] as unknown as MinimalProps[keyof MinimalProps]
+                    acc[key as keyof Props] as unknown as MinimalProps[keyof MinimalProps],
+                    key as keyof Props
                 ) as unknown as Props[keyof Props];
             } else {
                 acc[key as keyof Props] = value as unknown as Props[keyof Props];
