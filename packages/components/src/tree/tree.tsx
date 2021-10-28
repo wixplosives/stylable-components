@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
-import type { ListItemProps } from '../list/list';
+import { KeyCodes } from '../keycodes';
+import { forwardListRoot, ListItemProps } from '../list/list';
 import { ScrollList, ScrollListProps } from '../scroll-list/scroll-list';
 // import { st, classes } from './tree.st.css';
 
@@ -26,9 +27,19 @@ export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 
 export type Tree<T, EL extends HTMLElement = HTMLDivElement> = (props: TreeProps<T, EL>) => JSX.Element;
 
 export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T, EL>): JSX.Element {
-    const { data, getChildren, openItemsControls, openItemsByDefault, getId, ItemRenderer, ...scrollListProps } = props;
+    const {
+        listRoot,
+        data,
+        getChildren,
+        openItemsControls,
+        openItemsByDefault,
+        getId,
+        ItemRenderer,
+        focusControl,
+        ...scrollListProps
+    } = props;
     const [openItems, updateOpenItems] = useStateControls(openItemsControls || [[]]);
-
+    const [focused, updateFocused] = useStateControls(focusControl);
     const { items, depths } = getItems({ data, getChildren, getId, openItems, openItemsByDefault });
     const itemRenderer = useMemo(() => TreeItemWrapper(ItemRenderer), [ItemRenderer]);
     const wrapperContext = useMemo(
@@ -51,9 +62,29 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         }),
         [openItems, getChildren, updateOpenItems, depths]
     );
+    const updatedListRoot = forwardListRoot(listRoot, {
+        onKeyDown: useCallback(
+            (ev: React.KeyboardEvent) => {
+                if (ev.code === KeyCodes.ArrowLeft && focused && openItems.includes(focused)) {
+                    wrapperContext.close(focused);
+                }
+                if (ev.code === KeyCodes.ArrowRight && focused && !openItems.includes(focused)) {
+                    wrapperContext.open(focused);
+                }
+            },
+            [focused, openItems, wrapperContext]
+        ),
+    });
     return (
         <treeWrapperContext.Provider value={wrapperContext}>
-            <ScrollList {...scrollListProps} getId={getId} items={items} ItemRenderer={itemRenderer} />
+            <ScrollList
+                {...scrollListProps}
+                getId={getId}
+                items={items}
+                ItemRenderer={itemRenderer}
+                listRoot={updatedListRoot}
+                focusControl={[focused, updateFocused]}
+            />
         </treeWrapperContext.Provider>
     );
 }
