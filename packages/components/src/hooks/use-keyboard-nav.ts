@@ -1,8 +1,9 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { childrenById } from '../common/element-id-utils';
 import { KeyCodes } from '../keycodes';
 
 export const useIdBasedKeyboardNav = (
+    elementsParent: React.RefObject<HTMLElement>,
     focusedId: string | undefined,
     setFocusedId: (id: string) => void,
     selectedId: string | undefined,
@@ -10,7 +11,10 @@ export const useIdBasedKeyboardNav = (
 ) => {
     const onKeyPress = useCallback(
         (ev: React.KeyboardEvent) => {
-            const element = ev.currentTarget;
+            if (!elementsParent.current) {
+                return;
+            }
+            const element = elementsParent.current;
             const children = childrenById(element);
             if (!focusedId) {
                 return;
@@ -126,7 +130,7 @@ export const useIdBasedKeyboardNav = (
                 default:
             }
         },
-        [focusedId, setFocusedId, setSelectedId]
+        [elementsParent, focusedId, setFocusedId, setSelectedId]
     );
     return onKeyPress;
 };

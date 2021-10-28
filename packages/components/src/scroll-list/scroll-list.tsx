@@ -142,6 +142,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     loadingState,
     itemGap = 0,
     itemsInRow = 1,
+    transmitKeyPress,
 }: ScrollListProps<T, EL>): JSX.Element {
     const listRef = useRef<HTMLElement>(null);
     const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
@@ -282,6 +283,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                 items={rendereredItems}
                 focusControl={focusControl}
                 selectionControl={selectionControl}
+                transmitKeyPress={transmitKeyPress}
             />
             <div
                 style={{

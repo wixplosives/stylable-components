@@ -6,7 +6,7 @@
 emphasis] from "../button/variants.st.css";
 @st-import Area from "../area/area.st.css";
 @st-import [floating] from "../area/variants.st.css";
-@st-import [popover,
+@st-import [popover, scrollListRoot,
 ] from "../auto-complete/auto-complete.st.css";
 @st-import ScrollList from "../scroll-list/scroll-list.st.css";
 @st-import InputWithClear from "../input-with-clear/input-with-clear.st.css";
@@ -98,5 +98,8 @@ emphasis] from "../button/variants.st.css";
         -st-mixin: small;
     }
 
-    ;
+    .scrollListRoot {
+        max-height: 30vh;
+
+    }
 }
