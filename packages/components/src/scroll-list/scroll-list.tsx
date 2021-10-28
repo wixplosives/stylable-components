@@ -116,7 +116,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
 
     itemsInRow?: number;
     itemGap?: number;
-    listRoot: typeof listRoot;
+    listRoot?: typeof listRoot;
 }
 export type ScrollListLoadingState = 'loading' | 'idle' | 'done';
 export type ScrollList<T, EL extends HTMLElement = HTMLDivElement> = (props: ScrollListProps<T, EL>) => JSX.Element;
