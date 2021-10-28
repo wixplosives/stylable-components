@@ -9,6 +9,7 @@ import {
     preferExternal,
 } from '../hooks/use-element-slot';
 import { useIdBasedKeyboardNav } from '../hooks/use-keyboard-nav';
+import type { UseTransmit } from '../hooks/use-transmitted-events';
 
 export type ListRootMinimalProps = Pick<
     React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
@@ -22,6 +23,7 @@ export const ListRootPropMapping = {
     onKeyPress: callInternalFirst,
     onKeyDown: callInternalFirst,
     tabIndex: preferExternal,
+    ref: preferExternal,
 };
 export const {
     slot: listRoot,
@@ -49,6 +51,7 @@ export interface ListProps<T> {
     ItemRenderer: React.ComponentType<ListItemProps<T>>;
     focusControl?: StateControls<string | undefined>;
     selectionControl?: StateControls<string | undefined>;
+    transmitKeyPress?: UseTransmit<React.KeyboardEventHandler>;
 }
 
 export type List<T> = (props: ListProps<T>) => JSX.Element;
@@ -60,6 +63,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     getId,
     ItemRenderer,
     items,
+    transmitKeyPress,
 }: ListProps<T>): JSX.Element {
     const [selectedId, setSelectedId] = useStateControls(selectionControl);
     const [focusedId, setFocusedId] = useStateControls(focusControl);
@@ -68,7 +72,16 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     const actualRef = listRoot?.props?.ref || defaultRef;
     const onMouseMove = useIdListener(setFocusedId);
     const onClick = useIdListener(setSelectedId);
-    const onKeyPress = useIdBasedKeyboardNav(focusedId, setFocusedId, selectedId, setSelectedId);
+    const onKeyPress = useIdBasedKeyboardNav(
+        actualRef as React.RefObject<HTMLElement>,
+        focusedId,
+        setFocusedId,
+        selectedId,
+        setSelectedId
+    );
+    if (transmitKeyPress) {
+        transmitKeyPress(callInternalFirst(onKeyPress, listRoot?.props?.onKeyPress));
+    }
     return (
         <RootSlot
             slot={listRoot}
