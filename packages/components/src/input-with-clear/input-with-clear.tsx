@@ -1,13 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import { XIcon } from '../icons';
-import { KeyCodes } from '../keycodes';
 import { st, classes } from './input-with-clear.st.css';
 export interface InputWithClearProps extends React.HTMLAttributes<HTMLInputElement> {
     valueControl?: StateControls<string>;
 }
 
-export const InputWithClear: React.FC<InputWithClearProps> = (props: InputWithClearProps) => {
+export const InputWithClear = React.forwardRef<HTMLInputElement, InputWithClearProps>((props, ref) => {
+    const defaultRef = useRef<HTMLInputElement>(null);
+    const usedRef = (ref || defaultRef) as React.RefObject<HTMLInputElement>;
     const { valueControl, onKeyDown, ...inputProps } = props;
     const [value, setValue] = useStateControls(valueControl || '');
     const onClear = useCallback(() => {
@@ -24,16 +25,28 @@ export const InputWithClear: React.FC<InputWithClearProps> = (props: InputWithCl
             if (onKeyDown) {
                 onKeyDown(ev);
             }
-            if (ev.code === KeyCodes.Escape) {
-                onClear();
-            }
         },
-        [onClear, onKeyDown]
+        [onKeyDown]
     );
     return (
-        <div className={st(classes.root, props.className)}>
-            <input {...inputProps} className={classes.input} value={value} onChange={onChange} onKeyDown={keyDown} />
+        <div
+            className={st(classes.root, props.className)}
+            onClick={useCallback(() => {
+                if (usedRef.current) {
+                    usedRef.current.focus();
+                }
+            }, [usedRef])}
+        >
+            <input
+                {...inputProps}
+                className={classes.input}
+                value={value}
+                onChange={onChange}
+                onKeyDown={keyDown}
+                ref={usedRef}
+            />
             <XIcon className={classes.clear} onClick={onClear}></XIcon>
         </div>
     );
-};
+});
+InputWithClear.displayName = 'InputWithClear';

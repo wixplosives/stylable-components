@@ -6,11 +6,11 @@ export default createSimulation({
     name: 'Button',
     componentType: Button,
     props: {
-        children: 'Hellojhkj khj',
+        children: 'click here',
     },
     plugins: [mixinProjectThemes],
     environmentProps: {
-        canvasWidth: 264,
+        canvasWidth: 188,
         canvasHeight: 237,
     },
 });
