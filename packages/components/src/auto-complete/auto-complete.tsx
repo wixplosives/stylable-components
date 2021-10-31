@@ -20,7 +20,7 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
     const { searchControl, getTextContent, items, focusControl, selectionControl, getId, ...listProps } = props;
     const [focused, setFocused] = useStateControls(focusControl);
     const [selected, setSelected] = useStateControls(selectionControl);
-
+    const inputRef = useRef<HTMLInputElement>(null);
     const scrollListRef = useRef<HTMLDivElement>(null);
     const [searchText, updateSearchText] = useStateControls(searchControl);
     const { match } = useContext(searchMethodContext);
@@ -61,7 +61,11 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
         style: {
             height: '100%',
         },
+        onMouseDown: useCallback((ev: React.MouseEvent) => {
+            ev.preventDefault();
+        }, []),
     });
+
     const onKeyDown = useCallback(
         (ev: React.KeyboardEvent<HTMLInputElement>) => {
             if (ev.code === KeyCodes.Escape) {
@@ -79,15 +83,26 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
         }
     }, [filteredData, getId, setFocused]);
     return (
-        <div className={st(classes.root)} onClick={open}>
+        <div className={st(classes.root)}>
             <InputWithClear
                 valueControl={[searchText || '', updateSearchText]}
                 onFocus={open}
+                onBlur={(ev) => {
+                    ev.preventDefault();
+                }}
                 className={classes.input}
                 onKeyDown={onKeyDown}
+                ref={inputRef}
             />
 
-            <Popover show={isOpen} matchWidth className={classes.popover} avoidAnchor onClickOutside={close}>
+            <Popover
+                show={isOpen}
+                matchWidth
+                className={classes.popover}
+                avoidAnchor
+                onClickOutside={close}
+                ignoreAnchorClick
+            >
                 <searchStringContext.Provider value={searchText || ''}>
                     <ScrollList
                         items={filteredData}
