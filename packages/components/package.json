@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@stylable/runtime": "^4.7.4",
-    "@zeejs/react": "^0.3.0"
+    "@zeejs/react": "^0.3.1"
   },
   "files": [
     "dist",

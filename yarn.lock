@@ -1480,26 +1480,26 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-"@zeejs/browser@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@zeejs/browser/-/browser-0.3.0.tgz#5f611c27dcb558ca24372af7742c116fecfb3468"
-  integrity sha512-UJp6/mQb3L+jeVPN84jBZXmxUynPgqXSBuIo4ShlAyhQrAGf+8rZS4acSle424lBmhvIFzJwY9Ns3K8/W5k47A==
+"@zeejs/browser@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@zeejs/browser/-/browser-0.3.1.tgz#3633de4976e4945b8b46476a7fdf3a69fb9e6816"
+  integrity sha512-mAW+6MM6desg45GEIFcTySxzUDdtvbkSI1KSHAoqsLMIH5b42xqzz8NNXyRleR9CsDxd+YAUUyKEhY6HTf2u6A==
   dependencies:
-    "@zeejs/core" "^0.3.0"
+    "@zeejs/core" "^0.3.1"
     tabbable "^5.2.1"
 
-"@zeejs/core@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@zeejs/core/-/core-0.3.0.tgz#17ecf657d1d4962ae85aeb59fdc9768b7362e056"
-  integrity sha512-CWuWolzEUhxASpGa5HQe+Q+DJ67n+AFbCVL3fKbUqpTIP2mvUxVvu5oQfF7gZwfCAYuIFBMOFN3PQaAalRiOzA==
+"@zeejs/core@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@zeejs/core/-/core-0.3.1.tgz#db6afabd6b0f289dab3facfd5c9c72996beb1305"
+  integrity sha512-Yeeqyhe+g8ISbxxW80eUMDeX2NyRlrhissjALaLU9OD86iVnwXN3kbWvBq2B1L56tUUQLESMDC878Y/1euhQVQ==
 
-"@zeejs/react@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@zeejs/react/-/react-0.3.0.tgz#2ff6b197c74fe07fa9f2be52b4b832321e1b5de6"
-  integrity sha512-nrKMIBpqeK2Umm83BNY0inZbGRDvjUF3NJ3VDU+SSdM857yTFbbXgZgtLEhjgEdgXN0MM4W09GNXoxENP19QPA==
+"@zeejs/react@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@zeejs/react/-/react-0.3.1.tgz#f05b330f830c23d3eb0dc7933a7053eac2dd90b1"
+  integrity sha512-1Jv/FsUOa0n6dBjZRodwPYZBx/X9KVozrdgRP0hgnmmIjasKxqdIwN2wKyzEKGJiiXorXKGtDkWStWKkHoSzaw==
   dependencies:
-    "@zeejs/browser" "^0.3.0"
-    "@zeejs/core" "^0.3.0"
+    "@zeejs/browser" "^0.3.1"
+    "@zeejs/core" "^0.3.1"
 
 JSONStream@^1.0.4:
   version "1.3.5"
