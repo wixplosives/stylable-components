@@ -4,7 +4,7 @@ import { classes as black } from '../themes/black.st.css';
 
 export const mixinProjectThemes = themeMixin.use({
     themes: [
-        {
+        {  
             themeTitle: 'White',
             themeClass: white.white!,
         },
