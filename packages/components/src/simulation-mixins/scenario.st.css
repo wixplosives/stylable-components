@@ -1,15 +1,30 @@
-.root{
+.root {}
 
+.header {
+  -st-states: skipped;
 }
 
-.item{
+.header:skipped {
+  text-decoration: line-through;
+  color: blue;
+}
+
+.item {
   user-select: none;
   animation: autoProgress 1s infinite;
 }
 
 
 @keyframes autoProgress {
-  from {outline: 1px solid blue}
-  50% {outline: 2px solid rgb(255, 0, 0)}
-  to {outline: 3px solid blue}
+  from {
+    outline: 1px solid blue
+  }
+
+  50% {
+    outline: 2px solid rgb(255, 0, 0)
+  }
+
+  to {
+    outline: 3px solid blue
+  }
 }
