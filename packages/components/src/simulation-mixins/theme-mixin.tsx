@@ -1,9 +1,8 @@
 import { createPlugin } from '@wixc3/simulation-core';
 import type { IReactSimulation } from '@wixc3/react-simulation';
 import { classes } from './theme-mixin.st.css';
-import React, { useCallback, useState } from 'react';
-import { getMixinControls } from './mixin-controls';
-import ReactDom from 'react-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { renderInMixinControls } from './mixin-controls';
 
 export interface ThemeItem {
     themeClass: string;
@@ -15,6 +14,12 @@ export interface ThemeProps {
 
 export const ThemeControls = ({ themes }: ThemeProps) => {
     const [currentValue, updateValue] = useState(themes[0]?.themeClass || '');
+    useEffect(() => {
+        const firstTheme = themes[0];
+        if (firstTheme) {
+            document.body.setAttribute('class', firstTheme.themeClass);
+        }
+    }, [themes]);
     const onThemeSelect = useCallback(
         (ev: React.ChangeEvent<HTMLSelectElement>) => {
             const currValue = ev.currentTarget.value;
@@ -48,20 +53,10 @@ export const themeMixin = createPlugin<IReactSimulation>()(
     } as ThemeProps,
     {
         wrapRender({ themes }, _r, demo) {
-            const el = getMixinControls();
-            const firstTheme = themes[0];
-            if (firstTheme) {
-                document.body.setAttribute('class', firstTheme.themeClass);
-            }
-            return (
-                <>
-                    {demo}
-                    {ReactDom.createPortal(
-                        <ThemeControls key="theme-controls" themes={themes} />,
-                        el,
-                        'theme-controls'
-                    )}
-                </>
+            return renderInMixinControls(
+                demo,
+                <ThemeControls key="theme-controls" themes={themes} />,
+                'theme-controls'
             );
         },
     }

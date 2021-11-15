@@ -1,8 +1,8 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { classes } from './mixin-controls.st.css';
-// import React from 'react';
-// import ReactDom from 'react-dom';
 export const mixinControlsId = 'scenario-mixin-area';
-
+export const hackFromTransformers = <div></div>;
 export const getMixinControls = () => {
     let existing = window.document.querySelector('#' + mixinControlsId);
     if (!existing) {
@@ -12,27 +12,14 @@ export const getMixinControls = () => {
         window.document.body.appendChild(existing);
     }
     return existing;
-    // return ReactDom.createPortal()
-    // const elements: Record<string, JSX.Element> = {};
-    // let triggered: number | undefined = undefined;
-    // return (element: JSX.Element) => {
-    //     const id = element.key;
-    //     if (!id) {
-    //         throw new Error('must supply key');
-    //     }
-    //     elements[id] = element;
-    //     if (!triggered) {
-    //         triggered = setTimeout(() => {
-    //             ReactDom.render(
-    //                 <div>
-    //                     {Object.entries(elements).map(([_key, el]) => {
-    //                         return el;
-    //                     })}
-    //                 </div>,
-    //                 existing
-    //             );
-    //             triggered = undefined;
-    //         }, 0);
-    //     }
-    // };
+};
+
+export const renderInMixinControls = (demo: JSX.Element, mixinControls: JSX.Element, key: string) => {
+    const el = getMixinControls();
+    return (
+        <>
+            {demo}
+            {ReactDOM.createPortal(mixinControls, el, key)}
+        </>
+    );
 };

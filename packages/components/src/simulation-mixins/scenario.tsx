@@ -1,9 +1,10 @@
 import { createPlugin } from '@wixc3/simulation-core';
 import type { IReactSimulation } from '@wixc3/react-simulation';
-import { classes } from './scenario.st.css';
-import { getMixinControls } from './mixin-controls';
+import { classes, st } from './scenario.st.css';
+import { renderInMixinControls } from './mixin-controls';
 import { expect } from 'chai';
 import { waitFor } from 'promise-assist';
+import React, { useCallback, useMemo, useState } from 'react';
 export interface Action {
     execute: () => void | Promise<void>;
     title: string;
@@ -17,6 +18,87 @@ export interface ScenarioProps {
     skip?: boolean;
 }
 
+export const ScenarioRenderer = (props: ScenarioProps) => {
+    const [events, updateEvents] = useState(props.events);
+    const [btnText, updateButtonText] = useState(props.events[0]?.title);
+    const highlight = useMemo(() => window.document.createElement('div'), []);
+    const clearHighlight = useCallback(() => {
+        highlight.removeAttribute('style');
+        highlight.removeAttribute('class');
+    }, [highlight]);
+    const setHighlightedElement = useCallback(
+        (selector?: string) => {
+            if (!selector) {
+                clearHighlight();
+                return;
+            }
+            const target = actionTarget(selector);
+            if (target && target instanceof Element) {
+                const rect = target.getBoundingClientRect();
+                highlight.setAttribute(
+                    'style',
+                    `position: absolute; top: ${rect.top}px; left: ${rect.left}px; height:${rect.height}px; width:${rect.width}px;`
+                );
+                highlight.setAttribute('class', classes.item!);
+            }
+        },
+        [clearHighlight, highlight]
+    );
+    const hoverAction = () => {
+        const current = events[0];
+
+        if (current?.highlightSelector) {
+            setHighlightedElement(current.highlightSelector);
+        } else {
+            clearHighlight();
+        }
+    };
+
+    const runAction = useCallback(() => {
+        const current = events[0];
+        if (current) {
+            const onTaskFailed = (err: any) => {
+                updateEvents(events.slice(1));
+                if (err instanceof Error) {
+                    updateButtonText('Error:' + err.message);
+                } else {
+                    updateButtonText('Error ');
+                }
+            };
+            const onTaskDone = () => {
+                const next = events[1];
+                updateButtonText(next?.title || 'Done!');
+                updateEvents(events.slice(1));
+            };
+
+            try {
+                const res = current.execute();
+                if (res) {
+                    updateButtonText('task in progress');
+                    res.then(onTaskDone).catch(onTaskFailed);
+                } else {
+                    onTaskDone();
+                }
+            } catch (err) {
+                return onTaskFailed(err);
+            }
+        } else {
+            updateButtonText(props.events[0]!.title);
+            updateEvents(props.events);
+        }
+        setHighlightedElement(events[1]?.highlightSelector);
+    }, [events, props.events, setHighlightedElement]);
+    return (
+        <div className={classes.root}>
+            <div className={st(classes.header, { skipped: props.skip })}>{props.title || 'unamedScenario'}</div>
+            <div>{events.length} events left to run</div>
+            <button onClick={runAction} onMouseLeave={clearHighlight} onMouseMove={hoverAction}>
+                {btnText}
+            </button>
+        </div>
+    );
+};
+
 export const scenarioMixin = createPlugin<IReactSimulation>()(
     'scenario',
     {
@@ -26,61 +108,17 @@ export const scenarioMixin = createPlugin<IReactSimulation>()(
         skip: false,
     } as Partial<ScenarioProps>,
     {
-        beforeRender(props) {
-            const canvas = getMixinControls();
-            const existing = canvas.querySelector('#scenario-mixin-button');
-            if (!existing) {
-                let modifiable = [...props.events];
-                const btn = window.document.createElement('button');
-                btn.setAttribute('class', classes.root);
-                btn.setAttribute('id', 'scenario-mixin-button');
-                btn.addEventListener('click', () => {
-                    const current = modifiable.shift();
-                    if (current) {
-                        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                        current.execute();
-                        const next = modifiable[0];
-                        btn.innerText = next?.title || 'Done!';
-                    } else {
-                        btn.innerText = props.events[0]!.title;
-                        modifiable = [...props.events];
-                    }
-                    setHighlightedElement(modifiable[0]?.highlightSelector);
-                });
-                btn.addEventListener('mousemove', () => {
-                    const current = modifiable[0];
-
-                    if (current?.highlightSelector) {
-                        setHighlightedElement(current.highlightSelector);
-                    } else {
-                        clearHighlight();
-                    }
-                });
-                const clearHighlight = () => {
-                    highlight.removeAttribute('style');
-                    highlight.removeAttribute('class');
-                };
-                const setHighlightedElement = (selector?: string) => {
-                    if (!selector) {
-                        clearHighlight();
-                        return;
-                    }
-                    const target = actionTarget(selector);
-                    if (target && target instanceof Element) {
-                        const rect = target.getBoundingClientRect();
-                        highlight.setAttribute(
-                            'style',
-                            `position: absolute; top: ${rect.top}px; left: ${rect.left}px; height:${rect.height}px; width:${rect.width}px;`
-                        );
-                        highlight.setAttribute('class', classes.item!);
-                    }
-                };
-                btn.addEventListener('mouseout', clearHighlight);
-                btn.innerText = props.skip ? 'skipped ' + props.events[0]!.title : props.events[0]!.title;
-                const highlight = window.document.createElement('div');
-                canvas.appendChild(btn);
-                document.body.appendChild(highlight);
-            }
+        wrapRender(props, _r, demo) {
+            return renderInMixinControls(
+                demo,
+                <ScenarioRenderer
+                    skip={props.skip}
+                    title={props.title || 'untitled'}
+                    timeout={props.timeout}
+                    events={props.events}
+                />,
+                'scenario ' + props.title
+            );
         },
     }
 );
