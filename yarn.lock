@@ -1473,17 +1473,17 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.6.0.tgz#2c275aa05c895eccebbfc34cfb223c6e8bd591a2"
   integrity sha512-ZkVeqEmRpBV2GHvjjUZqEai2PpUbuq8Bqd//vEYsp63J8WyexI8ppCqVS3Zs0QADf6aWuPdU+0XsPI647PVlQA==
 
-"@wixc3/react-simulation@^3.0.1":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@wixc3/react-simulation/-/react-simulation-3.0.1.tgz#fa15d7532ded692f2b52ba522f10ac9849ae0843"
-  integrity sha512-51KdIb83+Ozeav2QcKgg7PklSQmy+SAMA9dhOrZ6DFTfCKTWKQfdWl/3B36drR299yEbXOFrhNBmKtJ3zf4fng==
+"@wixc3/react-simulation@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@wixc3/react-simulation/-/react-simulation-4.0.0.tgz#beec0c6f44552977e571e25413bf1f05126e9a72"
+  integrity sha512-mMWIShsWgIaqenwRNPK2RujgakQdDos+KsFMvTTEDLJvjo8hU9q05gqfZzkKFDB7fHtyZMFeK9cgenD1ZshAFA==
   dependencies:
-    "@wixc3/simulation-core" "^7.0.0"
+    "@wixc3/simulation-core" "^8.0.0"
 
-"@wixc3/simulation-core@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@wixc3/simulation-core/-/simulation-core-7.0.0.tgz#fc29a0c882717c00b6989e67a674fbadba8bed2e"
-  integrity sha512-JBBhR8s0P19Upusz9zQavp+wK75fHhBmTlBz6Ena99mkTdJjQljUL3v/ZWuhGZcPQ7AV2pP8VvW0bnT2s6fy8Q==
+"@wixc3/simulation-core@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@wixc3/simulation-core/-/simulation-core-8.0.0.tgz#4d4c9fc8ce82ffc6404b5aed0f607b9b550ded30"
+  integrity sha512-1Xevl3360DNoxAlaQKpIkRI1kCCHLhI5BC70bfzDidqygeNz3ZK2YSYr9kP1njfUmawaqvfN14UPd0A8awbndw==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
