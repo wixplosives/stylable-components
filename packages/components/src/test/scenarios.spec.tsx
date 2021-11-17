@@ -1,3 +1,4 @@
+import { sleep } from 'promise-assist';
 import UseScrollHorizontalSim from '../hooks/simulations/use-scroll/use-scroll-horizontal-window.sim';
 import UseScrollVerticallSim from '../hooks/simulations/use-scroll/use-scroll-vertical-window.sim';
 import UseScrollWithRef from '../hooks/simulations/use-scroll/use-scroll-with-ref.sim';
@@ -17,6 +18,7 @@ for (const sim of sims) {
                         this.timeout(props.timeout || 2000);
                         const { canvas, cleanup } = sim.setupStage();
                         await sim.render(canvas);
+                        await sleep(500);
                         for (const action of props.events) {
                             try {
                                 await action.execute();
