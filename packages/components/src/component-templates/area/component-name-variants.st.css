@@ -1,5 +1,0 @@
-@st-import ComponentName from "./component-name.st.css";
-
-.floating {
-  -st-extends: ComponentName;
-}

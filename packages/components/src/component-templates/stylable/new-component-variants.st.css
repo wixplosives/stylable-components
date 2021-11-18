@@ -1,0 +1,13 @@
+@st-import NewComponent from "./new-component.st.css";
+
+.small {
+    -st-extends: NewComponent;
+}
+
+.medium {
+    -st-extends: NewComponent;
+}
+
+.large {
+    -st-extends: NewComponent;
+}

@@ -5,6 +5,6 @@ module.exports = {
     newComponent: {
         componentsPath: 'packages/components/src',
         templatesPath: 'packages/components/src/component-templates',
-        fileNamingConvention: 'pascal-case',
+        fileNamingConvention: 'kebab-case',
     },
 };
