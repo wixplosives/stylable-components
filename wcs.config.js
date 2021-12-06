@@ -12,6 +12,7 @@ module.exports = {
          title: "Yarn (Install)", // optional
          description: "Installs the required dependencies", // optional
          command: "yarn",
+         trigger: ["checkout", "pull", "setup"]
         }
     },
 };
