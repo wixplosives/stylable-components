@@ -7,4 +7,11 @@ module.exports = {
         templatesPath: 'packages/components/src/component-templates',
         fileNamingConvention: 'kebab-case',
     },
+    scripts: {
+        install: {
+         title: "Yarn (Install)", // optional
+         description: "Installs the required dependencies", // optional
+         command: "yarn",
+        }
+    },
 };
