@@ -26,6 +26,7 @@ export default createSimulation({
             title: 'scrolls horizontally',
             events: [
                 scrollAction(200, false),
+                scrollAction(200, false),
                 expectElementText('#res', '200'),
                 scrollAction(-1, false),
                 expectElement('#res', (el: HTMLElement) => {
