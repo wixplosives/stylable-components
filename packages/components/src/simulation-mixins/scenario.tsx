@@ -153,12 +153,12 @@ export const scrollAction = (pos: number, isVertical = true, selector?: string):
                 if (isVertical) {
                     target.scrollTo({
                         top: usedPos,
-                        behavior: 'auto',
+                        behavior: 'smooth',
                     });
                 } else {
                     target.scrollTo({
                         left: usedPos,
-                        behavior: 'auto',
+                        behavior: 'smooth',
                     });
                 }
             }
@@ -254,20 +254,18 @@ export const expectElements = <SELECTORS extends string>(
 ): Action => {
     return {
         title,
-        async execute() {
-            await waitFor(() => {
-                const res = selectors.reduce((acc, selector) => {
-                    const el = window.document.querySelector(selector);
-                    if (!el) {
-                        throw new Error(title + ': element not found for selector ' + selector);
-                    }
-                    acc[selector] = el;
-                    return acc;
-                }, {} as Record<SELECTORS, Element>);
-                if (expectation) {
-                    expectation(res);
+        execute() {
+            const res = selectors.reduce((acc, selector) => {
+                const el = window.document.querySelector(selector);
+                if (!el) {
+                    throw new Error(title + ': element not found for selector ' + selector);
                 }
-            });
+                acc[selector] = el;
+                return acc;
+            }, {} as Record<SELECTORS, Element>);
+            if (expectation) {
+                expectation(res);
+            }
         },
     };
 };
@@ -279,14 +277,12 @@ export const expectElementText = <EL extends Element>(
 ): Action => {
     return {
         title,
-        async execute() {
-            return waitFor(() => {
-                const el = window.document.querySelector(selector) as EL;
-                if (!el || !(el instanceof HTMLElement)) {
-                    throw new Error(title + ': element not found for selector ' + selector);
-                }
-                expect(el.innerText).to.equal(text);
-            });
+        execute() {
+            const el = window.document.querySelector(selector) as EL;
+            if (!el || !(el instanceof HTMLElement)) {
+                throw new Error(title + ': element not found for selector ' + selector);
+            }
+            expect(el.innerText).to.equal(text);
         },
         highlightSelector: selector,
     };
