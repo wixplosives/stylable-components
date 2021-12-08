@@ -17,7 +17,9 @@ for (const sim of simulations) {
                         this.timeout(props.timeout || 2000);
                         const { canvas, cleanup } = sim.setupStage();
                         await sim.render(canvas);
-                        for (const action of props.events) {
+
+                        const a = await Promise.all(props.events);
+                        for (const action of a) {
                             try {
                                 await action.execute();
                             } catch (err) {
