@@ -254,18 +254,20 @@ export const expectElements = <SELECTORS extends string>(
 ): Action => {
     return {
         title,
-        execute() {
-            const res = selectors.reduce((acc, selector) => {
-                const el = window.document.querySelector(selector);
-                if (!el) {
-                    throw new Error(title + ': element not found for selector ' + selector);
+        async execute() {
+            await waitFor(() => {
+                const res = selectors.reduce((acc, selector) => {
+                    const el = window.document.querySelector(selector);
+                    if (!el) {
+                        throw new Error(title + ': element not found for selector ' + selector);
+                    }
+                    acc[selector] = el;
+                    return acc;
+                }, {} as Record<SELECTORS, Element>);
+                if (expectation) {
+                    expectation(res);
                 }
-                acc[selector] = el;
-                return acc;
-            }, {} as Record<SELECTORS, Element>);
-            if (expectation) {
-                expectation(res);
-            }
+            });
         },
     };
 };
@@ -277,12 +279,14 @@ export const expectElementText = <EL extends Element>(
 ): Action => {
     return {
         title,
-        execute() {
-            const el = window.document.querySelector(selector) as EL;
-            if (!el || !(el instanceof HTMLElement)) {
-                throw new Error(title + ': element not found for selector ' + selector);
-            }
-            expect(el.innerText).to.equal(text);
+        async execute() {
+            return waitFor(() => {
+                const el = window.document.querySelector(selector) as EL;
+                if (!el || !(el instanceof HTMLElement)) {
+                    throw new Error(title + ': element not found for selector ' + selector);
+                }
+                expect(el.innerText).to.equal(text);
+            });
         },
         highlightSelector: selector,
     };
