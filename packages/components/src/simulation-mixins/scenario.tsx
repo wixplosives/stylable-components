@@ -148,17 +148,18 @@ export const scrollAction = (pos: number, isVertical = true, selector?: string):
             'Scroll ' + (selector || 'window') + ' to ' + (pos === -1 ? (isVertical ? 'bottom' : 'right-most') : pos),
         execute: async () => {
             const target = actionTarget(selector);
+            console.log(target);
             const usedPos = target && pos === -1 ? maxScroll(target, isVertical) : pos;
             if (target) {
                 if (isVertical) {
                     target.scrollTo({
                         top: usedPos,
-                        behavior: 'smooth',
+                        behavior: 'auto',
                     });
                 } else {
                     target.scrollTo({
                         left: usedPos,
-                        behavior: 'smooth',
+                        behavior: 'auto',
                     });
                 }
             }
