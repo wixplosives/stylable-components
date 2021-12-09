@@ -11,7 +11,7 @@
     "react": ">=17"
   },
   "dependencies": {
-    "@stylable/runtime": "^4.9.1",
+    "@stylable/runtime": "^4.9.2",
     "@zeejs/react": "^0.3.1"
   },
   "files": [
