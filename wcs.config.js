@@ -5,14 +5,14 @@ module.exports = {
     newComponent: {
         componentsPath: 'packages/components/src',
         templatesPath: 'packages/components/src/component-templates',
-        fileNamingConvention: 'kebab-case',
     },
+    fileNamingConvention: 'pascal-case',
     scripts: {
         install: {
-         title: "Yarn (Install)", // optional
-         description: "Installs the required dependencies", // optional
-         command: "yarn",
-         trigger: ["checkout", "pull", "setup"]
-        }
+            title: 'Yarn (Install)', // optional
+            description: 'Installs the required dependencies', // optional
+            command: 'yarn',
+            trigger: ['checkout', 'pull', 'setup'],
+        },
     },
 };

@@ -1,0 +1,13 @@
+@st-import ToggleSwitch from "./toggle-switch.st.css";
+
+.small {
+    -st-extends: ToggleSwitch;
+}
+
+.medium {
+    -st-extends: ToggleSwitch;
+}
+
+.large {
+    -st-extends: ToggleSwitch;
+}
