@@ -6,7 +6,7 @@ module.exports = {
         componentsPath: 'packages/components/src',
         templatesPath: 'packages/components/src/component-templates',
     },
-    fileNamingConvention: 'pascal-case',
+    fileNamingConvention: 'kebab-case',
     scripts: {
         install: {
             title: 'Yarn (Install)', // optional
