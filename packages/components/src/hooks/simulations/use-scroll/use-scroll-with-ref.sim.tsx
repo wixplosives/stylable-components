@@ -23,7 +23,6 @@ export default createSimulation({
     },
     plugins: [
         scenarioMixin.use({
-            skip: true,
             events: [
                 scrollAction(300, true, '#scroll-div'),
                 expectElementText('#res', '300'),

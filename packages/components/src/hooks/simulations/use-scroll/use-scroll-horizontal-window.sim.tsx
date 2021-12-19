@@ -23,8 +23,7 @@ export default createSimulation({
     },
     plugins: [
         scenarioMixin.use({
-            title: 'scrolls horiontaly',
-            skip: true,
+            title: 'scrolls horizontally',
             events: [
                 scrollAction(200, false),
                 expectElementText('#res', '200'),
