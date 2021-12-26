@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { createSimulation } from '@wixc3/react-simulation';
-import { useCallback, useState } from 'react';
+import { createDemo } from '@wixc3/react-simulation';
+import React, { useCallback, useState } from 'react';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
 import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../../simulation-mixins/scenario';
 import { ScrollList, ScrollListLoadingState } from '../scroll-list';
@@ -8,17 +8,9 @@ import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes
 import { sleep } from 'promise-assist';
 import { createItems } from '../../simulation-assets/create-items';
 
-export default createSimulation<ScrollList<ItemData, HTMLElement>>({
+export default createDemo<ScrollList<ItemData, HTMLElement>>({
     name: 'scroll-list-add-more',
-    componentType: ScrollList,
-    props: {
-        ItemRenderer,
-        items: [],
-        getId: (item: ItemData) => item.id,
-        itemCount: -1,
-        watchScrollWindoSize: true,
-    },
-    wrapper: ({ renderSimulation }) => {
+    demo: () => {
         const [items, updateItems] = useState(createItems(0));
 
         const [loadingState, updateLoadingState] = useState<ScrollListLoadingState>('idle');
@@ -31,11 +23,18 @@ export default createSimulation<ScrollList<ItemData, HTMLElement>>({
             },
             [items]
         );
-        return renderSimulation({
-            loadMore,
-            items,
-            loadingState,
-        });
+
+        return (
+            <ScrollList
+                ItemRenderer={ItemRenderer}
+                items={items}
+                getId={(item: ItemData) => item.id}
+                itemCount={-1}
+                watchScrollWindoSize={true}
+                loadMore={loadMore}
+                loadingState={loadingState}
+            />
+        );
     },
     environmentProps: {
         canvasWidth: 560,

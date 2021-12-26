@@ -1,4 +1,5 @@
-import { createSimulation } from '@wixc3/react-simulation';
+import React from 'react';
+import { createDemo } from '@wixc3/react-simulation';
 import { ZeeRoot } from '../simulation-mixins/mixin-zee-root';
 import { AutoComplete } from './auto-complete';
 import { mixinProjectThemes } from '../simulation-mixins/mixin-project-themes';
@@ -11,15 +12,16 @@ const items = new Array(30000).fill(0).map(
             title: 'item number ' + idx,
         } as ItemData)
 );
-export default createSimulation<AutoComplete<ItemData, HTMLElement>>({
+export default createDemo<AutoComplete<ItemData, HTMLElement>>({
     name: 'auto-complete',
-    componentType: AutoComplete,
-    props: {
-        ItemRenderer,
-        items,
-        getId: (item: ItemData) => item.id,
-        getTextContent: (item: ItemData) => item.title,
-    },
+    demo: () => (
+        <AutoComplete
+            ItemRenderer={ItemRenderer}
+            items={items}
+            getId={(item: ItemData) => item.id}
+            getTextContent={(item: ItemData) => item.title}
+        />
+    ),
     plugins: [ZeeRoot, mixinProjectThemes],
     environmentProps: {
         canvasHeight: 24,

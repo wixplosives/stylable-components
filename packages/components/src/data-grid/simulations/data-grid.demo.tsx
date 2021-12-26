@@ -1,4 +1,4 @@
-import { createSimulation } from '@wixc3/react-simulation';
+import { createDemo } from '@wixc3/react-simulation';
 import React from 'react';
 import type { ListItemProps } from '../..';
 import { DataGrid } from '../data-grid';
@@ -36,39 +36,40 @@ const createItems = (count = 1000, from = 0) => {
     );
 };
 
-export default createSimulation<DataGrid<GridItem>>({
-    componentType: DataGrid,
+export default createDemo<DataGrid<GridItem>>({
     name: 'Data Grid',
-    props: {
-        columns: [
-            {
-                cellRenderer: cellRenderer<GridItem, 'firstName'>('firstName'),
-                header: <div>First name</div>,
-                id: 'fName',
-            },
-            {
-                cellRenderer: cellRenderer<GridItem, 'lastName'>('lastName'),
-                header: <div>Last name</div>,
-                id: 'lastName',
-            },
-            {
-                cellRenderer: cellRenderer<GridItem, 'age'>('age'),
-                header: <div>Age</div>,
-                id: 'age',
-            },
-        ],
-        columnSizesControl: [[200, 200, 200]],
-        items: createItems(),
-        getId: (item) => item.id,
-        gridRoot: {
-            el: 'div',
-            props: {
-                style: {
-                    height: '100%',
+    demo: () => (
+        <DataGrid
+            columns={[
+                {
+                    cellRenderer: cellRenderer('firstName'),
+                    header: <div>First name</div>,
+                    id: 'fName',
                 },
-            },
-        },
-    },
+                {
+                    cellRenderer: cellRenderer('lastName'),
+                    header: <div>Last name</div>,
+                    id: 'lastName',
+                },
+                {
+                    cellRenderer: cellRenderer('age'),
+                    header: <div>Age</div>,
+                    id: 'age',
+                },
+            ]}
+            columnSizesControl={[[200, 200, 200]]}
+            items={createItems()}
+            getId={(item) => item.id}
+            gridRoot={{
+                el: 'div',
+                props: {
+                    style: {
+                        height: '100%',
+                    },
+                },
+            }}
+        />
+    ),
     plugins: [mixinProjectThemes],
     environmentProps: {
         canvasWidth: 461,

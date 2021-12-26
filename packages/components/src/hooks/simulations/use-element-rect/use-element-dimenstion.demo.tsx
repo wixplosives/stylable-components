@@ -1,15 +1,11 @@
-import { createSimulation } from '@wixc3/react-simulation';
+import React from 'react';
+import { createDemo } from '@wixc3/react-simulation';
 import { expectElementText, scenarioMixin } from '../../../simulation-mixins/scenario';
 import { ElmentDimHookSimulator } from './element-rect-hook-simulator';
 
-export default createSimulation({
-    componentType: ElmentDimHookSimulator,
+export default createDemo({
+    demo: () => <ElmentDimHookSimulator isVertical={true} watchSize={true} width="100%" height="100%" />,
     name: 'use element dimenstion',
-    props: {
-        watchSize: true,
-        width: '100%',
-        height: '100%',
-    },
     environmentProps: {
         canvasWidth: 746,
         canvasHeight: 372,

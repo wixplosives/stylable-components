@@ -1,4 +1,5 @@
-import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
+import React from 'react';
+import type { ItemData } from '../../simulation-assets/item-renderer';
 import {
     clickAction,
     expectElementsStyle,
@@ -9,7 +10,8 @@ import {
 } from '../../simulation-mixins/scenario';
 import { ScrollList } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
-import { createSimulation } from '@wixc3/react-simulation';
+import { createDemo } from '@wixc3/react-simulation';
+import { StatefullItemRenderer } from '../../simulation-assets/statefull-item-renderer';
 
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
@@ -18,44 +20,21 @@ const items = new Array(1000).fill(0).map(
             title: 'item number ' + idx,
         } as ItemData)
 );
-const elementRef: React.RefObject<HTMLDivElement> = {
-    current: null,
-};
-export default createSimulation<ScrollList<ItemData, HTMLElement>>({
-    name: 'element-scroll',
-    componentType: ScrollList,
-    props: {
-        ItemRenderer,
-        items,
-        getId: (item: ItemData) => item.id,
-        watchScrollWindoSize: true,
-        listRoot: {
-            el: 'div',
-            props: {
-                style: {
-                    display: 'grid',
-                    gridTemplateColumns: '1fr',
-                    gridGap: '20px',
-                },
-            },
-        },
-        scrollListRoot: {
-            el: 'div',
-            props: {
-                style: {
-                    width: '200px',
-                    height: '400px',
-                    overflow: 'auto',
-                },
-                ref: elementRef,
-            },
-        },
-        scrollWindow: elementRef,
-        itemGap: 20,
-    },
+
+export default createDemo<ScrollList<ItemData, HTMLElement>>({
+    name: 'no-unmount',
+    demo: () => (
+        <ScrollList
+            ItemRenderer={StatefullItemRenderer}
+            items={items}
+            getId={(item: ItemData) => item.id}
+            watchScrollWindoSize={true}
+            unmountItems={false}
+        />
+    ),
     environmentProps: {
         canvasWidth: 560,
-        windowHeight: 726,
+        windowHeight: 388,
         windowWidth: 600,
     },
     plugins: [

@@ -1,10 +1,10 @@
-import { createSimulation } from '@wixc3/react-simulation';
+import React from 'react';
+import { createDemo } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { InputWithClear } from '../input-with-clear';
 
-export default createSimulation({
+export default createDemo({
     name: 'InputWithClear',
-    componentType: InputWithClear,
-    props: {},
+    demo: () => <InputWithClear />,
     plugins: [mixinProjectThemes],
 });

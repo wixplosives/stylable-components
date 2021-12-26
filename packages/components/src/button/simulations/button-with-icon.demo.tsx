@@ -1,15 +1,17 @@
 import React from 'react';
-import { createSimulation } from '@wixc3/react-simulation';
+import { createDemo } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { Button } from '../button';
 import { classes } from '../../common/common.st.css';
 import { AddFileIcon } from '../../icons';
-export default createSimulation({
+export default createDemo({
     name: 'button-with-icon',
-    componentType: Button,
-    props: {
-        children: [<AddFileIcon key="icon" className={classes.icon} />, <span key="text">Click Me!</span>],
-    },
+    demo: () => (
+        <Button>
+            <AddFileIcon key="icon" className={classes.icon} />
+            <span key="text">Click Me!</span>
+        </Button>
+    ),
     plugins: [mixinProjectThemes],
     environmentProps: {
         windowBackgroundColor: '#ffffff',

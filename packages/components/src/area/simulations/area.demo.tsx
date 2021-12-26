@@ -1,14 +1,16 @@
-import { createSimulation } from '@wixc3/react-simulation';
+import { createDemo } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { Area } from '../area';
 import { AddFileIcon } from '../../icons';
 import React from 'react';
-export default createSimulation({
+export default createDemo({
     name: 'Area',
-    componentType: Area,
-    props: {
-        children: [<AddFileIcon key="a" />, 'Hello'],
-    },
+    demo: () => (
+        <Area>
+            <AddFileIcon key="a" />
+            Hello
+        </Area>
+    ),
     plugins: [mixinProjectThemes],
     environmentProps: {
         canvasWidth: 264,

@@ -1,4 +1,5 @@
-import type { ItemData } from '../../simulation-assets/item-renderer';
+import React from 'react';
+import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
 import {
     clickAction,
     expectElementsStyle,
@@ -9,8 +10,7 @@ import {
 } from '../../simulation-mixins/scenario';
 import { ScrollList } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
-import { createSimulation } from '@wixc3/react-simulation';
-import { StatefullItemRenderer } from '../../simulation-assets/statefull-item-renderer';
+import { createDemo } from '@wixc3/react-simulation';
 
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
@@ -20,19 +20,30 @@ const items = new Array(1000).fill(0).map(
         } as ItemData)
 );
 
-export default createSimulation<ScrollList<ItemData, HTMLElement>>({
-    name: 'no-unmount',
-    componentType: ScrollList,
-    props: {
-        ItemRenderer: StatefullItemRenderer,
-        items,
-        getId: (item: ItemData) => item.id,
-        watchScrollWindoSize: true,
-        unmountItems: false,
-    },
+export default createDemo<ScrollList<ItemData, HTMLElement>>({
+    name: 'ScrollList',
+    demo: () => (
+        <ScrollList
+            ItemRenderer={ItemRenderer}
+            items={items}
+            getId={(item: ItemData) => item.id}
+            watchScrollWindoSize={true}
+            listRoot={{
+                el: 'div',
+                props: {
+                    style: {
+                        display: 'grid',
+                        gridTemplateColumns: '1fr',
+                        gridGap: '20px',
+                    },
+                },
+            }}
+            itemGap={20}
+        />
+    ),
     environmentProps: {
         canvasWidth: 560,
-        windowHeight: 388,
+        windowHeight: 300,
         windowWidth: 600,
     },
     plugins: [

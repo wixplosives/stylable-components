@@ -1,3 +1,4 @@
+import React from 'react';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
 import {
     clickAction,
@@ -9,43 +10,44 @@ import {
 } from '../../simulation-mixins/scenario';
 import { ScrollList } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
-import { createSimulation } from '@wixc3/react-simulation';
+import { createDemo } from '@wixc3/react-simulation';
 
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
-    ({
-        id: 'a' + idx,
-        title: 'item number ' + idx,
-    } as ItemData)
+        ({
+            id: 'a' + idx,
+            title: 'item number ' + idx,
+        } as ItemData)
 );
 
-export default createSimulation<ScrollList<ItemData, HTMLElement>>({
+export default createDemo<ScrollList<ItemData, HTMLElement>>({
     name: 'many-in-row',
-    componentType: ScrollList,
-    props: {
-        ItemRenderer,
-        items,
-        getId: (item: ItemData) => item.id,
-        watchScrollWindoSize: true,
-        listRoot: {
-            props: {
-                style: {
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr',
-                    gridGap: '50px',
+    demo: () => (
+        <ScrollList
+            ItemRenderer={ItemRenderer}
+            items={items}
+            getId={(item: ItemData) => item.id}
+            watchScrollWindoSize={true}
+            listRoot={{
+                props: {
+                    style: {
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr 1fr',
+                        gridGap: '50px',
+                    },
                 },
-            },
-        },
-        scrollListRoot: {
-            props: {
-                style: {
-                    height: '100%'
-                }
-            }
-        },
-        itemGap: 50,
-        itemsInRow: 3,
-    },
+            }}
+            scrollListRoot={{
+                props: {
+                    style: {
+                        height: '100%',
+                    },
+                },
+            }}
+            itemGap={50}
+            itemsInRow={3}
+        />
+    ),
     environmentProps: {
         canvasWidth: 560,
         windowHeight: 300,

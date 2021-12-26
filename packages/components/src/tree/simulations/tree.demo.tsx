@@ -1,4 +1,5 @@
-import { createSimulation } from '@wixc3/react-simulation';
+import React from 'react';
+import { createDemo } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { TreeItemData, TreeItemRenderer } from '../../text-tree-item/tree-item-renderer';
 import { Tree } from '../tree';
@@ -16,20 +17,23 @@ const createItem = (maxChildren: number, maxDepth: number, currentDepth = 0, pat
     }
     return item;
 };
-export default createSimulation<Tree<TreeItemData>>({
+export default createDemo<Tree<TreeItemData>>({
     name: 'Tree',
-    componentType: Tree,
-    props: {
-        ItemRenderer: TreeItemRenderer,
-        data: createItem(20, 5),
-        getId: (item: TreeItemData) => item.id,
-        getChildren: (item: TreeItemData) => item.children || [],
-        initialScrollOffset: 50,
-    },
+    demo: () => (
+        <Tree
+            ItemRenderer={TreeItemRenderer}
+            data={createItem(20, 5)}
+            getId={(item: TreeItemData) => item.id}
+            getChildren={(item: TreeItemData) => item.children || []}
+            initialScrollOffset={50}
+            openItemsControls={[]}
+            openItemsByDefault={false}
+        />
+    ),
     plugins: [mixinProjectThemes],
     environmentProps: {
         canvasWidth: 264,
         windowHeight: 600,
-        windowWidth: 1024
+        windowWidth: 1024,
     },
 });
