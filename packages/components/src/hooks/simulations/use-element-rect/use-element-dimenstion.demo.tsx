@@ -4,8 +4,8 @@ import { expectElementText, scenarioMixin } from '../../../simulation-mixins/sce
 import { ElmentDimHookSimulator } from './element-rect-hook-simulator';
 
 export default createDemo({
-    demo: () => <ElmentDimHookSimulator isVertical={true} watchSize={true} width="100%" height="100%" />,
     name: 'use element dimenstion',
+    demo: () => <ElmentDimHookSimulator isVertical={true} watchSize={true} width="100%" height="100%" />,
     environmentProps: {
         canvasWidth: 746,
         canvasHeight: 372,
