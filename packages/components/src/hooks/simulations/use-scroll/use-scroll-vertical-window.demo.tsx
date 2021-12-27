@@ -1,4 +1,5 @@
-import { createSimulation } from '@wixc3/react-simulation';
+import React from 'react';
+import { createDemo } from '@wixc3/react-simulation';
 import { expect } from 'chai';
 import {
     expectElement,
@@ -9,10 +10,9 @@ import {
 } from '../../../simulation-mixins/scenario';
 import { ScrollHookSimulator } from './scroll-hook-simulator';
 
-export default createSimulation({
-    componentType: ScrollHookSimulator,
+export default createDemo({
+    demo: () => <ScrollHookSimulator />,
     name: 'use scroll window vertical',
-    props: {},
     environmentProps: {
         canvasWidth: 200,
         canvasHeight: 2000,

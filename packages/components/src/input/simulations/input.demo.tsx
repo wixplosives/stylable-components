@@ -1,11 +1,11 @@
-import { createSimulation } from '@wixc3/react-simulation';
+import React from 'react';
+import { createDemo } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { Input } from '../input';
 
-export default createSimulation({
+export default createDemo({
     name: 'Input',
-    componentType: Input,
-    props: {},
+    demo: () => <Input />,
     plugins: [mixinProjectThemes],
     environmentProps: {
         canvasWidth: 264,
