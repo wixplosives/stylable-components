@@ -27,7 +27,7 @@
     "@types/react-dom": "^17.0.11",
     "@types/react-window": "^1.8.5",
     "@typescript-eslint/eslint-plugin": "^5.8.1",
-    "@typescript-eslint/parser": "^5.8.1",
+    "@typescript-eslint/parser": "^5.9.0",
     "@wixc3/react-simulation": "^4.0.0",
     "chai": "^4.3.4",
     "eslint": "^8.6.0",
