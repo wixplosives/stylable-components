@@ -17,10 +17,15 @@ export interface TreeAddedProps<T> {
     data: T;
     getChildren: (t: T) => T[];
     openItemsControls: StateControls<string[]>;
-    openItemsByDefault: false;
+    /**
+     * if passed as true tree will open all items when creating initial open items.
+     * ignored if controled
+     */
+    openItemsByDefault: OpenItemsByDefault<T>;
     ItemRenderer: React.ComponentType<TreeItemProps<T>>;
 }
 
+type OpenItemsByDefault<T> = boolean | ((item: T) => boolean);
 export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 'items' | 'ItemRenderer'> &
     TreeAddedProps<T>;
 
@@ -140,7 +145,7 @@ export function getItems<T>({
     getChildren: (t: T) => T[];
     getId: (t: T) => string;
     openItems: string[];
-    openItemsByDefault: false;
+    openItemsByDefault: OpenItemsByDefault<T>;
     depth?: number;
     depths?: Record<string, number>;
 }): { items: T[]; depths: Record<string, number> } {
