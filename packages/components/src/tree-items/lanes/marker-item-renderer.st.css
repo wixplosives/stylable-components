@@ -2,11 +2,18 @@
 @st-import Icon from "../../icons/icon.st.css";
 
 .root {
-    -st-states: focused, selected, open;
+    -st-states: focused, selected, open, empty;
     --indent: 0;
-    display: flex;
-    justify-content: space-between;
+    font-size: 10px;
+    color: gray;
+    padding: 3px;
     margin-left: calc(var(--indent) * 8px)
+}
+
+.root:empty {
+    height: 30px;
+    border: 1px dashed gray;
+    border-radius: 3px;
 }
 
 .root:focused {

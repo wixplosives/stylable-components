@@ -1,0 +1,21 @@
+.root {}
+
+.item {
+    -st-states: kind(enum(lane, marker, element));
+    --indent: 0;
+    left: calc((var(--indent) * 8 + 7) * 1px);
+}
+
+.item {}
+
+
+.item:kind(marker) {
+    width: 10px;
+    border-left: 1px dashed gray;
+    border-radius: 5px
+}
+
+.item:kind(lane) {
+    width: 0px;
+    border: 1px solid var(--laneColor);
+}

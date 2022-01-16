@@ -18,11 +18,11 @@ export type AutoComplete<T, EL extends HTMLElement = HTMLDivElement> = (props: A
 
 export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: AutoCompleteProps<T, EL>): JSX.Element {
     const { searchControl, getTextContent, items, focusControl, selectionControl, getId, ...listProps } = props;
-    const [focused, setFocused] = useStateControls(focusControl);
-    const [selected, setSelected] = useStateControls(selectionControl);
+    const [focused, setFocused] = useStateControls(focusControl, undefined);
+    const [selected, setSelected] = useStateControls(selectionControl, undefined);
     const inputRef = useRef<HTMLInputElement>(null);
     const scrollListRef = useRef<HTMLDivElement>(null);
-    const [searchText, updateSearchText] = useStateControls(searchControl);
+    const [searchText, updateSearchText] = useStateControls(searchControl, undefined);
     const { match } = useContext(searchMethodContext);
 
     const { cb: onKeyPress, useTransmit } = useTransmittedCB<React.KeyboardEventHandler>();

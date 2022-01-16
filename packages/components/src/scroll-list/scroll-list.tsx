@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
 import { useElementDimension, useIdBasedRects, WatchedSize } from '../hooks/use-element-rect';
 import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
@@ -7,6 +7,7 @@ import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins 
 import { useScroll } from '../hooks/use-scroll';
 import { List, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
+import { useStateControls } from '../hooks/use-state-controls';
 
 const defaultPreloader: ElementSlot<{}> = {
     el: Preloader,
@@ -32,6 +33,19 @@ export const {
     ScrollListRootPropMapping
 );
 
+export interface ItemInfo<T> {
+    data: T;
+    isSelected: boolean;
+    isFocused: boolean;
+}
+
+export interface OverlayProps<T> {
+    shownItems: T[];
+    itemSizes: Record<string, number>;
+    avgSize: number;
+    style?: React.CSSProperties;
+}
+
 export const { forward: forwardListRoot, slot: listRoot } = listRootParent(defaultRoot, ScrollListRootPropMapping);
 export const {
     forward: forwardPreloader,
@@ -39,6 +53,13 @@ export const {
     parentSlot: scrollListPreloaderParent,
     Slot: PreloaderSlot,
 } = defineElementSlot(defaultPreloader, {});
+
+export const {
+    forward: forwardListOverlay,
+    slot: scrollListOverlay,
+    parentSlot: scrollListOverlayParent,
+    Slot: ListOverlaySlot,
+} = defineElementSlot<OverlayProps<any>, {}>(defaultPreloader, {});
 
 export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T> {
     /**
@@ -68,7 +89,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      * size of the item ( height if vertical ) in pixels or a method to compute according to data
      * if omitted, item size will be measured
      */
-    itemSize?: number | ((t: T) => number) | boolean;
+    itemSize?: number | ((info: ItemInfo<T>) => number) | boolean;
     /**
      * size of the item ( height if vertical ) in pixels
      * @default 50
@@ -88,6 +109,8 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
     unmountItems?: boolean;
 
     preloader?: ElementSlot<{}>;
+
+    overlay?: ElementSlot<OverlayProps<T>>;
 
     /**
      * if loading the scroll list will show the preloader
@@ -143,6 +166,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     itemGap = 0,
     itemsInRow = 1,
     transmitKeyPress,
+    overlay,
 }: ScrollListProps<T, EL>): JSX.Element {
     const defaultListRef = useRef<HTMLElement>(null);
     const listRef = (listRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultListRef;
@@ -157,27 +181,43 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         lastRenderedItem.current.items = items;
         lastRenderedItem.current.last = 0;
     }
+    const [selected, setSelected] = useStateControls(selectionControl, undefined);
+    const [focused, setFocused] = useStateControls(focusControl, undefined);
 
+    const getItemInfo = useCallback(
+        (data: T): ItemInfo<T> => ({
+            data,
+            isFocused: focused === getId(data),
+            isSelected: selected === getId(data),
+        }),
+        [focused, selected, getId]
+    );
     const itemCountForCalc =
         itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount;
-    const rectOptions = dimToSize(itemSize);
+
+    const rectOptions = useMemo(() => dimToSize(itemSize, getItemInfo), [getItemInfo, itemSize]);
+
     const sizes = useIdBasedRects(listRef, items, getId, rectOptions, true);
-    const { totalMeasured, totalSize } = items.reduce(
+    const { totalMeasured, totalSize, itemSizes } = items.reduce(
         (acc, current) => {
             const id = getId(current);
             const itemSize = isHorizontal ? sizes[id]?.width : sizes[id]?.height;
-            if (itemSize) {
+
+            if (typeof itemSize === 'number') {
                 acc.totalMeasured++;
                 acc.totalSize += itemSize;
+                acc.itemSizes[id] = itemSize;
             }
             return acc;
         },
         {
             totalSize: 0,
             totalMeasured: 0,
+            itemSizes: {} as Record<string, number>,
         }
     );
     const avgSize = totalMeasured > 0 ? Math.ceil(totalSize / totalMeasured) : estimatedItemSize;
+
     const maxScrollSize =
         avgSize * Math.ceil(itemCountForCalc / itemsInRow) +
         initialScrollOffset +
@@ -277,13 +317,24 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                 className: classes.root,
             }}
         >
+            {overlay ? (
+                <ListOverlaySlot
+                    slot={overlay}
+                    props={{
+                        itemSizes,
+                        shownItems: rendereredItems,
+                        avgSize,
+                        style: innerStyle,
+                    }}
+                />
+            ) : null}
             <List<T, EL>
                 getId={getId}
                 ItemRenderer={ItemRenderer}
                 listRoot={listRootWithStyle}
                 items={rendereredItems}
-                focusControl={focusControl}
-                selectionControl={selectionControl}
+                focusControl={[focused, setFocused]}
+                selectionControl={[selected, setSelected]}
                 transmitKeyPress={transmitKeyPress}
             />
             <div
@@ -298,7 +349,8 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 }
 
 export function dimToSize<T>(
-    itemSize: number | ((t: T) => number) | boolean
+    itemSize: number | ((t: ItemInfo<T>) => number) | boolean,
+    getItemInfo: (t: T) => ItemInfo<T>
 ): boolean | WatchedSize | ((t: T) => WatchedSize) {
     if (typeof itemSize === 'boolean') {
         return itemSize;
@@ -311,7 +363,8 @@ export function dimToSize<T>(
     }
 
     return (t: T) => {
-        const dim = itemSize(t);
+        const info = getItemInfo(t);
+        const dim = itemSize(info);
         return {
             width: dim,
             height: dim,

@@ -12,11 +12,20 @@ export type StateControls<T> = ControlledState<T> | UnControlledState<T> | Locke
 const noop = () => undefined;
 
 export function useStateControls<T>(
-    options: StateControls<T>,
+    options: StateControls<T> | undefined,
+    //default value passed by the component, ignored if a value was passed in the options
+    defaultValue: T | (() => T),
     useStateFunction: (t: T | (() => T)) => ProcessedControlledState<T> = useState
 ): ProcessedControlledState<T> {
-    const status = Array.isArray(options) ? (options[1] === true ? 'locked' : 'controlled') : 'statefull';
-    const valueOrFactory = Array.isArray(options) ? options[0] : options;
+    const status =
+        options === undefined
+            ? 'statefull'
+            : Array.isArray(options)
+            ? options[1] === true
+                ? 'locked'
+                : 'controlled'
+            : 'statefull';
+    const valueOrFactory = options === undefined ? defaultValue : Array.isArray(options) ? options[0] : options;
     const [value, setValue] = useStateFunction(valueOrFactory);
     return useMemo<ProcessedControlledState<T>>(() => {
         switch (status) {
