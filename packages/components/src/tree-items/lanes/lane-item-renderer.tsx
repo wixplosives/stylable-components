@@ -16,11 +16,12 @@ export interface LaneData<TREEITEMS> {
 }
 
 export interface LaneOverlayProps<TREEITEMS> extends TreeItemProps<LaneData<TREEITEMS>> {
-    childrenHeight: number;
+    startsAt: number;
+    endsAt: number;
 }
-export function LaneOverlayRenderer<TREEITEMS>(props: TreeItemProps<LaneData<TREEITEMS>>) {
+export function LaneOverlayRenderer<TREEITEMS>(props: LaneOverlayProps<LaneData<TREEITEMS>>) {
     const laneCtx = useContext(lanesContext);
-    const indent = laneCtx.getIndent(props.data as LaneData<any>);
+    const indent = laneCtx.getIndent(props.data as LaneData<any>) - 1;
 
     return (
         <div

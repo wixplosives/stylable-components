@@ -4,8 +4,6 @@ import type { TreeItemWithLaneData } from '../tree-item-with-lane-renderer';
 import { lanesContext } from './lane-context';
 import { st, classes, vars } from './overlays-renderer.st.css';
 
-
-
 export const OverlayRenderer = (props: TreeOverlayProps<TreeItemWithLaneData>) => {
     const laneCtx = useContext(lanesContext);
     let currPos = 0;
@@ -67,10 +65,10 @@ export const OverlayRenderer = (props: TreeOverlayProps<TreeItemWithLaneData>) =
                         key={item.id}
                         style={{
                             position: 'absolute',
-                           
+
                             top: start - 18 + 'px',
                             height: end - start + 18 + 'px',
-                           
+
                             [vars.indent!]: actualIndent.toString(),
                         }}
                     />

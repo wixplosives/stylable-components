@@ -35,7 +35,7 @@ export interface TreeItemProps<T> extends ListItemProps<T> {
 }
 
 export interface TreeOverlayProps<T> extends OverlayProps<T> {
-    overlay?: ElementSlot<OverlayProps<T>>;
+    expandedItems: string[];
 }
 
 export const { forward: forwardListOverlay, slot: overlayRoot } =
@@ -83,6 +83,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     const [focused, updateFocused] = useStateControls(focusControl, undefined);
     const { items, depths } = getItems({ data, getChildren, getId, openItems, openItemsByDefault });
     const itemRenderer = useMemo(() => TreeItemWrapper(ItemRenderer), [ItemRenderer]);
+
     const wrapperContext = useMemo(
         () => ({
             open(id: string) {
