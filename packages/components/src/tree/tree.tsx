@@ -1,9 +1,22 @@
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import type { ElementSlot } from '../common/types';
+import { defaultRoot } from '../hooks/use-element-slot';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import { KeyCodes } from '../keycodes';
 import { forwardListRoot, ListItemProps } from '../list/list';
-import { ScrollList, ScrollListProps } from '../scroll-list/scroll-list';
+import {
+    ItemInfo,
+    OverlayProps,
+    ScrollList,
+    scrollListOverlayParent,
+    ScrollListProps,
+} from '../scroll-list/scroll-list';
 // import { st, classes } from './tree.st.css';
+
+export interface TreeItemInfo<T> extends ItemInfo<T> {
+    isOpen: boolean;
+    hasChildren: boolean;
+}
 
 export interface TreeItemProps<T> extends ListItemProps<T> {
     isOpen: boolean;
@@ -13,15 +26,42 @@ export interface TreeItemProps<T> extends ListItemProps<T> {
     indent: number;
 }
 
+export interface TreeItemProps<T> extends ListItemProps<T> {
+    isOpen: boolean;
+    hasChildren: boolean;
+    open(): void;
+    close(): void;
+    indent: number;
+}
+
+export interface TreeOverlayProps<T> extends OverlayProps<T> {
+    expandedItems: string[];
+}
+
+export const { forward: forwardListOverlay, slot: overlayRoot } =
+    scrollListOverlayParent<TreeOverlayProps<any>>(defaultRoot);
+
 export interface TreeAddedProps<T> {
     data: T;
     getChildren: (t: T) => T[];
     openItemsControls: StateControls<string[]>;
-    openItemsByDefault: false;
+    /**
+     * if passed as true tree will open all items when creating initial open items.
+     * ignored if controled
+     */
+    openItemsByDefault: OpenItemsByDefault<T>;
     ItemRenderer: React.ComponentType<TreeItemProps<T>>;
+    /**
+     * size of the item ( height if vertical ) in pixels or a method to compute according to data
+     * if omitted, item size will be measured
+     */
+    itemSize?: number | ((info: TreeItemInfo<T>) => number) | boolean;
+
+    overlay?: ElementSlot<TreeOverlayProps<T>>;
 }
 
-export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 'items' | 'ItemRenderer'> &
+type OpenItemsByDefault<T> = boolean | ((item: T) => boolean);
+export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 'items' | 'ItemRenderer' | 'itemSize'> &
     TreeAddedProps<T>;
 
 export type Tree<T, EL extends HTMLElement = HTMLDivElement> = (props: TreeProps<T, EL>) => JSX.Element;
@@ -36,12 +76,14 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         getId,
         ItemRenderer,
         focusControl,
+        itemSize,
         ...scrollListProps
     } = props;
-    const [openItems, updateOpenItems] = useStateControls(openItemsControls || [[]]);
-    const [focused, updateFocused] = useStateControls(focusControl);
+    const [openItems, updateOpenItems] = useStateControls(openItemsControls, []);
+    const [focused, updateFocused] = useStateControls(focusControl, undefined);
     const { items, depths } = getItems({ data, getChildren, getId, openItems, openItemsByDefault });
     const itemRenderer = useMemo(() => TreeItemWrapper(ItemRenderer), [ItemRenderer]);
+
     const wrapperContext = useMemo(
         () => ({
             open(id: string) {
@@ -75,6 +117,21 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
             [focused, openItems, wrapperContext]
         ),
     });
+
+    const listItemSize = useMemo(() => {
+        if (typeof itemSize !== 'function') {
+            return itemSize;
+        }
+        return (info: ItemInfo<T>) => {
+            const isOpen = openItems.includes(getId(info.data));
+            const hasChildren = getChildren(info.data).length > 0;
+            return itemSize({
+                ...info,
+                isOpen,
+                hasChildren,
+            });
+        };
+    }, [getChildren, getId, itemSize, openItems]);
     return (
         <treeWrapperContext.Provider value={wrapperContext}>
             <ScrollList
@@ -84,6 +141,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
                 ItemRenderer={itemRenderer}
                 listRoot={updatedListRoot}
                 focusControl={[focused, updateFocused]}
+                itemSize={listItemSize}
             />
         </treeWrapperContext.Provider>
     );
@@ -140,7 +198,7 @@ export function getItems<T>({
     getChildren: (t: T) => T[];
     getId: (t: T) => string;
     openItems: string[];
-    openItemsByDefault: false;
+    openItemsByDefault: OpenItemsByDefault<T>;
     depth?: number;
     depths?: Record<string, number>;
 }): { items: T[]; depths: Record<string, number> } {

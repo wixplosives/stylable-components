@@ -65,8 +65,8 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     items,
     transmitKeyPress,
 }: ListProps<T>): JSX.Element {
-    const [selectedId, setSelectedId] = useStateControls(selectionControl);
-    const [focusedId, setFocusedId] = useStateControls(focusControl);
+    const [selectedId, setSelectedId] = useStateControls(selectionControl, undefined);
+    const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
     const defaultRef = useRef<EL>();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;

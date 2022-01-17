@@ -1,33 +1,45 @@
 import { useMemo, useState } from 'react';
 
-export type ControlledState<T> = [value: T, setValue: (t: T) => void];
-export type UnControlledState<T> = T | [T];
-export type LockedState<T> = [defaultValue: T, isDisabled: true];
+export type NotAnArray<T> = T extends any[] ? never : T;
 
-export function isControlled<T>(value: StateControls<T>): value is ControlledState<T> {
-    if (!Array.isArray(value)) {
-        return false;
-    }
-    const [_, cb] = value;
-    return cb !== true && cb !== undefined;
-}
+export type ControlledState<T> = [value: T | (() => T), setValue: (t: T) => void];
+export type UnControlledState<T> = NotAnArray<T> | (() => T);
+export type LockedState<T> = [defaultValue: T | (() => T), isDisabled: true];
 
+export type ProcessedControlledState<T> = [value: T, setValue: (t: T) => void];
 export type StateControls<T> = ControlledState<T> | UnControlledState<T> | LockedState<T>;
 
 const noop = () => undefined;
 
 export function useStateControls<T>(
-    options: StateControls<T>,
-    useStateFunction: (t: T) => ControlledState<T> = useState
-): ControlledState<T> {
-    const [value, setValue] = useStateFunction(Array.isArray(options) ? options[0] : options);
-    const unControlledRes = useMemo<ControlledState<T>>(
-        () => (Array.isArray(options) && options.length > 1 ? [value, noop] : [value, setValue]),
-        [options, value, setValue]
-    );
-    if (isControlled(options)) {
-        return options;
-    }
-
-    return unControlledRes;
+    options: StateControls<T> | undefined,
+    //default value passed by the component, ignored if a value was passed in the options
+    defaultValue: T | (() => T),
+    useStateFunction: (t: T | (() => T)) => ProcessedControlledState<T> = useState
+): ProcessedControlledState<T> {
+    const status =
+        options === undefined
+            ? 'statefull'
+            : Array.isArray(options)
+            ? options[1] === true
+                ? 'locked'
+                : 'controlled'
+            : 'statefull';
+    const valueOrFactory = options === undefined ? defaultValue : Array.isArray(options) ? options[0] : options;
+    const [value, setValue] = useStateFunction(valueOrFactory);
+    return useMemo<ProcessedControlledState<T>>(() => {
+        switch (status) {
+            case 'controlled': {
+                const [funcOrValue, setter] = options as ControlledState<T>;
+                if (typeof funcOrValue === 'function') {
+                    return [(funcOrValue as () => T)(), setter];
+                }
+                return options as ProcessedControlledState<T>;
+            }
+            case 'locked':
+                return [value, noop];
+            case 'statefull':
+                return [value, setValue];
+        }
+    }, [status, options, value, setValue]);
 }

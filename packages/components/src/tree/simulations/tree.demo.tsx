@@ -1,7 +1,7 @@
 import React from 'react';
 import { createDemo } from '@wixc3/react-simulation';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
-import { TreeItemData, TreeItemRenderer } from '../../text-tree-item/tree-item-renderer';
+import { TreeItemData, TreeItemRenderer } from '../../tree-items/tree-item-renderer';
 import { Tree } from '../tree';
 
 const createItem = (maxChildren: number, maxDepth: number, currentDepth = 0, path: number[] = []) => {
@@ -26,7 +26,7 @@ export default createDemo<Tree<TreeItemData>>({
             getId={(item: TreeItemData) => item.id}
             getChildren={(item: TreeItemData) => item.children || []}
             initialScrollOffset={50}
-            openItemsControls={[]}
+            openItemsControls={()=>[]}
             openItemsByDefault={false}
         />
     ),

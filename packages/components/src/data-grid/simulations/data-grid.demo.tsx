@@ -57,7 +57,7 @@ export default createDemo<DataGrid<GridItem>>({
                     id: 'age',
                 },
             ]}
-            columnSizesControl={[[200, 200, 200]]}
+            columnSizesControl={() => [200, 200, 200]}
             items={createItems()}
             getId={(item) => item.id}
             gridRoot={{

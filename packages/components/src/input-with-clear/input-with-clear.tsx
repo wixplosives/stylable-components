@@ -10,7 +10,7 @@ export const InputWithClear = React.forwardRef<HTMLInputElement, InputWithClearP
     const defaultRef = useRef<HTMLInputElement>(null);
     const usedRef = (ref || defaultRef) as React.RefObject<HTMLInputElement>;
     const { valueControl, onKeyDown, ...inputProps } = props;
-    const [value, setValue] = useStateControls(valueControl || '');
+    const [value, setValue] = useStateControls(valueControl,'');
     const onClear = useCallback(() => {
         setValue('');
     }, [setValue]);
