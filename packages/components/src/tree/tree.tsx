@@ -1,5 +1,4 @@
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
-import type { ElementSlot } from '../common/types';
 import { defaultRoot } from '../hooks/use-element-slot';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import { KeyCodes } from '../keycodes';
@@ -38,18 +37,21 @@ export interface TreeOverlayProps<T> extends OverlayProps<T> {
     expandedItems: string[];
 }
 
-export const { forward: forwardListOverlay, slot: overlayRoot } =
-    scrollListOverlayParent<TreeOverlayProps<any>>(defaultRoot);
+export const {
+    forward: forwardListOverlay,
+    slot: overlayRoot,
+    Slot: TreeOverlay,
+    create: createTreeOverlay,
+    parentSlot: defineTreeParentOverlay,
+} = scrollListOverlayParent<{
+    expandedItems: string[];
+}>(defaultRoot);
 
 export interface TreeAddedProps<T> {
     data: T;
     getChildren: (t: T) => T[];
     openItemsControls: StateControls<string[]>;
-    /**
-     * if passed as true tree will open all items when creating initial open items.
-     * ignored if controled
-     */
-    openItemsByDefault: OpenItemsByDefault<T>;
+
     ItemRenderer: React.ComponentType<TreeItemProps<T>>;
     /**
      * size of the item ( height if vertical ) in pixels or a method to compute according to data
@@ -57,10 +59,9 @@ export interface TreeAddedProps<T> {
      */
     itemSize?: number | ((info: TreeItemInfo<T>) => number) | boolean;
 
-    overlay?: ElementSlot<TreeOverlayProps<T>>;
+    overlay?: typeof overlayRoot;
 }
 
-type OpenItemsByDefault<T> = boolean | ((item: T) => boolean);
 export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 'items' | 'ItemRenderer' | 'itemSize'> &
     TreeAddedProps<T>;
 
@@ -72,7 +73,6 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         data,
         getChildren,
         openItemsControls,
-        openItemsByDefault,
         getId,
         ItemRenderer,
         focusControl,
@@ -81,7 +81,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     } = props;
     const [openItems, updateOpenItems] = useStateControls(openItemsControls, []);
     const [focused, updateFocused] = useStateControls(focusControl, undefined);
-    const { items, depths } = getItems({ data, getChildren, getId, openItems, openItemsByDefault });
+    const { items, depths } = getItems({ data, getChildren, getId, openItems });
     const itemRenderer = useMemo(() => TreeItemWrapper(ItemRenderer), [ItemRenderer]);
 
     const wrapperContext = useMemo(
@@ -118,6 +118,10 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         ),
     });
 
+    const updatedOverlay = forwardListOverlay(props.overlay, {
+        expandedItems: openItems,
+    });
+
     const listItemSize = useMemo(() => {
         if (typeof itemSize !== 'function') {
             return itemSize;
@@ -136,6 +140,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         <treeWrapperContext.Provider value={wrapperContext}>
             <ScrollList
                 {...scrollListProps}
+                overlay={updatedOverlay}
                 getId={getId}
                 items={items}
                 ItemRenderer={itemRenderer}
@@ -188,7 +193,6 @@ export function TreeItemWrapper<T>(
 export function getItems<T>({
     data,
     getId,
-    openItemsByDefault,
     getChildren,
     openItems,
     depth = 0,
@@ -198,7 +202,6 @@ export function getItems<T>({
     getChildren: (t: T) => T[];
     getId: (t: T) => string;
     openItems: string[];
-    openItemsByDefault: OpenItemsByDefault<T>;
     depth?: number;
     depths?: Record<string, number>;
 }): { items: T[]; depths: Record<string, number> } {
@@ -218,7 +221,6 @@ export function getItems<T>({
                     getItems({
                         data: item,
                         getId,
-                        openItemsByDefault,
                         getChildren,
                         openItems,
                         depth: depth + 1,

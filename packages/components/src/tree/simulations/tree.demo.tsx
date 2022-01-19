@@ -26,8 +26,7 @@ export default createDemo<Tree<TreeItemData>>({
             getId={(item: TreeItemData) => item.id}
             getChildren={(item: TreeItemData) => item.children || []}
             initialScrollOffset={50}
-            openItemsControls={()=>[]}
-            openItemsByDefault={false}
+            openItemsControls={() => []}
         />
     ),
     plugins: [mixinProjectThemes],

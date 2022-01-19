@@ -12,7 +12,11 @@ export const defaultRoot: ElementSlot<React.ComponentPropsWithRef<'div'>, 'div'>
     el: 'div',
     props: {},
 };
-export const defineElementSlot = <MinimalProps, Mapping extends PropMapping<MinimalProps> = {}>(
+export const defineElementSlot = <
+    MinimalProps,
+    Mapping extends PropMapping<MinimalProps> = {},
+    ChildSlotProps extends {} = {}
+>(
     defaultSlot: ElementSlot<MinimalProps, any, any>,
     propsMapping: Mapping = {} as Mapping
 ) => {
@@ -42,7 +46,7 @@ export const defineElementSlot = <MinimalProps, Mapping extends PropMapping<Mini
         },
         forward: (
             slot: Partial<ElementSlot<MinimalProps, any, any> | undefined>,
-            props: MinimalProps
+            props: MinimalProps & Partial<ChildSlotProps>
         ): ElementSlot<MinimalProps, any, any> => {
             const usedSlot = { ...defaultSlot, ...(slot || {}) };
             // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -54,12 +58,15 @@ export const defineElementSlot = <MinimalProps, Mapping extends PropMapping<Mini
             }, [usedSlot.el, usedSlot.props, props]);
         },
         slot: defaultSlot as Partial<typeof defaultSlot>,
-        parentSlot: function <MinProps extends MinimalProps, MAP extends PropMapping<MinProps> = PropMapping<MinProps>>(
+        parentSlot: function <MinProps, MAP extends PropMapping<MinProps> = PropMapping<MinProps>>(
             defSlot?: ElementSlot<MinProps, any, any>,
             propsMapping: PropMapping<MinProps> = {}
         ) {
             const usedSlot = defSlot || defaultSlot;
-            return defineElementSlot<MinProps, MAP>(usedSlot as ElementSlot<MinProps, any, any>, propsMapping as MAP);
+            return defineElementSlot<MinProps, MAP, MinimalProps>(
+                usedSlot as ElementSlot<MinProps, any, any>,
+                propsMapping as MAP
+            );
         },
         create: function <Props extends MinimalProps>(
             el: React.ComponentType<Props> | keyof React.ReactHTML,
