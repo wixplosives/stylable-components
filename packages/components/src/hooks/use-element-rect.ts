@@ -147,7 +147,11 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
     const shouldWatchSize = size === true;
     const precomputed = typeof size === 'boolean' ? undefined : size;
     const cache = useRef(new Map<string, WatchedSize>());
-    const [sizes, updateSizes] = useState(() => getSizes(ref, data, precomputed, getId, false, cache.current));
+    const calculatedSize = useMemo(
+        () => getSizes(ref, data, precomputed, getId, false, cache.current),
+        [data, getId, precomputed, ref]
+    );
+    const [sizes, updateSizes] = useState(() => calculatedSize);
     const delayedUpdateSizes = useDelayedUpdateState(updateSizes);
     const { observer, listen } = useMemo(createSetableObserver, []);
     const { observer: mutationObserver, listen: mutationListener } = useMemo(createSetableMutationObserver, []);
@@ -195,6 +199,9 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
             observer.observe(el);
         }
     }, [data, precomputed, getId, shouldMeasure, size, ref, shouldWatchSize, observer]);
+    if (!shouldMeasure) {
+        return calculatedSize;
+    }
     return sizes;
 }
 

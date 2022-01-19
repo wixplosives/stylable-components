@@ -24,5 +24,6 @@
   "repository": "git@github.com:wixplosives/stylable-components.git",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "20118a38135fd111c6d680c08db656c06f25adda"
 }

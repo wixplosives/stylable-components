@@ -298,6 +298,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const innerStyle: React.CSSProperties = {
         position: 'absolute',
     };
+
     if (isHorizontal) {
         innerStyle.top = '0px';
         innerStyle.left = firstWantedPixel + 'px';
@@ -305,6 +306,11 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         innerStyle.left = '0px';
         innerStyle.top = firstWantedPixel + 'px';
     }
+    const overlayStyle: React.CSSProperties = {
+        ...innerStyle,
+        width: '100%',
+        height: '100%',
+    };
     const listRootWithStyle = forwardListRoot(listRoot || defaultRoot, {
         style: innerStyle,
         ref: listRef,
@@ -317,17 +323,6 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                 className: classes.root,
             }}
         >
-            {overlay ? (
-                <ListOverlaySlot
-                    slot={overlay}
-                    props={{
-                        itemSizes,
-                        shownItems: rendereredItems,
-                        avgSize,
-                        style: innerStyle,
-                    }}
-                />
-            ) : null}
             <List<T, EL>
                 getId={getId}
                 ItemRenderer={ItemRenderer}
@@ -337,6 +332,17 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                 selectionControl={[selected, setSelected]}
                 transmitKeyPress={transmitKeyPress}
             />
+            {overlay ? (
+                <ListOverlaySlot
+                    slot={overlay}
+                    props={{
+                        itemSizes,
+                        shownItems: rendereredItems,
+                        avgSize,
+                        style: overlayStyle,
+                    }}
+                />
+            ) : null}
             <div
                 style={{
                     height: maxScrollSize + 'px',
