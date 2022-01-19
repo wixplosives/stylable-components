@@ -41,6 +41,8 @@ export const {
     forward: forwardListOverlay,
     slot: overlayRoot,
     Slot: TreeOverlay,
+    create: createTreeOverlay,
+    parentSlot: defineTreeParentOverlay,
 } = scrollListOverlayParent<{
     expandedItems: string[];
 }>(defaultRoot);
@@ -57,7 +59,7 @@ export interface TreeAddedProps<T> {
      */
     itemSize?: number | ((info: TreeItemInfo<T>) => number) | boolean;
 
-    overlay?: typeof TreeOverlay;
+    overlay?: typeof overlayRoot;
 }
 
 export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 'items' | 'ItemRenderer' | 'itemSize'> &

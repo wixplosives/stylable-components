@@ -8,7 +8,7 @@ import {
     TreeItemWithLaneData,
     TreeItemWithLaneRenderer,
 } from '../../tree-items/tree-item-with-lane-renderer';
-import { Tree } from '../tree';
+import { createTreeOverlay, Tree } from '../tree';
 import type { ElementData } from '../../tree-items/lanes/element-item-renderer';
 import type { LaneData, LaneItem } from '../../tree-items/lanes/lane-item-renderer';
 import type { MarkerData } from '../../tree-items/lanes/marker-item-renderer';
@@ -268,7 +268,7 @@ const getIndent = (item: TreeItemWithLaneData) => {
         return acc;
     }, 0);
 };
-
+const treeOverlay = createTreeOverlay(OverlayRenderer, {});
 export default createDemo<Tree<TreeItemWithLaneData>>({
     name: 'Tree with lanes',
     demo: () => {
@@ -295,7 +295,6 @@ export default createDemo<Tree<TreeItemWithLaneData>>({
                     getChildren={(item: TreeItemWithLaneData) => item.children || []}
                     initialScrollOffset={50}
                     openItemsControls={[openItems, updateOpen]}
-                    openItemsByDefault={true}
                     selectionControl={[selection, updateSelection]}
                     itemSize={calcItemSize}
                     scrollListRoot={{
@@ -312,10 +311,7 @@ export default createDemo<Tree<TreeItemWithLaneData>>({
                             },
                         },
                     }}
-                    overlay={{
-                        el: OverlayRenderer,
-                        props: {},
-                    }}
+                    overlay={treeOverlay}
                 />
             </lanesContext.Provider>
         );
