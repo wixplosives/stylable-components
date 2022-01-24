@@ -1,7 +1,7 @@
-import UseScrollHorizontalSim from '../hooks/simulations/use-scroll/use-scroll-horizontal-window.sim';
-import UseScrollVerticallSim from '../hooks/simulations/use-scroll/use-scroll-vertical-window.sim';
-import UseScrollWithRef from '../hooks/simulations/use-scroll/use-scroll-with-ref.sim';
-import type { ScenarioProps } from '../simulation-mixins/scenario';
+import UseScrollHorizontalSim from '../hooks/boards/use-scroll/use-scroll-horizontal-window.board';
+import UseScrollVerticallSim from '../hooks/boards/use-scroll/use-scroll-vertical-window.board';
+import UseScrollWithRef from '../hooks/boards/use-scroll/use-scroll-with-ref.board';
+import type { ScenarioProps } from '../board-mixins/scenario';
 
 const sims = [UseScrollHorizontalSim, UseScrollVerticallSim, UseScrollWithRef];
 

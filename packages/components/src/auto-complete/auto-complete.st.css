@@ -2,6 +2,11 @@
 @st-import [floating] from "../area/variants.st.css";
 @st-import ScrollList  from "../scroll-list/scroll-list.st.css";
 
+:import {
+  -st-from: "../themes/colors.st.css";
+  -st-default: Colors;
+}
+
 .root {}
 
 .input {}
@@ -9,7 +14,6 @@
 .popover {
   overflow: hidden;
 }
-
 
 .scrollListRoot {
   -st-extends: floating, ScrollList;

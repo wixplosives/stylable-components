@@ -9,6 +9,7 @@ import { createListRoot } from '../list/list';
 import { InputWithClear } from '../input-with-clear/input-with-clear';
 import { KeyCodes } from '../keycodes';
 import { useTransmittedCB } from '../hooks/use-transmitted-events';
+import '../themes/colors.st.css';
 
 export interface AutoCompleteProps<T, EL extends HTMLElement = HTMLDivElement> extends ScrollListProps<T, EL> {
     getTextContent: (item: T) => string;

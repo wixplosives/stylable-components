@@ -10,7 +10,11 @@ emphasis] from "../button/variants.st.css";
 ] from "../auto-complete/auto-complete.st.css";
 @st-import ScrollList from "../scroll-list/scroll-list.st.css";
 @st-import InputWithClear from "../input-with-clear/input-with-clear.st.css";
-@st-import [--primary-2, --primary-3, --primary-4, --primary-7, --reference-1, --notification-warning-1] from "./colors.st.css";
+
+:import {
+    -st-from: "./colors.st.css";
+    -st-named: --primary-2, --primary-3, --primary-4, --primary-7, --reference-1, --notification-warning-1;
+}
 
 @st-scope .white {
     .CirclePreloader::inner {
