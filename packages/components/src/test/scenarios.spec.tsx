@@ -1,7 +1,7 @@
 import { waitFor } from 'promise-assist';
-import UseScrollHorizontalSim from '../hooks/simulations/use-scroll/use-scroll-horizontal-window.demo';
-import UseScrollVerticallySim from '../hooks/simulations/use-scroll/use-scroll-vertical-window.demo';
-import UseScrollWithRef from '../hooks/simulations/use-scroll/use-scroll-with-ref.demo';
+import UseScrollHorizontalSim from '../hooks/simulations/use-scroll/use-scroll-horizontal-window.board';
+import UseScrollVerticallySim from '../hooks/simulations/use-scroll/use-scroll-vertical-window.board';
+import UseScrollWithRef from '../hooks/simulations/use-scroll/use-scroll-with-ref.board';
 import type { ScenarioProps } from '../simulation-mixins/scenario';
 
 const simulations = [UseScrollHorizontalSim, UseScrollVerticallySim, UseScrollWithRef];
