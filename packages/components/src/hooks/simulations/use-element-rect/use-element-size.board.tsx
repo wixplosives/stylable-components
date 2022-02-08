@@ -1,10 +1,10 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { ElementSizeHookSimulator } from './element-rect-hook-simulator';
 
-export default createDemo({
+export default createBoard({
     name: 'use element size',
-    demo: () => <ElementSizeHookSimulator watchSize={true} width="100%" height="100%" />,
+    Board: () => <ElementSizeHookSimulator watchSize={true} width="100%" height="100%" />,
     environmentProps: {
         canvasWidth: 538,
         canvasHeight: 310,

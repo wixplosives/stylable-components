@@ -1,5 +1,5 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
 import {
     expectElement,
@@ -10,9 +10,9 @@ import {
 } from '../../../simulation-mixins/scenario';
 import { ScrollHookSimulator } from './scroll-hook-simulator';
 
-export default createDemo({
+export default createBoard({
     name: 'use scroll window horizontal',
-    demo: () => <ScrollHookSimulator isHorizontal={true} />,
+    Board: () => <ScrollHookSimulator isHorizontal={true} />,
     environmentProps: {
         canvasWidth: 2000,
         canvasHeight: 500,

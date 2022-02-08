@@ -1,5 +1,5 @@
-import { createPlugin } from '@wixc3/simulation-core';
-import type { IReactSimulation } from '@wixc3/react-simulation';
+import { createPlugin } from '@wixc3/board-core';
+import type { IReactBoard } from '@wixc3/react-board';
 import { classes } from './theme-mixin.st.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { renderInMixinControls } from './mixin-controls';
@@ -46,7 +46,7 @@ export const ThemeControls = ({ themes }: ThemeProps) => {
     );
 };
 
-export const themeMixin = createPlugin<IReactSimulation>()(
+export const themeMixin = createPlugin<IReactBoard>()(
     'theme',
     {
         themes: [],

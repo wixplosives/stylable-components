@@ -1,4 +1,4 @@
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import type { ListItemProps } from '../..';
 import { DataGrid } from '../data-grid';
@@ -36,9 +36,9 @@ const createItems = (count = 1000, from = 0) => {
     );
 };
 
-export default createDemo<DataGrid<GridItem>>({
+export default createBoard({
     name: 'Data Grid',
-    demo: () => (
+    Board: () => (
         <DataGrid
             columns={[
                 {

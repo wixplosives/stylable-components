@@ -1,5 +1,5 @@
-import { createPlugin } from '@wixc3/simulation-core';
-import type { IReactSimulation } from '@wixc3/react-simulation';
+import { createPlugin } from '@wixc3/board-core';
+import type { IReactBoard } from '@wixc3/react-board';
 import { classes, st } from './scenario.st.css';
 import { renderInMixinControls } from './mixin-controls';
 import { expect } from 'chai';
@@ -99,7 +99,7 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
     );
 };
 
-export const scenarioMixin = createPlugin<IReactSimulation>()(
+export const scenarioMixin = createPlugin<IReactBoard>()(
     'scenario',
     {
         title: 'scenario',
@@ -108,9 +108,9 @@ export const scenarioMixin = createPlugin<IReactSimulation>()(
         skip: false,
     } as Partial<ScenarioProps>,
     {
-        wrapRender(props, _r, demo) {
+        wrapRender(props, _r, board) {
             return renderInMixinControls(
-                demo,
+                board,
                 <ScenarioRenderer
                     skip={props.skip}
                     title={props.title || 'untitled'}

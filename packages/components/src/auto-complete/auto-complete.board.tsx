@@ -1,5 +1,5 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { ZeeRoot } from '../simulation-mixins/mixin-zee-root';
 import { AutoComplete } from './auto-complete';
 import { mixinProjectThemes } from '../simulation-mixins/mixin-project-themes';
@@ -12,9 +12,9 @@ const items = new Array(30000).fill(0).map(
             title: 'item number ' + idx,
         } as ItemData)
 );
-export default createDemo<AutoComplete<ItemData, HTMLElement>>({
+export default createBoard({
     name: 'auto-complete',
-    demo: () => (
+    Board: () => (
         <AutoComplete
             ItemRenderer={ItemRenderer}
             items={items}

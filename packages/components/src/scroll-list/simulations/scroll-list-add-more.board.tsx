@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import React, { useCallback, useState } from 'react';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
 import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../../simulation-mixins/scenario';
@@ -8,9 +8,9 @@ import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes
 import { sleep } from 'promise-assist';
 import { createItems } from '../../simulation-assets/create-items';
 
-export default createDemo<ScrollList<ItemData, HTMLElement>>({
+export default createBoard({
     name: 'scroll-list-add-more',
-    demo: () => {
+    Board: () => {
         const [items, updateItems] = useState(createItems(0));
 
         const [loadingState, updateLoadingState] = useState<ScrollListLoadingState>('idle');

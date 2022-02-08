@@ -1,12 +1,12 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { Preloader } from '../preloader';
 import { classes } from '../variants/circle-preloader.st.css';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 
-export default createDemo({
+export default createBoard({
     name: 'circle-preloader',
-    demo: () => <Preloader className={classes.root}>Loading</Preloader>,
+    Board: () => <Preloader className={classes.root}>Loading</Preloader>,
     environmentProps: {
         canvasWidth: 298,
         canvasHeight: 422,

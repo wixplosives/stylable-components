@@ -1527,12 +1527,17 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.6.1.tgz#0de2875ac31b46b6c5bb1ae0a7d7f0ba5678dffe"
   integrity sha512-gNGTiTrjEVQ0OcVnzsRSqTxaBSr+dmTfm+qJsCDluky8uhdLWep7Gcr62QsAKHTMxjCS/8nEITsmFAhfIx+QSw==
 
-"@wixc3/react-simulation@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@wixc3/react-simulation/-/react-simulation-4.0.0.tgz#beec0c6f44552977e571e25413bf1f05126e9a72"
-  integrity sha512-mMWIShsWgIaqenwRNPK2RujgakQdDos+KsFMvTTEDLJvjo8hU9q05gqfZzkKFDB7fHtyZMFeK9cgenD1ZshAFA==
+"@wixc3/board-core@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@wixc3/board-core/-/board-core-1.0.0.tgz#b9fdafbad3dba57cd903d52336b1e7ca10f97056"
+  integrity sha512-U2KhHEu/tVrypxqQljLzhldF9Ail8CUkBb5I/8pOrRzLhCr4BSf1D2svmiYKoiCaUE++8ZyZ5lqGABeJhDbV9w==
+
+"@wixc3/react-board@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@wixc3/react-board/-/react-board-1.0.0.tgz#7aff9555b22259794fd714480b75d8f7f6742dc7"
+  integrity sha512-UVIlL5IxOPgT+4P1WMEVyvyBccYKPTtguiMd1V/xKha9YTwWMJqYMurvtKLLnY81lxkfyWmnZ8a5ySGhZEZdlg==
   dependencies:
-    "@wixc3/simulation-core" "^8.0.0"
+    "@wixc3/board-core" "^1.0.0"
 
 "@wixc3/resolve-directory-context@^1.0.4":
   version "1.0.4"
@@ -1541,11 +1546,6 @@
   dependencies:
     glob "^7.2.0"
     type-fest "^2.9.0"
-
-"@wixc3/simulation-core@^8.0.0":
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/@wixc3/simulation-core/-/simulation-core-8.0.0.tgz#4d4c9fc8ce82ffc6404b5aed0f607b9b550ded30"
-  integrity sha512-1Xevl3360DNoxAlaQKpIkRI1kCCHLhI5BC70bfzDidqygeNz3ZK2YSYr9kP1njfUmawaqvfN14UPd0A8awbndw==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"

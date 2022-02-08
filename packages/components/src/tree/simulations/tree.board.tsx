@@ -1,5 +1,5 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { TreeItemData, TreeItemRenderer } from '../../tree-items/tree-item-renderer';
 import { Tree } from '../tree';
@@ -17,9 +17,9 @@ const createItem = (maxChildren: number, maxDepth: number, currentDepth = 0, pat
     }
     return item;
 };
-export default createDemo<Tree<TreeItemData>>({
+export default createBoard({
     name: 'Tree',
-    demo: () => (
+    Board: () => (
         <Tree
             ItemRenderer={TreeItemRenderer}
             data={createItem(20, 5)}

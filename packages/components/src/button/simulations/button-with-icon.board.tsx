@@ -1,12 +1,12 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { Button } from '../button';
 import { classes } from '../../common/common.st.css';
 import { AddFileIcon } from '../../icons';
-export default createDemo({
+export default createBoard({
     name: 'button-with-icon',
-    demo: () => (
+    Board: () => (
         <Button>
             <AddFileIcon key="icon" className={classes.icon} />
             <span key="text">Click Me!</span>

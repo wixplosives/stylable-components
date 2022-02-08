@@ -1,4 +1,4 @@
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { ScrollList } from '../scroll-list';
 import React from 'react';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
@@ -10,9 +10,9 @@ const items = new Array(1000).fill(0).map(
         } as ItemData)
 );
 
-export default createDemo<ScrollList<ItemData, HTMLElement>>({
+export default createBoard({
     name: 'scroll list with header',
-    demo: () => (
+    Board: () => (
         <div>
             <ScrollList
                 ItemRenderer={ItemRenderer}

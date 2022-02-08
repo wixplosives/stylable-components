@@ -1,10 +1,10 @@
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { SearchableText, searchStringContext } from '../searchable-text';
-import { classes } from './searchable-text.sim.st.css';
+import { classes } from './searchable-text.board.st.css';
 import React from 'react';
-export default createDemo({
+export default createBoard({
     name: 'SearchableText',
-    demo: () => (
+    Board: () => (
         <searchStringContext.Provider value="search">
             <SearchableText text="some text with search content asd" className={classes.root} />
         </searchStringContext.Provider>
