@@ -30,7 +30,7 @@
     "@typescript-eslint/parser": "^5.12.1",
     "@wixc3/react-simulation": "^4.0.0",
     "chai": "^4.3.6",
-    "eslint": "^8.9.0",
+    "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-react": "^7.29.2",
