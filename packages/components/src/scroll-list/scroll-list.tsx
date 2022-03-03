@@ -127,7 +127,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      * if provided the list will request more items when reaching the scroll length
      * you must manage the loading state as well for loadMore to work
      */
-    loadMore?: (count: number) => void;
+    loadMore?: (count: number) => unknown;
     /**
      * @default false
      */
