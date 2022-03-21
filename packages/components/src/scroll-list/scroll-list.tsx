@@ -16,7 +16,7 @@ const defaultPreloader: ElementSlot<{}> = {
     },
 };
 export type ScrollListRootMinimalProps = Pick<
-    React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
+    React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>,
     'children' | 'style' | 'ref' | 'className'
 >;
 export const ScrollListRootPropMapping: PropMapping<ScrollListRootMinimalProps> = {
@@ -169,7 +169,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     overlay,
 }: ScrollListProps<T, EL>): JSX.Element {
     const defaultListRef = useRef<HTMLElement>(null);
-    const listRef = (listRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultListRef;
+    const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
     const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
     const currentScroll = useScroll(isHorizontal, scrollWindow);
     const lastRenderedItem = useRef({

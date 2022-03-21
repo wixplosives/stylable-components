@@ -12,7 +12,7 @@ import { useIdBasedKeyboardNav } from '../hooks/use-keyboard-nav';
 import type { UseTransmit } from '../hooks/use-transmitted-events';
 
 export type ListRootMinimalProps = Pick<
-    React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
+    React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>,
     'children' | 'onClick' | 'onMouseMove' | 'onKeyPress' | 'ref' | 'onKeyDown' | 'tabIndex'
 >;
 
@@ -86,7 +86,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
         <RootSlot
             slot={listRoot}
             props={{
-                ref: actualRef as React.RefObject<EL>,
+                ref: actualRef as React.RefObject<HTMLDivElement>,
                 onMouseMove,
                 onClick,
                 onKeyPress,
