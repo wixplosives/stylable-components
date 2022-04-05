@@ -1534,6 +1534,13 @@
   dependencies:
     "@wixc3/board-core" "^1.0.0"
 
+"@wixc3/react-simulation@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@wixc3/react-simulation/-/react-simulation-4.0.0.tgz#beec0c6f44552977e571e25413bf1f05126e9a72"
+  integrity sha512-mMWIShsWgIaqenwRNPK2RujgakQdDos+KsFMvTTEDLJvjo8hU9q05gqfZzkKFDB7fHtyZMFeK9cgenD1ZshAFA==
+  dependencies:
+    "@wixc3/simulation-core" "^8.0.0"
+
 "@wixc3/resolve-directory-context@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@wixc3/resolve-directory-context/-/resolve-directory-context-2.0.0.tgz#931336ebacab016133955afbed3fda7a483c5715"
@@ -1541,6 +1548,11 @@
   dependencies:
     minimatch "^4.1.1"
     type-fest "^2.11.2"
+
+"@wixc3/simulation-core@^8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@wixc3/simulation-core/-/simulation-core-8.0.0.tgz#4d4c9fc8ce82ffc6404b5aed0f607b9b550ded30"
+  integrity sha512-1Xevl3360DNoxAlaQKpIkRI1kCCHLhI5BC70bfzDidqygeNz3ZK2YSYr9kP1njfUmawaqvfN14UPd0A8awbndw==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
