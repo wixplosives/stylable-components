@@ -1,11 +1,11 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { expectElementText, scenarioMixin } from '../../../simulation-mixins/scenario';
 import { ElmentDimHookSimulator } from './element-rect-hook-simulator';
 
-export default createDemo({
+export default createBoard({
     name: 'use element dimenstion',
-    demo: () => <ElmentDimHookSimulator isVertical={true} watchSize={true} width="100%" height="100%" />,
+    Board: () => <ElmentDimHookSimulator isVertical={true} watchSize={true} width="100%" height="100%" />,
     environmentProps: {
         canvasWidth: 746,
         canvasHeight: 372,

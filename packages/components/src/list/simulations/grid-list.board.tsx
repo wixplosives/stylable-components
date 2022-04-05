@@ -1,5 +1,5 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { createItems } from '../../simulation-assets/create-items';
 import { ItemRenderer } from '../../simulation-assets/item-renderer';
 import { List } from '../list';
@@ -8,9 +8,9 @@ interface ItemData {
     id: string;
 }
 
-export default createDemo<List<ItemData>>({
+export default createBoard({
     name: 'grid-list',
-    demo: () => (
+    Board: () => (
         <List
             ItemRenderer={ItemRenderer}
             items={createItems()}

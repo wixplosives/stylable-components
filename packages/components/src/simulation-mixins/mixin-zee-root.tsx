@@ -1,14 +1,13 @@
 import { Root } from '@zeejs/react';
-
-import { createPlugin } from '@wixc3/simulation-core';
-import type { IReactSimulation } from '@wixc3/react-simulation';
+import { createPlugin } from '@wixc3/board-core';
+import type { IReactBoard } from '@wixc3/react-board';
 import React from 'react';
 
 export interface ThemeItem {
     themeClass: string;
     themeTitle: string;
 }
-export const ZeeRoot = createPlugin<IReactSimulation>()(
+export const ZeeRoot = createPlugin<IReactBoard>()(
     'ZeeRoot',
     {},
     {

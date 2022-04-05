@@ -1,13 +1,14 @@
-import { createSimulation } from '@wixc3/react-simulation';
+import React from 'react';
+import { createBoard } from '@wixc3/react-board';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { IconSimulator } from './icon-simulator';
 
-export default createSimulation({
+export default createBoard({
     name: 'IconSimulator',
-    componentType: IconSimulator,
-    props: {},
+    Board: () => <IconSimulator />,
     plugins: [mixinProjectThemes],
     environmentProps: {
         canvasWidth: 797,
+        canvasHeight: 2250,
     },
 });

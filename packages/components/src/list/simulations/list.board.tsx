@@ -1,22 +1,17 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
+import { ItemRenderer } from '../../simulation-assets/item-renderer';
 import { List } from '../list';
-
-import { LIItemRenderer } from '../../simulation-assets/li-item-renderer';
 interface ItemData {
     title: string;
     id: string;
 }
 
-export default createDemo<List<ItemData>>({
-    name: 'list-with-li',
-    demo: () => (
+export default createBoard({
+    name: 'List',
+    Board: () => (
         <List
-            listRoot={{
-                el: 'ul',
-                props: {},
-            }}
-            ItemRenderer={LIItemRenderer}
+            ItemRenderer={ItemRenderer}
             items={
                 [
                     {
@@ -34,5 +29,6 @@ export default createDemo<List<ItemData>>({
     ),
     environmentProps: {
         canvasWidth: 331,
+        canvasHeight: 138,
     },
 });

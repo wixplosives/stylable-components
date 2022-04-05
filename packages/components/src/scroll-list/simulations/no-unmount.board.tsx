@@ -10,7 +10,7 @@ import {
 } from '../../simulation-mixins/scenario';
 import { ScrollList } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { StatefullItemRenderer } from '../../simulation-assets/statefull-item-renderer';
 
 const items = new Array(1000).fill(0).map(
@@ -21,9 +21,9 @@ const items = new Array(1000).fill(0).map(
         } as ItemData)
 );
 
-export default createDemo<ScrollList<ItemData, HTMLElement>>({
+export default createBoard({
     name: 'no-unmount',
-    demo: () => (
+    Board: () => (
         <ScrollList
             ItemRenderer={StatefullItemRenderer}
             items={items}

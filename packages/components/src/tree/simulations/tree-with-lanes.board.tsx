@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useMemo, useState } from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import {
     calcItemSize,
@@ -269,9 +269,9 @@ const getIndent = (item: TreeItemWithLaneData) => {
     }, 0);
 };
 const treeOverlay = createTreeOverlay(OverlayRenderer, {});
-export default createDemo<Tree<TreeItemWithLaneData>>({
+export default createBoard({
     name: 'Tree with lanes',
-    demo: () => {
+    Board: () => {
         const [selection, updateSelection] = useState<string | undefined>(undefined);
         const [openItems, updateOpen] = useState<string[]>(allIds);
 

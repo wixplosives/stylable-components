@@ -1,11 +1,11 @@
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { Area } from '../area';
 import { AddFileIcon } from '../../icons';
 import React from 'react';
-export default createDemo({
+export default createBoard({
     name: 'Area',
-    demo: () => (
+    Board: () => (
         <Area>
             <AddFileIcon key="a" />
             Hello

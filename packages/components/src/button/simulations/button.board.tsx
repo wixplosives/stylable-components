@@ -1,14 +1,14 @@
 import React from 'react';
-import { createDemo } from '@wixc3/react-simulation';
+import { createBoard } from '@wixc3/react-board';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
-import { Input } from '../input';
+import { Button } from '../button';
 
-export default createDemo({
-    name: 'Input',
-    demo: () => <Input />,
+export default createBoard({
+    name: 'Button',
+    Board: () => <Button>click here</Button>,
     plugins: [mixinProjectThemes],
     environmentProps: {
-        canvasWidth: 264,
+        canvasWidth: 188,
         canvasHeight: 237,
     },
 });
