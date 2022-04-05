@@ -16,7 +16,7 @@ const defaultPreloader: ElementSlot<{}> = {
     },
 };
 export type ScrollListRootMinimalProps = Pick<
-    React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
+    React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>,
     'children' | 'style' | 'ref' | 'className'
 >;
 export const ScrollListRootPropMapping: PropMapping<ScrollListRootMinimalProps> = {
@@ -127,7 +127,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      * if provided the list will request more items when reaching the scroll length
      * you must manage the loading state as well for loadMore to work
      */
-    loadMore?: (count: number) => void;
+    loadMore?: (count: number) => unknown;
     /**
      * @default false
      */
@@ -169,7 +169,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     overlay,
 }: ScrollListProps<T, EL>): JSX.Element {
     const defaultListRef = useRef<HTMLElement>(null);
-    const listRef = (listRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultListRef;
+    const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
     const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
     const currentScroll = useScroll(isHorizontal, scrollWindow);
     const lastRenderedItem = useRef({
