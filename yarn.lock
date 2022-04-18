@@ -984,10 +984,10 @@
     "@stylable/core" "^4.11.0"
     js-beautify "^1.14.0"
 
-"@stylable/core@^4.11.0":
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/@stylable/core/-/core-4.11.0.tgz#b389328500d38ba2f21d13cf4a5d366fb906c8b6"
-  integrity sha512-MRizwA2a5U94dz6egQCHu/b7o2WJAAnHJ8PDtgC8odgy3lGopt8Wt/bSw0twl+qqbDJlTXmDqyTx89SSNWdJnA==
+"@stylable/core@^4.11.0", "@stylable/core@^4.13.0":
+  version "4.13.0"
+  resolved "https://registry.yarnpkg.com/@stylable/core/-/core-4.13.0.tgz#539544d9fbea3132f629707c18835c62d8f117ca"
+  integrity sha512-N5WWJ6MWko/SC+l3t+L2XUuMdTl4x0eV/SXY0oR0F2gYaCINL8xN8rkkk0wIZEn+mu83OICLeuO9JK5hfMAlnw==
   dependencies:
     "@tokey/css-selector-parser" "^0.6.0"
     "@tokey/imports-parser" "^0.1.0"
@@ -995,7 +995,7 @@
     css-selector-tokenizer "^0.8.0"
     cssesc "^3.0.0"
     deindent "^0.1.0"
-    enhanced-resolve "^5.9.2"
+    enhanced-resolve "^5.9.3"
     is-vendor-prefixed "^4.0.0"
     lodash.clonedeep "^4.5.0"
     lodash.clonedeepwith "^4.5.0"
@@ -2916,10 +2916,10 @@ end-of-stream@^1.1.0:
   dependencies:
     once "^1.4.0"
 
-enhanced-resolve@^5.9.2:
-  version "5.9.2"
-  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.9.2.tgz#0224dcd6a43389ebfb2d55efee517e5466772dd9"
-  integrity sha512-GIm3fQfwLJ8YZx2smuHpBKkXC1yOk+OBEmKckVyL0i/ea8mqDEykK3ld5dgH1QYPNyT/lIllxV2LULnxCHaHkA==
+enhanced-resolve@^5.9.2, enhanced-resolve@^5.9.3:
+  version "5.9.3"
+  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-5.9.3.tgz#44a342c012cbc473254af5cc6ae20ebd0aae5d88"
+  integrity sha512-Bq9VSor+kjvW3f9/MiiR4eE3XYgOl7/rS8lnSxbRbF3kS0B2r+Y9w5krBWxZgDxASVZbdYrn5wT4j/Wb0J9qow==
   dependencies:
     graceful-fs "^4.2.4"
     tapable "^2.2.0"
