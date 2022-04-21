@@ -1,5 +1,5 @@
 module.exports = {
-    safeMode: {
+    safeRender: {
         maxInstancesPerComponent: 10000,
     },
     newComponent: {
