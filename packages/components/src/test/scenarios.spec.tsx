@@ -10,28 +10,30 @@ for (const sim of simulations) {
         for (const plg of sim.plugins || []) {
             if (plg.key.pluginName === 'scenario') {
                 const props = plg.props as Required<ScenarioProps>;
-                if (props.skip) {
-                    xit(props.title);
-                } else {
-                    it(props.title, async function () {
-                        this.timeout(props.timeout || 2000);
-                        const { canvas, cleanup } = sim.setupStage();
-                        await sim.render(canvas);
+                const itFn = props.skip ? xit : it;
+                const timeout = props.timeout ?? 2000;
+                itFn(props.title, async () => {
+                    const { canvas, cleanup } = sim.setupStage();
+                    await sim.render(canvas);
 
-                        for (const { execute, title } of props.events) {
-                            try {
-                                await waitFor(async () => {
+                    for (const { execute, title } of props.events) {
+                        try {
+                            await waitFor(
+                                async () => {
                                     await execute();
-                                });
-                            } catch (err) {
-                                const errMessage = err instanceof Error ? err.message : '';
-                                throw new Error(`failed to run action ${title} 
+                                },
+                                // decrease timeout by 10ms so that the waitFor timeouts before the test
+                                // and we'll get a better error message during a failure
+                                { timeout: timeout - 10 }
+                            );
+                        } catch (err) {
+                            const errMessage = err instanceof Error ? err.message : String(err);
+                            throw new Error(`failed to run action ${title} 
                                 ${errMessage}`);
-                            }
                         }
-                        cleanup();
-                    });
-                }
+                    }
+                    cleanup();
+                }).timeout(timeout);
             }
         }
     });

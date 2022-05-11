@@ -33,6 +33,7 @@ export default createBoard({
                 scrollAction(0),
                 expectElementText('#res', '0'),
             ],
+            timeout: 4000,
         }),
     ],
 });
