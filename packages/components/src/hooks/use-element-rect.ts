@@ -11,33 +11,31 @@ export interface SizesById {
     [id: string]: WatchedSize;
 }
 
-const elementOrWindowSize = (dim?: React.RefObject<HTMLElement>): WatchedSize => {
-    if (dim) {
-        if (dim.current) {
-            return rectToSize(dim?.current?.getBoundingClientRect());
+const elementOrWindowSize = (dim?: HTMLElement | null): WatchedSize => {
+    if (dim === null) {
+        return unMeasured;
+    }
+
+    if (dim === undefined) {
+        if (typeof window === 'undefined') {
+            return unMeasured;
         }
-        return unMeasured;
+
+        return {
+            height: window.innerHeight,
+            width: window.innerWidth,
+        };
     }
-    if (typeof window === 'undefined') {
-        return unMeasured;
-    }
-    return {
-        height: window.innerHeight,
-        width: window.innerWidth,
-    };
+
+    return rectToSize(dim.getBoundingClientRect());
 };
 
 export const useElementDimension = (
-    dim?: React.RefObject<HTMLElement>,
+    dim?: HTMLElement | null,
     isVertical = true,
     watchSize: number | boolean = false
 ): number => {
-    const startDim = useMemo(() => {
-        if (typeof watchSize === 'number') {
-            return watchSize;
-        }
-        return watchedSizeToDim(isVertical, elementOrWindowSize(dim));
-    }, [dim, isVertical, watchSize]);
+    const startDim = typeof watchSize === 'number' ? watchSize : watchedSizeToDim(isVertical, elementOrWindowSize(dim));
     const [dimension, updateDimension] = useState(startDim);
     useLayoutEffect(() => {
         let observer: ResizeObserver;
@@ -52,11 +50,11 @@ export const useElementDimension = (
                 };
                 window.addEventListener('resize', listener);
                 return () => window.removeEventListener('resize', listener);
-            } else if (dim.current) {
+            } else if (dim) {
                 observer = new ResizeObserver(() => {
                     updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(dim)));
                 });
-                observer.observe(dim.current);
+                observer.observe(dim);
                 return () => {
                     observer.disconnect();
                 };

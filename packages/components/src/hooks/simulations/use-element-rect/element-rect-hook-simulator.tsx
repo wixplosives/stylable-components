@@ -32,7 +32,7 @@ export const ElmentDimHookSimulator: React.FC<{
     height?: string;
 }> = ({ isVertical, watchSize, width, height }) => {
     const ref = useRef<HTMLDivElement>(null);
-    const res = useElementDimension(ref, isVertical, watchSize);
+    const res = useElementDimension(ref.current, isVertical, watchSize);
 
     const [size, updateSize] = useState('100');
     const usedSize = isNaN(parseInt(size)) ? 100 : parseInt(size);
@@ -51,7 +51,7 @@ export const ElmentDimHookSimulator: React.FC<{
             <div ref={ref} style={{ width: '100%', height: usedSize + 'px', background: 'lightblue' }}>
                 <div style={{ position: 'fixed', top: '50%', left: '50%' }}>{res}</div>
             </div>
-        </div >
+        </div>
     );
 };
 
