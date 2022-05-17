@@ -2,21 +2,32 @@ import { useLayoutEffect } from 'react';
 import { useDelayedUpdate } from './use-delayed-update';
 
 /** if ref is not supplied use scroll will return the window scroll */
-export const useScroll = (isHorizontal?: boolean, ref?: HTMLElement | null): number => {
+export const useScroll = ({
+    isHorizontal,
+    ref,
+    disabled = false,
+}: {
+    isHorizontal?: boolean;
+    disabled?: boolean;
+    ref?: React.RefObject<HTMLElement>;
+}): number => {
     const trigger = useDelayedUpdate();
 
     useLayoutEffect(() => {
-        const target = ref ? ref : typeof window !== 'undefined' ? window : undefined;
-        target?.addEventListener('scroll', trigger);
-        return () => {
-            target?.removeEventListener('scroll', trigger);
-        };
-    }, [ref, trigger]);
-    if (!ref) {
+        if (!disabled) {
+            const target = ref?.current ? ref.current : typeof window !== 'undefined' ? window : undefined;
+
+            target?.addEventListener('scroll', trigger);
+            return () => target?.removeEventListener('scroll', trigger);
+        }
+        return;
+    }, [disabled, ref, trigger]);
+
+    if (!ref?.current) {
         if (typeof window === 'undefined') {
             return 0;
         }
         return isHorizontal ? window.scrollX : window.scrollY;
     }
-    return (isHorizontal ? ref.scrollLeft : ref.scrollTop) || 0;
+    return (isHorizontal ? ref.current.scrollLeft : ref.current.scrollTop) || 0;
 };

@@ -7,7 +7,7 @@ export const ScrollHookSimulator: React.FC<{
     useWindowScroll?: boolean;
 }> = ({ isHorizontal = false, useWindowScroll = true }) => {
     const ref = useRef<HTMLDivElement>(null);
-    const res = useScroll(isHorizontal, useWindowScroll ? undefined : ref.current);
+    const res = useScroll({ isHorizontal, ref: useWindowScroll ? undefined : ref });
     return useWindowScroll ? (
         <div>
             <div style={{ position: 'fixed', top: '50%', left: '50%' }} id="res">
