@@ -1536,10 +1536,10 @@
   resolved "https://registry.yarnpkg.com/@wixc3/board-core/-/board-core-1.1.0.tgz#f2d4bb556af29ef56e306db68323004adb8b2f98"
   integrity sha512-ApE/2lrEMx2owrl1SXarPaU4NjxGWpkqcLjj21y1kZO0Y0ozcXQ394iPhkIbNgncBKVRXd3VS9mVLock8Ze5Ug==
 
-"@wixc3/react-board@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@wixc3/react-board/-/react-board-1.1.1.tgz#36fbeac5e194223516b6ae8bf3736819ed90cb2b"
-  integrity sha512-1LiVg3TrwRP192/KcO5bZ42WcyOZrbvNoZAyFsR7CUCpHlB5JBUe3toMHdOEJfCeYHkrdjSTNQqZKOXFgHLkmA==
+"@wixc3/react-board@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@wixc3/react-board/-/react-board-1.2.0.tgz#4b32dfb01c72e1aa53f964add1d8e20b92c919bd"
+  integrity sha512-YS3aZtCH4SS32l+AMjPdKY8SqEdEuQJMcTGOuVTneQoCMEG7XjTAMP7SPitUr8ah5Lp9YmCUalrao6+S6lScZw==
   dependencies:
     "@wixc3/board-core" "^1.1.0"
 
