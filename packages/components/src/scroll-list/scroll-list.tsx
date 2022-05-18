@@ -137,6 +137,10 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      */
     scrollListRoot?: typeof scrollListRoot;
 
+    /**
+     * sets a custom scroll position instead of watching container's scroll event
+     */
+    scrollPosition?: number;
     itemsInRow?: number;
     itemGap?: number;
     listRoot?: typeof listRoot;
@@ -167,11 +171,13 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     itemsInRow = 1,
     transmitKeyPress,
     overlay,
+    scrollPosition,
 }: ScrollListProps<T, EL>): JSX.Element {
     const defaultListRef = useRef<HTMLElement>(null);
     const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
-    const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
-    const currentScroll = useScroll(isHorizontal, scrollWindow);
+    const scrollWindowSize = useElementDimension(scrollWindow?.current, !isHorizontal, watchScrollWindoSize);
+    const currentScroll = useScroll({ isHorizontal, ref: scrollWindow, disabled: scrollPosition !== undefined });
+    const resolvedScroll = scrollPosition ?? currentScroll;
     const lastRenderedItem = useRef({
         items,
         last: 0,
@@ -225,9 +231,9 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 
     const calcScrollPosition = () => {
         const firstWantedPixel = unmountItems
-            ? Math.max(currentScroll - scrollWindowSize * extraRenderedItems - initialScrollOffset, 0)
+            ? Math.max(resolvedScroll - scrollWindowSize * extraRenderedItems - initialScrollOffset, 0)
             : 0;
-        const lastWantedPixel = scrollWindowSize * (1 + extraRenderedItems) + currentScroll - initialScrollOffset;
+        const lastWantedPixel = scrollWindowSize * (1 + extraRenderedItems) + resolvedScroll - initialScrollOffset;
 
         if (typeof itemSize === 'number') {
             let endIdx = Math.ceil(lastWantedPixel / itemSize);

@@ -47,7 +47,7 @@ export function DataGrid<T, EL extends HTMLElement>({
     const scrollListRef = useRef<HTMLDivElement>(null);
     // const headerSize = useElementDimension(headerRef, isHorizontal, true);
     const [columnSizes, updateColumnSizes] = useStateControls(columnSizesControl, []);
-    const listHorizontalScroll = useScroll(true, scrollListRef);
+    const listHorizontalScroll = useScroll({ isHorizontal: true, ref: scrollListRef });
     const listeners = useRef(new Set<{ cb: (ev: MouseEvent) => void; eventName: keyof WindowEventMap }>());
     const contextValue = useMemo(
         () => ({
