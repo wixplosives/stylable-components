@@ -1,12 +1,12 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
-import type { ListItemProps } from '../..';
+import type { ListItemProps } from '../../list/list';
 import { DataGrid } from '../data-grid';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 
-function cellRenderer<T, K extends keyof T>(key: K) {
+function cellRenderer<T>(key: keyof T) {
     const renderer = (props: ListItemProps<T>) => {
-        return <div>{props.data[key]}</div>;
+        return <div>{props.data[key] as unknown as React.ReactNode}</div>;
     };
     renderer.displayName = 'renderer ' + key;
     return renderer;

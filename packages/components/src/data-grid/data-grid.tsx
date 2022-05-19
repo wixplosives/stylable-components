@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef } from 'react';
-import type { ListItemProps } from '..';
+import type { ListItemProps } from '../list/list';
 import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
 import { useScroll } from '../hooks/use-scroll';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
