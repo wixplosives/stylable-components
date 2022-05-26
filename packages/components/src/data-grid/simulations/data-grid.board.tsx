@@ -8,7 +8,7 @@ function cellRenderer<T>(key: keyof T) {
     const renderer = (props: ListItemProps<T>) => {
         return <div>{props.data[key] as unknown as React.ReactNode}</div>;
     };
-    renderer.displayName = 'renderer ' + key;
+    renderer.displayName = 'renderer ' + (key as string);
     return renderer;
 }
 
