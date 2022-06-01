@@ -255,7 +255,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 
             for (let z = 0; z < itemsInRow && z + i < items.length; z++) {
                 const id = getId(items[i + z]!);
-                const itemSize = (isHorizontal ? sizes[id]?.width : sizes[id]?.height) || avgSize;
+                const itemSize = (isHorizontal ? sizes[id]?.width : sizes[id]?.height) ?? avgSize;
                 itemMaxSize = Math.max(itemMaxSize, itemSize);
             }
             taken += itemMaxSize + itemGap;
