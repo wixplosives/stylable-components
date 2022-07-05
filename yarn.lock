@@ -1043,9 +1043,9 @@
     universal-user-agent "^6.0.0"
 
 "@octokit/openapi-types@^12.7.0":
-  version "12.7.0"
-  resolved "https://registry.yarnpkg.com/@octokit/openapi-types/-/openapi-types-12.7.0.tgz#b8e9434b5e005d88ebc49e102b39ba10d022923f"
-  integrity sha512-vWXEPETgvltt9jEYdNtQTM8xnsQ7loEbBaLV26V7Tx8ovoN8P7R3XvhFeWiboqNhlXuBsIg1QI979WElB5mGXw==
+  version "12.8.0"
+  resolved "https://registry.yarnpkg.com/@octokit/openapi-types/-/openapi-types-12.8.0.tgz#f4708cf948724d6e8f7d878cfd91584c1c5c0523"
+  integrity sha512-ydcKLs2KKcxlhpdWLzJxEBDEk/U5MUeqtqkXlrtAUXXFPs6vLl1PEGghFC/BbpleosB7iXs0Z4P2DGe7ZT5ZNg==
 
 "@octokit/plugin-enterprise-rest@^6.0.1":
   version "6.0.1"
@@ -1065,11 +1065,11 @@
   integrity sha512-mLUsMkgP7K/cnFEw07kWqXGF5LKrOkD+lhCrKvPHXWDywAwuDUeDwWBpc69XK3pNX0uKiVt8g5z96PJ6z9xCFA==
 
 "@octokit/plugin-rest-endpoint-methods@^5.12.0":
-  version "5.16.1"
-  resolved "https://registry.yarnpkg.com/@octokit/plugin-rest-endpoint-methods/-/plugin-rest-endpoint-methods-5.16.1.tgz#24e5c33cb039bef3168db7e6266be5a6025df2a4"
-  integrity sha512-RMHD3aJZvOpjR2fGzD2an6eU7LG8MsknhUHvP+wRUnKdbt7eDdhTMLQsZ4xsHZcLNsxPO/K4DDIZPhI2s571Ag==
+  version "5.16.2"
+  resolved "https://registry.yarnpkg.com/@octokit/plugin-rest-endpoint-methods/-/plugin-rest-endpoint-methods-5.16.2.tgz#7ee8bf586df97dd6868cf68f641354e908c25342"
+  integrity sha512-8QFz29Fg5jDuTPXVtey05BLm7OB+M8fnvE64RNegzX7U+5NUXcOcnpTIK0YfSHBg8gYd0oxIq3IZTe9SfPZiRw==
   dependencies:
-    "@octokit/types" "^6.38.2"
+    "@octokit/types" "^6.39.0"
     deprecation "^2.3.1"
 
 "@octokit/request-error@^2.0.5", "@octokit/request-error@^2.1.0":
@@ -1103,7 +1103,7 @@
     "@octokit/plugin-request-log" "^1.0.4"
     "@octokit/plugin-rest-endpoint-methods" "^5.12.0"
 
-"@octokit/types@^6.0.3", "@octokit/types@^6.16.1", "@octokit/types@^6.38.2":
+"@octokit/types@^6.0.3", "@octokit/types@^6.16.1", "@octokit/types@^6.38.2", "@octokit/types@^6.39.0":
   version "6.39.0"
   resolved "https://registry.yarnpkg.com/@octokit/types/-/types-6.39.0.tgz#46ce28ca59a3d4bac0e487015949008302e78eee"
   integrity sha512-Mq4N9sOAYCitTsBtDdRVrBE80lIrMBhL9Jbrw0d+j96BAzlq4V+GLHFJbHokEsVvO/9tQupQdoFdgVYhD2C8UQ==
@@ -1688,17 +1688,17 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.7.0.tgz#e1993689ac42d2b16e9194376cfb6753f6254db1"
   integrity sha512-oxnCNGj88fL+xzV+dacXs44HcDwf1ovs3AuEzvP7mqXw7fQntqIhQ1BRmynh4qEKQSSSRSWVyXRjmTbZIX9V2Q==
 
-"@wixc3/board-core@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@wixc3/board-core/-/board-core-1.2.0.tgz#199432a1a42e7c736caeca0aae58e87d398babc7"
-  integrity sha512-dfmCiZdUrPLDWZ5NKCwflFTM0FkIqCaG85U1kjnGnHhU4jocilIb23EgEzBSKhvd4mQlOE0NqjotxUWLTRI1HA==
+"@wixc3/board-core@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@wixc3/board-core/-/board-core-2.0.2.tgz#11d502603c102cd8ee3f7194b7df962aeb671eb7"
+  integrity sha512-hI6UIx4yG0AYFyTEoK2LwV4EjBgo9+OIwqwTHTFQfjpGo0ttBXiXIqDQRb22nqL1j2onBK/cfN7npBHHKg3eYg==
 
-"@wixc3/react-board@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@wixc3/react-board/-/react-board-1.3.0.tgz#3568f8f2be81d5d02bc777539a1fcfbde011b21a"
-  integrity sha512-lnTP3Ew3vdypzH2QM6NOqLva4Tb8rZ+PyKVLgWKIqohDdvubjag9rowEzuwinj1Q6xcgDC17U2HC9QT74oGR1g==
+"@wixc3/react-board@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@wixc3/react-board/-/react-board-2.0.2.tgz#5f83fd95b0998e3a58536a8c066c63798d11589a"
+  integrity sha512-gunTE0WA08ORwJCfuyD0p0iyG47rajQLlLZwLRTQcXwDvadISAjMIReM9c6yGexfelvHFap9tCsqC6z7+lVomA==
   dependencies:
-    "@wixc3/board-core" "^1.2.0"
+    "@wixc3/board-core" "^2.0.2"
 
 "@wixc3/resolve-directory-context@^2.0.0":
   version "2.0.0"
@@ -2944,9 +2944,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.172:
-  version "1.4.178"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.178.tgz#3dae6fda486007bb54bbfed420ebd40881a3de45"
-  integrity sha512-aWuhJXkwIdoQzGR8p2QvR3N0OzdUKZSP8+P/hzuMzNQIPZoEa8HiCGM75bQBHjyz+eKT5PB9dVCzkK/tyQ4B5Q==
+  version "1.4.179"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.179.tgz#450561ade3ca3497dfed65af412c672972b2dad5"
+  integrity sha512-1XeTb/U/8Xgh2YgPOqhakLYsvCcU4U7jUjTMbEnhIJoIWd/Qt3yC8y0cbG+fHzn4zUNF99Ey1xiPf20bwgLO3Q==
 
 emoji-regex@^8.0.0:
   version "8.0.0"

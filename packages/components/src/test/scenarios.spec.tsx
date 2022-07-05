@@ -13,8 +13,8 @@ for (const sim of simulations) {
                 const itFn = props.skip ? xit : it;
                 const timeout = props.timeout ?? 2000;
                 itFn(props.title, async () => {
-                    const { canvas, cleanup } = sim.setupStage();
-                    await sim.render(canvas);
+                    const { canvas, cleanup: stageCleanup } = sim.setupStage();
+                    const simCleanup = await sim.render(canvas);
 
                     for (const { execute, title } of props.events) {
                         try {
@@ -32,7 +32,8 @@ for (const sim of simulations) {
                                 ${errMessage}`);
                         }
                     }
-                    cleanup();
+                    simCleanup();
+                    stageCleanup();
                 }).timeout(timeout);
             }
         }
