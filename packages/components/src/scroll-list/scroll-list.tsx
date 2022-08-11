@@ -175,7 +175,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 }: ScrollListProps<T, EL>): JSX.Element {
     const defaultListRef = useRef<HTMLElement>(null);
     const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
-    const scrollWindowSize = useElementDimension(scrollWindow?.current, !isHorizontal, watchScrollWindoSize);
+    const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
     const currentScroll = useScroll({ isHorizontal, ref: scrollWindow, disabled: scrollPosition !== undefined });
     const resolvedScroll = scrollPosition ?? currentScroll;
     const lastRenderedItem = useRef({

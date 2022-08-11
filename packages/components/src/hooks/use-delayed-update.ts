@@ -24,8 +24,9 @@ export const useDelayedUpdate = (): (() => void) => {
     }, []);
 };
 
-type DelayedUpdateState<T> = (value: T | (() => T)) => void;
+type DelayedUpdateState<T> = (value: T | (() => T | typeof unchanged)) => void;
 
+export const unchanged = Symbol('unchanged');
 export const useDelayedUpdateState = <T>(setValue: (t: T) => void): DelayedUpdateState<T> => {
     const triggeredForUpdate = useRef<{ handle: number | null }>({ handle: null });
     useEffect(() => {
@@ -38,14 +39,16 @@ export const useDelayedUpdateState = <T>(setValue: (t: T) => void): DelayedUpdat
         };
     }, []);
     return useCallback(
-        (value: T | (() => T)) => {
+        (value: T | (() => T | typeof unchanged)) => {
             if (triggeredForUpdate.current.handle !== null) {
                 return;
             }
             const cb = () => {
                 triggeredForUpdate.current.handle = null;
-                const val = typeof value === 'function' ? (value as () => T)() : value;
-                setValue(val);
+                const val = typeof value === 'function' ? (value as () => T | typeof unchanged)() : value;
+                if (val !== unchanged) {
+                    setValue(val);
+                }
             };
             triggeredForUpdate.current.handle = window.requestAnimationFrame(cb);
         },
