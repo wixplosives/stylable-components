@@ -3,8 +3,8 @@ import type { IReactBoard } from '@wixc3/react-board';
 import { classes, st } from './scenario.st.css';
 import { renderInMixinControls } from './mixin-controls';
 import { expect } from 'chai';
-import { waitFor } from 'promise-assist';
-import React, { useCallback, useMemo, useReducer, useState } from 'react';
+import { sleep, waitFor } from 'promise-assist';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 export interface Action {
     execute: () => void | Promise<void>;
     title: string;
@@ -31,6 +31,8 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
     const { resetBoard, events: propEvents } = props;
     const [events, updateEvents] = useState(propEvents);
     const [btnText, updateButtonText] = useState(propEvents[0]?.title);
+    const [autoRunning, triggerAutoRun] = useState(false);
+    const [runningAction, setRunning] = useState(false);
     const highlight = useMemo(() => window.document.createElement('div'), []);
     const clearHighlight = useCallback(() => {
         highlight.removeAttribute('style');
@@ -78,6 +80,9 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
             const onTaskDone = () => {
                 const next = events[1];
                 updateButtonText(next?.title || 'Done!');
+                if (!next) {
+                    triggerAutoRun(false);
+                }
                 updateEvents(events.slice(1));
             };
 
@@ -85,9 +90,9 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
                 const res = current.execute();
                 if (res) {
                     updateButtonText('task in progress');
-                    res.then(onTaskDone).catch(onTaskFailed);
+                    return res.then(onTaskDone).catch(onTaskFailed);
                 } else {
-                    onTaskDone();
+                    return onTaskDone();
                 }
             } catch (err) {
                 return onTaskFailed(err);
@@ -100,17 +105,49 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
         setHighlightedElement(events[1]?.highlightSelector);
     }, [events, propEvents, resetBoard, setHighlightedElement]);
 
-    // const runActions = useCallback(() => { });
+    const runActions = useCallback(() => {
+        triggerAutoRun(true);
+    }, []);
+
+    useEffect(() => {
+        const run = async () => {
+            await sleep(props.slowMo || 50);
+            if (autoRunning && !runningAction) {
+                setRunning(true);
+                await runAction();
+                setRunning(false);
+            }
+        };
+        void run();
+    }, [autoRunning, props.slowMo, runAction, runningAction]);
     return (
         <div className={classes.root}>
-            <div className={st(classes.header, { skipped: props.skip })}>{props.title || 'unamedScenario'}</div>
+            <div className={st(classes.header, { skipped: props.skip })}>
+                {props.title || 'unamedScenario'}
+                <button className={classes.reset} onClick={resetBoard}>
+                    🗘
+                </button>
+                <button
+                    className={classes.reset}
+                    onClick={() => {
+                        void runActions();
+                    }}
+                >
+                    {'>>'}
+                </button>
+            </div>
             <div className={classes.content}>
                 <div>{events.length} events left to run</div>
                 <div className={classes.controls}>
-                    <button onClick={runAction} onMouseLeave={clearHighlight} onMouseMove={hoverAction}>
+                    <button
+                        onClick={() => {
+                            void runAction();
+                        }}
+                        onMouseLeave={clearHighlight}
+                        onMouseMove={hoverAction}
+                    >
                         {btnText}
                     </button>
-                    <button className={classes.reset}>🗘</button>
                 </div>
             </div>
         </div>

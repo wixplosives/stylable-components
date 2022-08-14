@@ -11,7 +11,6 @@ import {
 import { ScrollList } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { createBoard } from '@wixc3/react-board';
-
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
         ({
@@ -43,6 +42,8 @@ export default createBoard({
             scrollListRoot={{
                 el: 'div',
                 props: {
+                    id: 'list',
+
                     style: {
                         width: '200px',
                         height: '400px',
@@ -62,28 +63,28 @@ export default createBoard({
     },
     plugins: [
         scenarioMixin.use({
-            skip: true,
+            title: 'scroll list sanity',
             events: [
                 hoverAction('[data-id="a8"]'),
                 expectElementStyle('[data-id="a8"]', {
-                    color: 'rgb(0, 0, 255)',
+                    backgroundColor: 'rgb(173, 216, 230)',
                 }),
                 hoverAction('[data-id="a9"]'),
                 expectElementsStyle({
                     '[data-id="a8"]': {
-                        color: 'rgb(0, 0, 0)',
+                        backgroundColor: 'none',
                     },
                     '[data-id="a9"]': {
-                        color: 'rgb(0, 0, 255)',
+                        backgroundColor: 'rgb(173, 216, 230)',
                     },
                 }),
                 clickAction('[data-id="a9"]'),
                 expectElementStyle('[data-id="a9"]', {
-                    backgroundColor: 'rgb(0, 0, 255)',
+                    backgroundColor: 'rgb(173, 216, 230)',
                 }),
                 clickAction('[data-id="a11"]'),
-                scrollAction(-1),
-                scrollAction(0),
+                scrollAction(-1, true, '#list'),
+                scrollAction(0, true, '#list'),
             ],
         }),
         mixinProjectThemes,

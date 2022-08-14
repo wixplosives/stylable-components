@@ -5,8 +5,12 @@
     color: gray;
 }
 
+:vars {
+    focusedBkg: rgb(173, 216, 230)
+}
+
 .root:focused {
-    background: lightblue;
+    background: value(focusedBkg);
 }
 
 .root:selected {

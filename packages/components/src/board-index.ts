@@ -1,3 +1,10 @@
+
+/**
+ * this file is auto generated when the project is built
+ * to rebuild only the file "run yarn build:boards" 
+ * generated at build-board-indexes.js
+ * do no edit manualy
+ */
 import scenario_renderer from './_wcs/boards/scenario-renderer/scenario-renderer.board';
 import area from './area/simulations/area.board';
 import auto_complete from './auto-complete/auto-complete.board';

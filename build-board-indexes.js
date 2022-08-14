@@ -27,7 +27,14 @@ glob('**/*.board.tsx', (error, boards) => {
             export: finalName,
         };
     });
-    const boardIndexSource = `${imports.map((i) => i.statement).join('')}
+    const boardIndexSource = `
+/**
+ * this file is auto generated when the project is built
+ * to rebuild only the file "run yarn build:boards" 
+ * generated at build-board-indexes.js
+ * do no edit manualy
+ */
+${imports.map((i) => i.statement).join('')}
 
 export default [${imports.map((i) => i.export).join(',\n\t')}]
     `;
