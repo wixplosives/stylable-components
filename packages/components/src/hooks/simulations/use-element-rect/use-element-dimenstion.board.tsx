@@ -14,6 +14,7 @@ export default createBoard({
     },
     plugins: [
         scenarioMixin.use({
+            title: 'should measure elements',
             events: [expectElementText('#res', '100')],
             timeout: 4000,
         }),
