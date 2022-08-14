@@ -43,6 +43,7 @@ export default createBoard({
     },
     plugins: [
         scenarioMixin.use({
+            title: 'should load more items when reaching end',
             events: [hoverAction('[data-id="a8"]'), clickAction('[data-id="a8"]'), scrollAction(-1), scrollAction(0)],
         }),
         mixinProjectThemes,

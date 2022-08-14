@@ -2,6 +2,7 @@ import React from 'react';
 import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
 import {
     clickAction,
+    expectElement,
     expectElementsStyle,
     expectElementStyle,
     hoverAction,
@@ -65,6 +66,7 @@ export default createBoard({
         scenarioMixin.use({
             title: 'scroll list sanity',
             events: [
+                expectElement('[data-id="a8"]'),
                 hoverAction('[data-id="a8"]'),
                 expectElementStyle('[data-id="a8"]', {
                     backgroundColor: 'rgb(173, 216, 230)',
