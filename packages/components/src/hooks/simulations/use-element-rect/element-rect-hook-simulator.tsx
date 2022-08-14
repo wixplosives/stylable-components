@@ -49,7 +49,7 @@ export const ElmentDimHookSimulator: React.FC<{
                 <input value={size} onChange={(ev) => updateSize(ev.target.value)}></input>
             </div>
             <div ref={ref} style={{ width: '100%', height: usedSize + 'px', background: 'lightblue' }}>
-                <div style={{ position: 'fixed', top: '50%', left: '50%' }}>{res}</div>
+                <div style={{ position: 'fixed', top: '50%', left: '50%' }} id="res">{res}</div>
             </div>
         </div>
     );

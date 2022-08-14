@@ -1,30 +1,44 @@
-.root {}
+.root {
+    border: 1px solid black;
+    padding: 5px;
+}
 
 .header {
-  -st-states: skipped;
+    -st-states: skipped;
+    padding: 5px;
+    font-weight: 600;
+    border-bottom: 1px solid black;
 }
 
 .header:skipped {
-  text-decoration: line-through;
-  color: blue;
+    text-decoration: line-through;
+    color: blue;
 }
 
 .item {
-  user-select: none;
-  animation: autoProgress 1s infinite;
+    user-select: none;
+    animation: autoProgress 1s infinite;
 }
 
 
 @keyframes autoProgress {
-  from {
-    outline: 1px solid blue
-  }
+    from {
+        outline: 1px solid blue
+    }
 
-  50% {
-    outline: 2px solid rgb(255, 0, 0)
-  }
+    50% {
+        outline: 2px solid rgb(255, 0, 0)
+    }
 
-  to {
-    outline: 3px solid blue
-  }
+    to {
+        outline: 3px solid blue
+    }
 }
+
+.content {
+    margin-top: 5px;
+}
+
+.controls {}
+
+.reset {}

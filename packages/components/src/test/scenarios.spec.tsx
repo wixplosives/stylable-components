@@ -1,11 +1,7 @@
 import { waitFor } from 'promise-assist';
-import UseScrollHorizontalSim from '../hooks/simulations/use-scroll/use-scroll-horizontal-window.board';
-import UseScrollVerticallySim from '../hooks/simulations/use-scroll/use-scroll-vertical-window.board';
-import UseScrollWithRef from '../hooks/simulations/use-scroll/use-scroll-with-ref.board';
 import type { ScenarioProps } from '../simulation-mixins/scenario';
-
-const simulations = [UseScrollHorizontalSim, UseScrollVerticallySim, UseScrollWithRef];
-for (const sim of simulations) {
+import boards from '../board-index';
+for (const sim of boards) {
     describe(sim.name, () => {
         for (const plg of sim.plugins || []) {
             if (plg.key.pluginName === 'scenario') {
