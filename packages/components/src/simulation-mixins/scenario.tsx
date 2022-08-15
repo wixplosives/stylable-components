@@ -373,8 +373,7 @@ export const expectElementStyle = (
     return {
         title,
         execute() {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            exp.execute();
+            return exp.execute();
         },
         highlightSelector: selector,
     };

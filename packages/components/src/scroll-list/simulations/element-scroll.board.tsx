@@ -65,28 +65,33 @@ export default createBoard({
     plugins: [
         scenarioMixin.use({
             title: 'scroll list sanity',
+            timeout: 4000,
+            slowMo: 500,
             events: [
-                expectElement('[data-id="a8"]'),
-                hoverAction('[data-id="a8"]'),
-                expectElementStyle('[data-id="a8"]', {
+                expectElement('[data-id="a3"]'),
+                hoverAction('[data-id="a3"]'),
+                expectElementStyle('[data-id="a3"]', {
                     backgroundColor: 'rgb(173, 216, 230)',
                 }),
-                hoverAction('[data-id="a9"]'),
+                hoverAction('[data-id="a4"]'),
                 expectElementsStyle({
-                    '[data-id="a8"]': {
+                    '[data-id="a3"]': {
                         backgroundColor: 'none',
                     },
-                    '[data-id="a9"]': {
+                    '[data-id="a4"]': {
                         backgroundColor: 'rgb(173, 216, 230)',
                     },
                 }),
-                clickAction('[data-id="a9"]'),
-                expectElementStyle('[data-id="a9"]', {
+                clickAction('[data-id="a4"]'),
+                expectElementStyle('[data-id="a4"]', {
                     backgroundColor: 'rgb(173, 216, 230)',
                 }),
-                clickAction('[data-id="a11"]'),
                 scrollAction(-1, true, '#list'),
+                expectElement('[data-id="a999"]'),
                 scrollAction(0, true, '#list'),
+                expectElementStyle('[data-id="a4"]', {
+                    backgroundColor: 'rgb(173, 216, 230)',
+                }),
             ],
         }),
         mixinProjectThemes,
