@@ -288,18 +288,21 @@ export const clickAction = (selector?: string): Action => {
     };
 };
 
-export const expectElement = <EL extends Element>(
+export const expectElement = <EL extends HTMLElement | SVGElement>(
     selector: string,
     expectation?: (el: EL) => void,
     title: string = 'expecting selector ' + selector
 ): Action => {
     return {
         title,
-        execute() {
+        async execute() {
+            await waitFor(() => {
+                const el = window.document.querySelector(selector) as EL;
+                if (!el) {
+                    throw new Error(title + ': element not found for selector ' + selector);
+                }
+            });
             const el = window.document.querySelector(selector) as EL;
-            if (!el) {
-                throw new Error(title + ': element not found for selector ' + selector);
-            }
             if (expectation) {
                 expectation(el);
             }
@@ -331,7 +334,7 @@ export const expectElements = <SELECTORS extends string>(
     };
 };
 
-export const expectElementText = <EL extends Element>(
+export const expectElementText = (
     selector: string,
     text: string,
     title: string = 'expecting text ' + text + ' for selector ' + selector
@@ -339,22 +342,23 @@ export const expectElementText = <EL extends Element>(
     return {
         title,
         execute() {
-            const el = window.document.querySelector(selector) as EL;
-            if (!el || !(el instanceof HTMLElement)) {
-                throw new Error(title + ': element not found for selector ' + selector);
-            }
-            expect(el.innerText).to.equal(text);
+            return expectElement(selector, (el) => {
+                if (!(el instanceof HTMLElement)) {
+                    throw new Error(title + ': element at ' + selector + 'is not an HTMLElement');
+                }
+                expect(el.innerText).to.equal(text);
+            }).execute();
         },
         highlightSelector: selector,
     };
 };
 
-export const expectElementStyle = <EL extends Element>(
+export const expectElementStyle = (
     selector: string,
     expectedStyle: Partial<Record<keyof CSSStyleDeclaration, string>>,
     title: string = 'expectElementStyle ' + selector
 ): Action => {
-    const exp = expectElement<EL>(
+    const exp = expectElement(
         selector,
         (el) => {
             const style = window.getComputedStyle(el);

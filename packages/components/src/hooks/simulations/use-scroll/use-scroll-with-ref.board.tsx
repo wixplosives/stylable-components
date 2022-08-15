@@ -21,6 +21,7 @@ export default createBoard({
     },
     plugins: [
         scenarioMixin.use({
+            title: 'should watch scroll position of element',
             events: [
                 scrollAction(300, true, '#scroll-div'),
                 expectElementText('#res', '300'),
