@@ -3,24 +3,36 @@ import type { IReactBoard } from '@wixc3/react-board';
 import { classes, st } from './scenario.st.css';
 import { renderInMixinControls } from './mixin-controls';
 import { expect } from 'chai';
-import { waitFor } from 'promise-assist';
-import React, { useCallback, useMemo, useState } from 'react';
+import { sleep, waitFor } from 'promise-assist';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 export interface Action {
     execute: () => void | Promise<void>;
     title: string;
     highlightSelector?: string;
 }
-
-export interface ScenarioProps {
+export interface ScenarioParams {
     title?: string;
     events: Action[];
+    slowMo?: number;
     timeout?: number;
     skip?: boolean;
 }
 
+export interface ScenarioProps {
+    title?: string;
+    events: Action[];
+    slowMo?: number;
+    timeout?: number;
+    skip?: boolean;
+    resetBoard: () => void;
+}
+
 export const ScenarioRenderer = (props: ScenarioProps) => {
-    const [events, updateEvents] = useState(props.events);
-    const [btnText, updateButtonText] = useState(props.events[0]?.title);
+    const { resetBoard, events: propEvents } = props;
+    const [events, updateEvents] = useState(propEvents);
+    const [btnText, updateButtonText] = useState(propEvents[0]?.title);
+    const [autoRunning, triggerAutoRun] = useState(false);
+    const [runningAction, setRunning] = useState(false);
     const highlight = useMemo(() => window.document.createElement('div'), []);
     const clearHighlight = useCallback(() => {
         highlight.removeAttribute('style');
@@ -68,6 +80,9 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
             const onTaskDone = () => {
                 const next = events[1];
                 updateButtonText(next?.title || 'Done!');
+                if (!next) {
+                    triggerAutoRun(false);
+                }
                 updateEvents(events.slice(1));
             };
 
@@ -75,26 +90,66 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
                 const res = current.execute();
                 if (res) {
                     updateButtonText('task in progress');
-                    res.then(onTaskDone).catch(onTaskFailed);
+                    return res.then(onTaskDone).catch(onTaskFailed);
                 } else {
-                    onTaskDone();
+                    return onTaskDone();
                 }
             } catch (err) {
                 return onTaskFailed(err);
             }
         } else {
-            updateButtonText(props.events[0]!.title);
-            updateEvents(props.events);
+            resetBoard();
+            updateButtonText(propEvents[0]!.title);
+            updateEvents(propEvents);
         }
         setHighlightedElement(events[1]?.highlightSelector);
-    }, [events, props.events, setHighlightedElement]);
+    }, [events, propEvents, resetBoard, setHighlightedElement]);
+
+    const runActions = useCallback(() => {
+        triggerAutoRun(true);
+    }, []);
+
+    useEffect(() => {
+        const run = async () => {
+            await sleep(props.slowMo || 50);
+            if (autoRunning && !runningAction) {
+                setRunning(true);
+                await runAction();
+                setRunning(false);
+            }
+        };
+        void run();
+    }, [autoRunning, props.slowMo, runAction, runningAction]);
     return (
         <div className={classes.root}>
-            <div className={st(classes.header, { skipped: props.skip })}>{props.title || 'unamedScenario'}</div>
-            <div>{events.length} events left to run</div>
-            <button onClick={runAction} onMouseLeave={clearHighlight} onMouseMove={hoverAction}>
-                {btnText}
-            </button>
+            <div className={st(classes.header, { skipped: props.skip })}>
+                {props.title || 'unamedScenario'}
+                <button className={classes.reset} onClick={resetBoard}>
+                    🗘
+                </button>
+                <button
+                    className={classes.reset}
+                    onClick={() => {
+                        void runActions();
+                    }}
+                >
+                    {'>>'}
+                </button>
+            </div>
+            <div className={classes.content}>
+                <div>{events.length} events left to run</div>
+                <div className={classes.controls}>
+                    <button
+                        onClick={() => {
+                            void runAction();
+                        }}
+                        onMouseLeave={clearHighlight}
+                        onMouseMove={hoverAction}
+                    >
+                        {btnText}
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };
@@ -106,22 +161,28 @@ export const scenarioMixin = createPlugin<IReactBoard>()(
         events: [],
         timeout: 2000,
         skip: false,
-    } as Partial<ScenarioProps>,
+    } as Partial<ScenarioParams>,
     {
         wrapRender(props, _r, board) {
-            return renderInMixinControls(
-                board,
-                <ScenarioRenderer
-                    skip={props.skip}
-                    title={props.title || 'untitled'}
-                    timeout={props.timeout}
-                    events={props.events}
-                />,
-                'scenario ' + props.title
-            );
+            return <RenderWrapper board={board} {...props} />;
         },
     }
 );
+
+export const RenderWrapper = (props: ScenarioParams & { board: JSX.Element }) => {
+    const [boardKey, resetBoard] = useReducer((n: number) => n + 1, 0);
+    return renderInMixinControls(
+        <React.Fragment key={boardKey}>{props.board}</React.Fragment>,
+        <ScenarioRenderer
+            skip={props.skip}
+            title={props.title || 'untitled'}
+            timeout={props.timeout}
+            events={props.events}
+            resetBoard={resetBoard}
+        />,
+        'scenario ' + props.title
+    );
+};
 
 const actionTarget = (selector?: string) => {
     if (selector) {
@@ -227,18 +288,21 @@ export const clickAction = (selector?: string): Action => {
     };
 };
 
-export const expectElement = <EL extends Element>(
+export const expectElement = <EL extends HTMLElement | SVGElement>(
     selector: string,
     expectation?: (el: EL) => void,
     title: string = 'expecting selector ' + selector
 ): Action => {
     return {
         title,
-        execute() {
+        async execute() {
+            await waitFor(() => {
+                const el = window.document.querySelector(selector) as EL;
+                if (!el) {
+                    throw new Error(title + ': element not found for selector ' + selector);
+                }
+            });
             const el = window.document.querySelector(selector) as EL;
-            if (!el) {
-                throw new Error(title + ': element not found for selector ' + selector);
-            }
             if (expectation) {
                 expectation(el);
             }
@@ -254,23 +318,25 @@ export const expectElements = <SELECTORS extends string>(
 ): Action => {
     return {
         title,
-        execute() {
-            const res = selectors.reduce((acc, selector) => {
-                const el = window.document.querySelector(selector);
-                if (!el) {
-                    throw new Error(title + ': element not found for selector ' + selector);
+        async execute() {
+            await waitFor(() => {
+                const res = selectors.reduce((acc, selector) => {
+                    const el = window.document.querySelector(selector);
+                    if (!el) {
+                        throw new Error(title + ': element not found for selector ' + selector);
+                    }
+                    acc[selector] = el;
+                    return acc;
+                }, {} as Record<SELECTORS, Element>);
+                if (expectation) {
+                    expectation(res);
                 }
-                acc[selector] = el;
-                return acc;
-            }, {} as Record<SELECTORS, Element>);
-            if (expectation) {
-                expectation(res);
-            }
+            });
         },
     };
 };
 
-export const expectElementText = <EL extends Element>(
+export const expectElementText = (
     selector: string,
     text: string,
     title: string = 'expecting text ' + text + ' for selector ' + selector
@@ -278,22 +344,23 @@ export const expectElementText = <EL extends Element>(
     return {
         title,
         execute() {
-            const el = window.document.querySelector(selector) as EL;
-            if (!el || !(el instanceof HTMLElement)) {
-                throw new Error(title + ': element not found for selector ' + selector);
-            }
-            expect(el.innerText).to.equal(text);
+            return expectElement(selector, (el) => {
+                if (!(el instanceof HTMLElement)) {
+                    throw new Error(title + ': element at ' + selector + 'is not an HTMLElement');
+                }
+                expect(el.innerText).to.equal(text);
+            }).execute();
         },
         highlightSelector: selector,
     };
 };
 
-export const expectElementStyle = <EL extends Element>(
+export const expectElementStyle = (
     selector: string,
     expectedStyle: Partial<Record<keyof CSSStyleDeclaration, string>>,
     title: string = 'expectElementStyle ' + selector
 ): Action => {
-    const exp = expectElement<EL>(
+    const exp = expectElement(
         selector,
         (el) => {
             const style = window.getComputedStyle(el);
@@ -306,8 +373,7 @@ export const expectElementStyle = <EL extends Element>(
     return {
         title,
         execute() {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            exp.execute();
+            return exp.execute();
         },
         highlightSelector: selector,
     };

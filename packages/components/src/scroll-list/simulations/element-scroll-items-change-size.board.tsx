@@ -1,17 +1,11 @@
-import React from 'react';
-import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
-import {
-    clickAction,
-    expectElement,
-    expectElementsStyle,
-    expectElementStyle,
-    hoverAction,
-    scenarioMixin,
-    scrollAction,
-} from '../../simulation-mixins/scenario';
+import React, { useState } from 'react';
+import type { ItemData } from '../../simulation-assets/item-renderer';
+import { clickAction, scenarioMixin, expectElement } from '../../simulation-mixins/scenario';
 import { ScrollList } from '../scroll-list';
+import type { ListItemProps } from '../../list/list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { createBoard } from '@wixc3/react-board';
+
 const items = new Array(1000).fill(0).map(
     (_, idx) =>
         ({
@@ -22,8 +16,24 @@ const items = new Array(1000).fill(0).map(
 const elementRef: React.RefObject<HTMLDivElement> = {
     current: null,
 };
+
+const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
+    const [isExpanded, setExpanded] = useState(true);
+    return (
+        <div
+            data-id={props.id}
+            style={{
+                height: isExpanded ? '100px' : '12px',
+                border: '1px solid ',
+            }}
+        >
+            <button onClick={() => setExpanded(!isExpanded)}>{isExpanded ? 'close' : 'open'}</button>
+            {isExpanded && <div>{props.data.title}</div>}
+        </div>
+    );
+};
 export default createBoard({
-    name: 'element-scroll',
+    name: 'element-scroll-items-change-size',
     Board: () => (
         <ScrollList
             ItemRenderer={ItemRenderer}
@@ -43,8 +53,6 @@ export default createBoard({
             scrollListRoot={{
                 el: 'div',
                 props: {
-                    id: 'list',
-
                     style: {
                         width: '200px',
                         height: '400px',
@@ -64,34 +72,12 @@ export default createBoard({
     },
     plugins: [
         scenarioMixin.use({
-            title: 'scroll list sanity',
-            timeout: 4000,
-            slowMo: 500,
+            title: 'should listen to item resize',
             events: [
-                expectElement('[data-id="a3"]'),
-                hoverAction('[data-id="a3"]'),
-                expectElementStyle('[data-id="a3"]', {
-                    backgroundColor: 'rgb(173, 216, 230)',
-                }),
-                hoverAction('[data-id="a4"]'),
-                expectElementsStyle({
-                    '[data-id="a3"]': {
-                        backgroundColor: 'none',
-                    },
-                    '[data-id="a4"]': {
-                        backgroundColor: 'rgb(173, 216, 230)',
-                    },
-                }),
-                clickAction('[data-id="a4"]'),
-                expectElementStyle('[data-id="a4"]', {
-                    backgroundColor: 'rgb(173, 216, 230)',
-                }),
-                scrollAction(-1, true, '#list'),
-                expectElement('[data-id="a999"]'),
-                scrollAction(0, true, '#list'),
-                expectElementStyle('[data-id="a4"]', {
-                    backgroundColor: 'rgb(173, 216, 230)',
-                }),
+                clickAction('[data-id="a0"] button'),
+                clickAction('[data-id="a1"] button'),
+                clickAction('[data-id="a2"] button'),
+                expectElement('[data-id="a5"]'),
             ],
         }),
         mixinProjectThemes,
