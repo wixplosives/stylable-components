@@ -1,4 +1,5 @@
 import { useLayoutEffect } from 'react';
+import { waitForRef } from './hook-utils';
 import { useDelayedUpdate } from './use-delayed-update';
 
 /** if ref is not supplied use scroll will return the window scroll */
@@ -15,10 +16,15 @@ export const useScroll = ({
 
     useLayoutEffect(() => {
         if (!disabled) {
-            const target = ref?.current ? ref.current : typeof window !== 'undefined' ? window : undefined;
-
-            target?.addEventListener('scroll', trigger);
-            return () => target?.removeEventListener('scroll', trigger);
+            const listen = () => {
+                const target = ref ? ref.current : typeof window !== 'undefined' ? window : undefined;
+                target?.addEventListener('scroll', trigger);
+                return () => target?.removeEventListener('scroll', trigger);
+            };
+            if (ref && !ref.current) {
+                return waitForRef(ref, listen);
+            }
+            return listen();
         }
         return;
     }, [disabled, ref, trigger]);

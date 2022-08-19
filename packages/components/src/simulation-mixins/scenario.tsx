@@ -5,6 +5,7 @@ import { renderInMixinControls } from './mixin-controls';
 import { expect } from 'chai';
 import { sleep, waitFor } from 'promise-assist';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import ReactTestUtils from 'react-dom/test-utils';
 export interface Action {
     execute: () => void | Promise<void>;
     title: string;
@@ -288,6 +289,33 @@ export const clickAction = (selector?: string): Action => {
     };
 };
 
+export const writeAction = (selector: string, text: string): Action => {
+    const title = `Write in "${text}" + ${selector}`;
+    return {
+        title,
+        execute: async () => {
+            const el = await waitForElement(selector, title);
+            if (el && el instanceof HTMLInputElement) {
+                el.value = text;
+                ReactTestUtils.Simulate.change(el, {
+                    target: el,
+                });
+            }
+        },
+        highlightSelector: selector,
+    };
+};
+
+export const waitForElement = async (selector: string, title: string) => {
+    await waitFor(() => {
+        const el = window.document.querySelector(selector);
+        if (!el) {
+            throw new Error(title + ': element not found for selector ' + selector);
+        }
+    });
+    return window.document.querySelector(selector);
+};
+
 export const expectElement = <EL extends HTMLElement | SVGElement>(
     selector: string,
     expectation?: (el: EL) => void,
@@ -296,13 +324,7 @@ export const expectElement = <EL extends HTMLElement | SVGElement>(
     return {
         title,
         async execute() {
-            await waitFor(() => {
-                const el = window.document.querySelector(selector) as EL;
-                if (!el) {
-                    throw new Error(title + ': element not found for selector ' + selector);
-                }
-            });
-            const el = window.document.querySelector(selector) as EL;
+            const el = (await waitForElement(selector, title)) as EL;
             if (expectation) {
                 expectation(el);
             }

@@ -126,7 +126,7 @@ export function DataGrid<T, EL extends HTMLElement>({
                     isHorizontal={isHorizontal}
                     scrollWindow={scrollListRef}
                     watchScrollWindoSize={true}
-                    // initialScrollOffset={headerSize}
+                    // scrollOffset={headerSize}
                 />
             </GridRoot>
             <div

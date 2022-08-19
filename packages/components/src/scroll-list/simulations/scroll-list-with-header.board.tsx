@@ -27,7 +27,7 @@ export default createBoard({
                         },
                     },
                 }}
-                initialScrollOffset={50}
+                scrollOffset={50}
             />
             <h1
                 style={{

@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { childrenById } from '../common/element-id-utils';
+import { waitForRef } from './hook-utils';
 import { unchanged, useDelayedUpdateState } from './use-delayed-update';
 
 export interface WatchedSize {
@@ -44,21 +45,24 @@ export const useElementDimension = (
             return;
         }
         updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(element?.current)));
+        const startListenToEl = () => {
+            observer = new ResizeObserver(() => {
+                updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(element!.current)));
+            });
+            observer.observe(element!.current!);
+            return () => {
+                observer.disconnect();
+            };
+        };
         if (watchSize) {
-            if (!element?.current) {
+            if (!element) {
                 const listener = () => {
                     updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize()));
                 };
                 window.addEventListener('resize', listener);
                 return () => window.removeEventListener('resize', listener);
-            } else if (element.current) {
-                observer = new ResizeObserver(() => {
-                    updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(element.current)));
-                });
-                observer.observe(element.current);
-                return () => {
-                    observer.disconnect();
-                };
+            } else {
+                return waitForRef(element, startListenToEl);
             }
         }
         return undefined;
