@@ -41,7 +41,7 @@ export const usePosition = (element: React.RefObject<HTMLElement>, watchPosition
         lastValRef.current = res;
         return res;
     }, []);
-    return useElementTimerEffect(element, onTimer, watch, defaultPos);
+    return useAfterRenderEffect(element, onTimer, watch, defaultPos);
 };
 export const usePositionInParent = (
     element: React.RefObject<HTMLElement>,
@@ -57,10 +57,10 @@ export const usePositionInParent = (
         lastValRef.current = res;
         return res;
     }, []);
-    return useElementTimerEffect(element, onTimer, watch, defaultPos);
+    return useAfterRenderEffect(element, onTimer, watch, defaultPos);
 };
 
-export const useElementTimerEffect = <T, U = null>(
+export const useAfterRenderEffect = <T, U = null>(
     element: React.RefObject<HTMLElement>,
     onElementUpdate: (el: HTMLElement) => T | typeof unchanged,
     watch?: Watch,
@@ -74,27 +74,21 @@ export const useElementTimerEffect = <T, U = null>(
         }
 
         const onElement = () => {
-            let currentWatch = watch;
-            let timeout: number | undefined;
             const delayedUpdateListener = () => {
                 const value = onElementUpdate(element.current!);
-                if (currentWatch === 'timer') {
-                    timeout = setTimeout(() => delayedUpdate(delayedUpdateListener), 10);
-                }
+
                 return value;
             };
             delayedUpdate(delayedUpdateListener);
             return () => {
-                currentWatch = undefined;
-                if (timeout) {
-                    clearTimeout(timeout);
-                }
+                //
             };
         };
         if (element.current) {
             return onElement();
         }
         return waitForRef(element, onElement);
-    }, [delayedUpdate, element, onElementUpdate, watch]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [delayedUpdate, element, onElementUpdate, watch, {}]);
     return state;
 };
