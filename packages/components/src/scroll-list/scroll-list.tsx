@@ -362,7 +362,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             ) : null}
             <div
                 style={{
-                    height: maxScrollSize + 'px',
+                    height: `${maxScrollSize + 1}px`,
                 }}
             >
                 {loadingState === 'loading' ? <PreloaderSlot slot={preloader} /> : null}

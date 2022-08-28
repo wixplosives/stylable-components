@@ -233,7 +233,7 @@ export const scrollAction = (pos: number, isVertical = true, selector?: string, 
                         : isVertical
                         ? target.scrollTop
                         : target.scrollLeft;
-                    expect(Math.round(currentPos)).to.eql(Math.round(usedPos));
+                    expect(Math.round(currentPos)).to.approximately(Math.round(usedPos), 2);
                 },
                 { timeout }
             );

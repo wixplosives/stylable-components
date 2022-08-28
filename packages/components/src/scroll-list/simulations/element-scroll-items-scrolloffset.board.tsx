@@ -107,7 +107,7 @@ export default createBoard({
                 expectElement(
                     '#scroll-element',
                     (el) => {
-                        expect(el.getBoundingClientRect().height).to.equal(1_000 * 100 + 400);
+                        expect(el.getBoundingClientRect().height).to.equal(1_000 * 100 + 401);
                     },
                     'max scroll is accurate',
                     5_000
@@ -117,14 +117,14 @@ export default createBoard({
                 expectElements(['#scroll-root', '[data-id="a999"]'], (els) => {
                     const rootBox = els['#scroll-root'].getBoundingClientRect();
                     const lastItem = els['[data-id="a999"]'].getBoundingClientRect();
-                    expect(Math.ceil(lastItem.bottom)).to.be.equal(Math.ceil(rootBox.bottom));
+                    expect(Math.ceil(lastItem.bottom)).to.be.approximately(Math.ceil(rootBox.bottom), 2);
                 }),
                 scrollAction(0, true, '#scroll-root'),
                 writeAction('#input', '123'),
                 expectElement(
                     '#scroll-element',
                     (el) => {
-                        expect(el.getBoundingClientRect().height).to.equal(1_000 * 100 + 123);
+                        expect(el.getBoundingClientRect().height).to.be.approximately(1_000 * 100 + 124, 2);
                     },
                     'max scroll is updated',
                     5_000
@@ -133,7 +133,7 @@ export default createBoard({
                 expectElements(['#scroll-root', '[data-id="a999"]'], (els) => {
                     const rootBox = els['#scroll-root'].getBoundingClientRect();
                     const lastItem = els['[data-id="a999"]'].getBoundingClientRect();
-                    expect(Math.ceil(lastItem.bottom)).to.be.equal(Math.ceil(rootBox.bottom));
+                    expect(Math.ceil(lastItem.bottom)).to.be.approximately(Math.ceil(rootBox.bottom), 2);
                 }),
             ],
         }),
