@@ -111,7 +111,7 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
 
     useEffect(() => {
         const run = async () => {
-            await sleep(props.slowMo || 50);
+            await sleep(props.slowMo || 10);
             if (autoRunning && !runningAction) {
                 setRunning(true);
                 await runAction();
