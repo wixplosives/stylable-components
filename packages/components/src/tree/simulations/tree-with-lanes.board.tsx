@@ -293,7 +293,7 @@ export default createBoard({
                     data={data}
                     getId={(item: TreeItemWithLaneData) => item.id}
                     getChildren={(item: TreeItemWithLaneData) => item.children || []}
-                    initialScrollOffset={50}
+                    scrollOffset={50}
                     openItemsControls={[openItems, updateOpen]}
                     selectionControl={[selection, updateSelection]}
                     itemSize={calcItemSize}
