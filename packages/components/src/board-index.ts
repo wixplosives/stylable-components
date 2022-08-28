@@ -28,6 +28,7 @@ import list_with_li from './list/simulations/list-with-li.board';
 import list from './list/simulations/list.board';
 import preloader from './preloader/simulations/preloader.board';
 import element_scroll_items_change_size from './scroll-list/simulations/element-scroll-items-change-size.board';
+import element_scroll_items_scrolloffset from './scroll-list/simulations/element-scroll-items-scrolloffset.board';
 import element_scroll from './scroll-list/simulations/element-scroll.board';
 import many_in_row from './scroll-list/simulations/many-in-row.board';
 import no_unmount from './scroll-list/simulations/no-unmount.board';
@@ -63,6 +64,7 @@ export default [scenario_renderer,
 	list,
 	preloader,
 	element_scroll_items_change_size,
+	element_scroll_items_scrolloffset,
 	element_scroll,
 	many_in_row,
 	no_unmount,

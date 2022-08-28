@@ -6,8 +6,13 @@ import { ElmentDimHookSimulator } from './element-rect-hook-simulator';
 export default createBoard({
     name: 'use element dimenstion',
     Board: () => {
-        const [render, setRender] = useState(true)
-        return <div onClick={() => setRender(!render)}><button>asdasd</button>{render && <ElmentDimHookSimulator isVertical={true} watchSize={true} width="100%" height="100%" />}</div>
+        const [render, setRender] = useState(true);
+        return (
+            <div onClick={() => setRender(!render)}>
+                <button>asdasd</button>
+                {render && <ElmentDimHookSimulator isVertical={true} watchSize={true} width="100%" height="100%" />}
+            </div>
+        );
     },
     environmentProps: {
         canvasWidth: 746,
@@ -19,7 +24,6 @@ export default createBoard({
         scenarioMixin.use({
             title: 'should measure elements',
             events: [expectElementText('#res', '100')],
-            timeout: 4000,
         }),
     ],
 });

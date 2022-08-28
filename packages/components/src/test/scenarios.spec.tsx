@@ -1,27 +1,43 @@
-import { waitFor } from 'promise-assist';
+import { sleep } from 'promise-assist';
 import type { ScenarioProps } from '../simulation-mixins/scenario';
 import boards from '../board-index';
+
+const asyncWaitFor = async (cb: () => Promise<void>, timeoutMessage: string, timeout: number) => {
+    let done = false;
+    cb()
+        .then(() => (done = true))
+        .catch((err) => {
+            throw err;
+        });
+    await sleep(timeout);
+    if (!done) {
+        throw new Error(timeoutMessage);
+    }
+};
+
 for (const sim of boards) {
     describe(sim.name, () => {
         for (const plg of sim.plugins || []) {
             if (plg.key.pluginName === 'scenario') {
                 const props = plg.props as Required<ScenarioProps>;
                 const itFn = props.skip ? xit : it;
-                const timeout = props.timeout ?? 2000;
+
+                // increase timeout by 20% so that the waitFor timeouts before the test
+                // and we'll get a better error message during a failure
+                const timeout = props.events.reduce((acc, item) => acc + item.timeout, 0) * 1.2;
                 itFn(props.title, async function () {
                     this.timeout(timeout);
                     const { canvas, cleanup: stageCleanup } = sim.setupStage();
                     const simCleanup = await sim.render(canvas);
 
-                    for (const { execute, title } of props.events) {
+                    for (const { execute, title, timeout } of props.events) {
                         try {
-                            await waitFor(
+                            await asyncWaitFor(
                                 async () => {
                                     await execute();
                                 },
-                                // decrease timeout by 10ms so that the waitFor timeouts before the test
-                                // and we'll get a better error message during a failure
-                                { timeout: timeout - 100 }
+                                `${title} timed out`,
+                                timeout
                             );
                         } catch (err) {
                             const errMessage = err instanceof Error ? err.message : String(err);

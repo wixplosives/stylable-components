@@ -35,7 +35,6 @@ export default createBoard({
                 }),
                 scrollAction(0, true, '#scroll-div'),
             ],
-            timeout: 4000,
         }),
     ],
 });

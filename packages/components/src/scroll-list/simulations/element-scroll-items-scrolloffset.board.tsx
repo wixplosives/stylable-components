@@ -92,7 +92,6 @@ export default createBoard({
     plugins: [
         scenarioMixin.use({
             title: 'should listen to offset resize',
-            timeout: 10_000,
             events: [
                 expectElements(['#offset', '[data-id="a0"]'], (els) => {
                     const rootBox = els['#offset'].getBoundingClientRect();
