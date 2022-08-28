@@ -4,12 +4,7 @@ import boards from '../board-index';
 
 const asyncWaitFor = async (cb: () => Promise<void>, timeoutMessage: string, timeout: number) => {
     let done = false;
-    cb()
-        .then(() => (done = true))
-        .catch((err) => {
-            throw err;
-        });
-    await sleep(timeout);
+    await Promise.race([cb().then(() => (done = true)), sleep(timeout)]);
     if (!done) {
         throw new Error(timeoutMessage);
     }
@@ -29,6 +24,7 @@ for (const sim of boards) {
                     this.timeout(timeout);
                     const { canvas, cleanup: stageCleanup } = sim.setupStage();
                     const simCleanup = await sim.render(canvas);
+                    await sleep(100);
 
                     for (const { execute, title, timeout } of props.events) {
                         try {

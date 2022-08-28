@@ -222,18 +222,21 @@ export const scrollAction = (pos: number, isVertical = true, selector?: string, 
                     });
                 }
             }
-            return waitFor(() => {
-                const currentPos = !target
-                    ? 0
-                    : target instanceof Window
-                    ? isVertical
-                        ? target.scrollY
-                        : target.scrollX
-                    : isVertical
-                    ? target.scrollTop
-                    : target.scrollLeft;
-                expect(Math.round(currentPos)).to.eql(Math.round(usedPos));
-            });
+            return waitFor(
+                () => {
+                    const currentPos = !target
+                        ? 0
+                        : target instanceof Window
+                        ? isVertical
+                            ? target.scrollY
+                            : target.scrollX
+                        : isVertical
+                        ? target.scrollTop
+                        : target.scrollLeft;
+                    expect(Math.round(currentPos)).to.eql(Math.round(usedPos));
+                },
+                { timeout }
+            );
         },
         timeout,
         highlightSelector: selector,
@@ -330,10 +333,24 @@ export const expectElement = <EL extends HTMLElement | SVGElement>(
     return {
         title,
         async execute() {
-            const el = (await waitForElement(selector, title, timeout)) as EL;
-            if (expectation) {
-                expectation(el);
-            }
+            const startTime = Date.now();
+            const innerExec = async (): Promise<void> => {
+                const timePassed = Date.now() - startTime;
+                const el = (await waitForElement(selector, title, timeout - timePassed)) as EL;
+
+                if (expectation) {
+                    try {
+                        expectation(el);
+                    } catch (err) {
+                        if (timePassed > timeout) {
+                            throw err;
+                        }
+                        await sleep(Math.min(timeout - timePassed, 10));
+                        return innerExec();
+                    }
+                }
+            };
+            return innerExec();
         },
         timeout,
         highlightSelector: selector,

@@ -73,10 +73,15 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      *   number: use the number as size
      */
     watchScrollWindoSize?: number | boolean;
+
     /**
-     * Scroll offset for initial render.
+     * Scroll offset if the scroll lists has a scroll window that is external to itself, it can have elements before it.
+     *
      *
      * For vertical lists, this affects scrollTop. For horizontal lists, this affects scrollLeft.
+     *  false: no remeasure,
+     *  true: measure on changes,
+     *  number: use the number as size
      */
     scrollOffset?: number | boolean;
 

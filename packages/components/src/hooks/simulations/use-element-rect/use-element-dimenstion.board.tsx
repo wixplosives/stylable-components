@@ -23,7 +23,7 @@ export default createBoard({
     plugins: [
         scenarioMixin.use({
             title: 'should measure elements',
-            events: [expectElementText('#res', '100')],
+            events: [expectElementText('#res', '100', 'expect measure text to equal 100', 4000)],
         }),
     ],
 });

@@ -1,73 +1,100 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import type React from 'react';
-import { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState, useRef, useCallback } from 'react';
 import { waitForRef } from './hook-utils';
+import { unchanged, useDelayedUpdateState } from './use-delayed-update';
 
 export const defaultPos = { x: null, y: null };
 export interface Pos {
     x: number | null;
     y: number | null;
 }
+
 const getItemPosition = (el: HTMLElement) => {
-    const box = window.getComputedStyle(el);
+    const box = el.getBoundingClientRect();
     return {
-        x: parseFloat(box.top),
-        y: parseFloat(box.left),
+        x: box.top,
+        y: box.left,
     };
 };
 
 const getItemPositionInParent = (el: HTMLElement) => {
-    const box = window.getComputedStyle(el);
-    const parentBox = window.getComputedStyle(el.parentElement!);
+    const box = el.getBoundingClientRect();
+    const parentBox = el.parentElement!.getBoundingClientRect();
     return {
-        x: parseFloat(box.top) - parseFloat(parentBox.top),
-        y: parseFloat(box.left) - parseFloat(parentBox.left),
+        y: box.top - parentBox.top,
+        x: box.left - parentBox.left,
     };
 };
-type Watch = 'measure-once' | 'watch-sizes' | 'ignore';
+
+const isSamePos = (p1: Pos, p2: Pos) => p1.x === p2.x && p1.y === p2.y;
+
+type Watch = 'measure-once' | 'timer' | 'ignore';
 export const usePosition = (element: React.RefObject<HTMLElement>, watchPosition: Pos | boolean = false): Pos => {
-    const watch: Watch = typeof watchPosition === 'object' ? 'ignore' : watchPosition ? 'watch-sizes' : 'measure-once';
-    return useElementResizeEffect(element, getItemPosition, watch, defaultPos);
+    const watch: Watch = typeof watchPosition === 'object' ? 'ignore' : watchPosition ? 'timer' : 'measure-once';
+    const lastValRef = useRef<Pos>();
+    const onTimer = useCallback((el: HTMLElement) => {
+        const res = getItemPosition(el);
+        if (lastValRef.current && isSamePos(res, lastValRef.current)) {
+            return unchanged;
+        }
+        lastValRef.current = res;
+        return res;
+    }, []);
+    return useElementTimerEffect(element, onTimer, watch, defaultPos);
 };
 export const usePositionInParent = (
     element: React.RefObject<HTMLElement>,
     watchPosition: Pos | boolean = false
 ): Pos => {
-    const watch: Watch = typeof watchPosition === 'object' ? 'ignore' : watchPosition ? 'watch-sizes' : 'measure-once';
-    return useElementResizeEffect(element, getItemPositionInParent, watch, defaultPos);
+    const watch: Watch = typeof watchPosition === 'object' ? 'ignore' : watchPosition ? 'timer' : 'measure-once';
+    const lastValRef = useRef<Pos>();
+    const onTimer = useCallback((el: HTMLElement) => {
+        const res = getItemPositionInParent(el);
+        if (lastValRef.current && isSamePos(res, lastValRef.current)) {
+            return unchanged;
+        }
+        lastValRef.current = res;
+        return res;
+    }, []);
+    return useElementTimerEffect(element, onTimer, watch, defaultPos);
 };
 
-export const useElementResizeEffect = <T, U = null>(
+export const useElementTimerEffect = <T, U = null>(
     element: React.RefObject<HTMLElement>,
-    onElementUpdate: (el: HTMLElement) => T,
-    watch?: 'measure-once' | 'watch-sizes' | 'ignore',
+    onElementUpdate: (el: HTMLElement) => T | typeof unchanged,
+    watch?: Watch,
     def: T | U = null as unknown as U
 ): T | U => {
     const [state, update] = useState(def);
+    const delayedUpdate = useDelayedUpdateState(update);
     useLayoutEffect(() => {
-        let observer: ResizeObserver;
         if (watch === 'ignore') {
             return;
         }
 
         const onElement = () => {
-            update(onElementUpdate(element.current!));
-            if (watch === 'watch-sizes') {
-                observer = new ResizeObserver(() => update(onElementUpdate(element.current!)));
-                observer.observe(element.current!);
-
-                return () => {
-                    observer.disconnect();
-                };
-            }
+            let currentWatch = watch;
+            let timeout: number | undefined;
+            const delayedUpdateListener = () => {
+                const value = onElementUpdate(element.current!);
+                if (currentWatch === 'timer') {
+                    timeout = setTimeout(() => delayedUpdate(delayedUpdateListener), 10);
+                }
+                return value;
+            };
+            delayedUpdate(delayedUpdateListener);
             return () => {
-                //
+                currentWatch = undefined;
+                if (timeout) {
+                    clearTimeout(timeout);
+                }
             };
         };
         if (element.current) {
             return onElement();
         }
         return waitForRef(element, onElement);
-    }, [element, onElementUpdate, watch]);
+    }, [delayedUpdate, element, onElementUpdate, watch]);
     return state;
 };

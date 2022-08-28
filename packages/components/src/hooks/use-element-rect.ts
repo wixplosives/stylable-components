@@ -211,6 +211,7 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
         if (ref.current && observeSubtree) {
             mutationObserver.observe(ref.current, {
                 childList: true,
+                subtree: true,
             });
         }
         return () => {
