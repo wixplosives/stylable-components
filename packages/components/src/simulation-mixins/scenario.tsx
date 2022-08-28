@@ -152,8 +152,6 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
                 </div>
             </div>
         </div>
-            </div>
-        </div>
     );
 };
 
