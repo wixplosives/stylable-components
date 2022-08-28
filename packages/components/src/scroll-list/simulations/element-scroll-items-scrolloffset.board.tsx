@@ -91,6 +91,7 @@ export default createBoard({
     plugins: [
         scenarioMixin.use({
             title: 'should listen to item resize',
+            timeout: 10_000,
             events: [
                 scrollAction(-1, true, '#scroll-root'),
                 expectElements(['#scroll-root', '[data-id="a999"]'], (els) => {
