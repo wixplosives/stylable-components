@@ -292,6 +292,7 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
             return acc;
         }, {} as SizesById);
         return { changed, res: changed ? res : oldRes };
+        return { changed, res: changed ? res : oldRes };
     }
 
     const elements = childrenById(ref.current);
@@ -314,7 +315,11 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
         if (acc[id]?.height !== oldRes[id]?.height || acc[id]?.width !== oldRes[id]?.width) {
             changed = true;
         }
+        if (acc[id]?.height !== oldRes[id]?.height || acc[id]?.width !== oldRes[id]?.width) {
+            changed = true;
+        }
         return acc;
     }, {} as SizesById);
+    return { changed, res: changed ? res : oldRes };
     return { changed, res: changed ? res : oldRes };
 }
