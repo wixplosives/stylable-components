@@ -4,7 +4,7 @@
 
 import React, { FC, memo } from 'react';
 
-const createIcon = (viewBox: string, svgChildren: React.ReactChild) => {
+const createIcon = (viewBox: string, svgChildren: React.ReactNode) => {
     const Icon: FC<React.SVGProps<SVGSVGElement>> = memo((props) => (
         <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox={viewBox} {...props}>
             {svgChildren}

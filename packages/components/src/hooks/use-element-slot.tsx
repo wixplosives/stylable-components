@@ -13,7 +13,7 @@ export const defaultRoot: ElementSlot<React.ComponentPropsWithRef<'div'>, 'div'>
     props: {},
 };
 export const defineElementSlot = <
-    MinimalProps,
+    MinimalProps extends {},
     Mapping extends PropMapping<MinimalProps> = {},
     ChildSlotProps extends {} = {}
 >(
@@ -34,13 +34,13 @@ export const defineElementSlot = <
             if (Array.isArray(children)) {
                 return React.createElement(
                     usedSlot.el,
-                    mergeWithMap(props, usedSlot.props as unknown as MinimalProps, propsMapping),
-                    ...(children as React.ReactChild[])
+                    mergeWithMap(props!, usedSlot.props as unknown as MinimalProps, propsMapping),
+                    ...(children as React.ReactNode[])
                 );
             }
             return React.createElement(
                 usedSlot.el,
-                mergeWithMap(props, usedSlot.props as unknown as MinimalProps, propsMapping),
+                mergeWithMap(props!, usedSlot.props as unknown as MinimalProps, propsMapping),
                 children as any
             );
         },
@@ -58,7 +58,7 @@ export const defineElementSlot = <
             }, [usedSlot.el, usedSlot.props, props]);
         },
         slot: defaultSlot as Partial<typeof defaultSlot>,
-        parentSlot: function <MinProps, MAP extends PropMapping<MinProps> = PropMapping<MinProps>>(
+        parentSlot: function <MinProps extends {}, MAP extends PropMapping<MinProps> = PropMapping<MinProps>>(
             defSlot?: ElementSlot<MinProps, any, any>,
             propsMapping: PropMapping<MinProps> = {}
         ) {
@@ -116,6 +116,7 @@ export const callExternal =
     <T extends (...args: any[]) => unknown>(_internal: T, external: T) =>
     (...args: any[]): unknown =>
         external(...args);
+
 export const callInternalFirst =
     <T extends (...args: any[]) => any>(internal?: T, external?: T) =>
     (...args: unknown[]): unknown => {
@@ -124,7 +125,8 @@ export const callInternalFirst =
     };
 
 export const concatClasses = <T extends string>(internal?: T, external?: T) => `${internal || ''} ${external || ''}`;
-export function mergeWithMap<Props, MinimalProps extends Partial<Props>>(
+
+export function mergeWithMap<Props extends {}, MinimalProps extends Partial<Props>>(
     props: Props,
     minProps: MinimalProps,
     mergeMap: PropMapping<MinimalProps>
