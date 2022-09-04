@@ -71,7 +71,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      *   true: measure on changes,
      *   number: use the number as size
      */
-    watchScrollWindoSize?: number | boolean;
+    watchScrollWindowSize?: number | boolean;
     /**
      * Scroll offset for initial render.
      *
@@ -151,7 +151,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     items,
     isHorizontal = false,
     scrollWindow,
-    watchScrollWindoSize,
+    watchScrollWindowSize,
     itemCount,
     getId,
     ItemRenderer,
@@ -175,7 +175,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 }: ScrollListProps<T, EL>): JSX.Element {
     const defaultListRef = useRef<HTMLElement>(null);
     const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
-    const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
+    const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindowSize);
     const currentScroll = useScroll({ isHorizontal, ref: scrollWindow, disabled: scrollPosition !== undefined });
     const resolvedScroll = scrollPosition ?? currentScroll;
     const lastRenderedItem = useRef({

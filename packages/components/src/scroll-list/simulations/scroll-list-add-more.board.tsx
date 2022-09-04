@@ -30,7 +30,7 @@ export default createBoard({
                 items={items}
                 getId={(item: ItemData) => item.id}
                 itemCount={-1}
-                watchScrollWindoSize={true}
+                watchScrollWindowSize={true}
                 loadMore={loadMore}
                 loadingState={loadingState}
             />
