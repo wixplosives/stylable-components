@@ -1,7 +1,6 @@
 import type React from 'react';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { childrenById } from '../common/element-id-utils';
-import { waitForRef } from './hook-utils';
 import { unchanged, useDelayedUpdateState } from './use-delayed-update';
 
 export interface WatchedSize {
@@ -39,34 +38,38 @@ export const useElementDimension = (
     const startDim =
         typeof watchSize === 'number' ? watchSize : watchedSizeToDim(isVertical, elementOrWindowSize(element?.current));
     const [dimension, updateDimension] = useState(startDim);
-    useLayoutEffect(() => {
+
+    useEffect(() => {
         let observer: ResizeObserver;
         if (typeof watchSize === 'number') {
             return;
         }
         updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(element?.current)));
-        const startListenToEl = () => {
+
+        if (watchSize) {
+            const listener = () => {
+                updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize()));
+            };
+            window.addEventListener('resize', listener);
+            
+            return () => window.removeEventListener('resize', listener);
+        }
+
+        if (element?.current) {
             observer = new ResizeObserver(() => {
-                updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(element!.current)));
+                updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(element.current)));
             });
-            observer.observe(element!.current!);
+
+            observer.observe(element.current);
+
             return () => {
                 observer.disconnect();
             };
-        };
-        if (watchSize) {
-            if (!element) {
-                const listener = () => {
-                    updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize()));
-                };
-                window.addEventListener('resize', listener);
-                return () => window.removeEventListener('resize', listener);
-            } else {
-                return waitForRef(element, startListenToEl);
-            }
         }
+
         return undefined;
     }, [element, isVertical, startDim, watchSize]);
+
     return dimension;
 };
 
@@ -292,7 +295,7 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
             }
             return acc;
         }, {} as SizesById);
-        return { changed, res: changed ? res : oldRes };
+
         return { changed, res: changed ? res : oldRes };
     }
 
@@ -321,6 +324,6 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
         }
         return acc;
     }, {} as SizesById);
-    return { changed, res: changed ? res : oldRes };
+
     return { changed, res: changed ? res : oldRes };
 }
