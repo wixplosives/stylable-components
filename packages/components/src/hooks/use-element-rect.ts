@@ -284,6 +284,7 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
         }
         return unMeasured;
     };
+    
     if (size !== undefined || !meassure || !ref.current) {
         let changed = false;
         const res = data.reduce((acc, item) => {
@@ -293,6 +294,7 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
             if (oldRes[id]?.height !== itemRes?.height || oldRes[id]?.width !== itemRes?.width) {
                 changed = true;
             }
+
             return acc;
         }, {} as SizesById);
 
@@ -300,28 +302,30 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
     }
 
     const elements = childrenById(ref.current);
-    setObserveTargets?.(Object.values(elements));
     let changed = false;
+    
+    setObserveTargets?.(Object.values(elements));
 
     const res = data.reduce((acc, item) => {
         const id = getId(item);
         const element = elements[id];
         const cachedSize = sizeCache.get(id);
+        
         if (cachedSize) {
             acc[id] = cachedSize;
         } else if (element) {
             const measured = elementToSize(element);
+            
             acc[id] = measured;
             sizeCache.set(id, measured);
         } else {
             acc[id] = unMeasured;
         }
+        
         if (acc[id]?.height !== oldRes[id]?.height || acc[id]?.width !== oldRes[id]?.width) {
             changed = true;
         }
-        if (acc[id]?.height !== oldRes[id]?.height || acc[id]?.width !== oldRes[id]?.width) {
-            changed = true;
-        }
+        
         return acc;
     }, {} as SizesById);
 
