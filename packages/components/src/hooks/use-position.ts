@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { unchanged, useDelayedUpdateState } from './use-delayed-update';
 
-interface Pos {
+interface Position {
   x: number | null;
   y: number | null;
 }
@@ -19,7 +18,7 @@ const getItemPositionInParent = (el: HTMLElement) => {
   };
 };
 
-const isSamePos = (p1: Pos, p2: Pos) => p1.x === p2.x && p1.y === p2.y;
+const isSamePosition = (p1: Position, p2: Position) => p1.x === p2.x && p1.y === p2.y;
 
 const useAfterRenderEffect = <T, U = null>(
   element: React.RefObject<HTMLElement>,
@@ -47,17 +46,17 @@ export const defaultPos = { x: null, y: null };
 
 export const usePositionInParent = (
   element: React.RefObject<HTMLElement>,
-  watchPosition: Pos | boolean = false
-): Pos => {
+  watchPosition: Position | boolean = false
+): Position => {
   const watch: Watch = typeof watchPosition === 'object'
                        ? 'ignore'
                        : watchPosition
                          ? 'timer'
                          : 'measure-once';
-  const lastValRef = useRef<Pos>();
+  const lastValRef = useRef<Position>();
   const onTimer = useCallback((el: HTMLElement) => {
     const res = getItemPositionInParent(el);
-    if (lastValRef.current && isSamePos(res, lastValRef.current)) {
+    if (lastValRef.current && isSamePosition(res, lastValRef.current)) {
       return unchanged;
     }
     lastValRef.current = res;

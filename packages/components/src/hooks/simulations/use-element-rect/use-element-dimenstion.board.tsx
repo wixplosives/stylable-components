@@ -4,7 +4,7 @@ import { expectElementText, scenarioMixin } from '../../../simulation-mixins/sce
 import { ElmentDimHookSimulator } from './element-rect-hook-simulator';
 
 export default createBoard({
-    name: 'use element dimenstion',
+    name: 'use element dimension',
     Board: () => {
         const [render, setRender] = useState(true);
         return (
