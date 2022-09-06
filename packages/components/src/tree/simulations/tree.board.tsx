@@ -25,7 +25,7 @@ export default createBoard({
             data={createItem(20, 5)}
             getId={(item: TreeItemData) => item.id}
             getChildren={(item: TreeItemData) => item.children || []}
-            initialScrollOffset={50}
+            scrollOffset={50}
             openItemsControls={() => []}
         />
     ),

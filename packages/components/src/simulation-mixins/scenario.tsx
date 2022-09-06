@@ -5,16 +5,17 @@ import { renderInMixinControls } from './mixin-controls';
 import { expect } from 'chai';
 import { sleep, waitFor } from 'promise-assist';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import ReactTestUtils from 'react-dom/test-utils';
 export interface Action {
     execute: () => void | Promise<void>;
     title: string;
     highlightSelector?: string;
+    timeout: number;
 }
 export interface ScenarioParams {
     title?: string;
     events: Action[];
     slowMo?: number;
-    timeout?: number;
     skip?: boolean;
 }
 
@@ -22,7 +23,6 @@ export interface ScenarioProps {
     title?: string;
     events: Action[];
     slowMo?: number;
-    timeout?: number;
     skip?: boolean;
     resetBoard: () => void;
 }
@@ -111,7 +111,7 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
 
     useEffect(() => {
         const run = async () => {
-            await sleep(props.slowMo || 50);
+            await sleep(props.slowMo || 10);
             if (autoRunning && !runningAction) {
                 setRunning(true);
                 await runAction();
@@ -176,7 +176,6 @@ export const RenderWrapper = (props: ScenarioParams & { board: JSX.Element }) =>
         <ScenarioRenderer
             skip={props.skip}
             title={props.title || 'untitled'}
-            timeout={props.timeout}
             events={props.events}
             resetBoard={resetBoard}
         />,
@@ -203,7 +202,7 @@ export const maxScroll = (target: Element | Window, isVertical: boolean) => {
     );
 };
 
-export const scrollAction = (pos: number, isVertical = true, selector?: string): Action => {
+export const scrollAction = (pos: number, isVertical = true, selector?: string, timeout = 2_000): Action => {
     return {
         title:
             'Scroll ' + (selector || 'window') + ' to ' + (pos === -1 ? (isVertical ? 'bottom' : 'right-most') : pos),
@@ -223,24 +222,28 @@ export const scrollAction = (pos: number, isVertical = true, selector?: string):
                     });
                 }
             }
-            return waitFor(() => {
-                const currentPos = !target
-                    ? 0
-                    : target instanceof Window
-                    ? isVertical
-                        ? target.scrollY
-                        : target.scrollX
-                    : isVertical
-                    ? target.scrollTop
-                    : target.scrollLeft;
-                expect(Math.round(currentPos)).to.eql(Math.round(usedPos));
-            });
+            return waitFor(
+                () => {
+                    const currentPos = !target
+                        ? 0
+                        : target instanceof Window
+                        ? isVertical
+                            ? target.scrollY
+                            : target.scrollX
+                        : isVertical
+                        ? target.scrollTop
+                        : target.scrollLeft;
+                    expect(Math.round(currentPos)).to.approximately(Math.round(usedPos), 2);
+                },
+                { timeout }
+            );
         },
+        timeout,
         highlightSelector: selector,
     };
 };
 
-export const hoverAction = (selector?: string): Action => {
+export const hoverAction = (selector?: string, timeout = 2_000): Action => {
     return {
         title: 'Hover ' + (selector || 'window'),
         execute: () => {
@@ -255,10 +258,11 @@ export const hoverAction = (selector?: string): Action => {
             }
         },
         highlightSelector: selector,
+        timeout,
     };
 };
 
-export const clickAction = (selector?: string): Action => {
+export const clickAction = (selector?: string, timeout = 2_000): Action => {
     return {
         title: 'Click ' + (selector || 'window'),
         execute: () => {
@@ -285,28 +289,70 @@ export const clickAction = (selector?: string): Action => {
             }
         },
         highlightSelector: selector,
+        timeout,
     };
+};
+
+export const writeAction = (selector: string, text: string, timeout = 2_000): Action => {
+    const title = `Write in "${text}" + ${selector}`;
+    return {
+        title,
+        execute: async () => {
+            const el = await waitForElement(selector, title, timeout);
+            if (el && el instanceof HTMLInputElement) {
+                el.value = text;
+                ReactTestUtils.Simulate.change(el, {
+                    target: el,
+                });
+            }
+        },
+        highlightSelector: selector,
+        timeout,
+    };
+};
+
+export const waitForElement = async (selector: string, title: string, timeout: number) => {
+    await waitFor(
+        () => {
+            const el = window.document.querySelector(selector);
+            if (!el) {
+                throw new Error(title + ': element not found for selector ' + selector);
+            }
+        },
+        { timeout }
+    );
+    return window.document.querySelector(selector);
 };
 
 export const expectElement = <EL extends HTMLElement | SVGElement>(
     selector: string,
     expectation?: (el: EL) => void,
-    title: string = 'expecting selector ' + selector
+    title: string = 'expecting selector ' + selector,
+    timeout = 2_000
 ): Action => {
     return {
         title,
         async execute() {
-            await waitFor(() => {
-                const el = window.document.querySelector(selector) as EL;
-                if (!el) {
-                    throw new Error(title + ': element not found for selector ' + selector);
+            const startTime = Date.now();
+            const innerExec = async (): Promise<void> => {
+                const timePassed = Date.now() - startTime;
+                const el = (await waitForElement(selector, title, timeout - timePassed)) as EL;
+
+                if (expectation) {
+                    try {
+                        expectation(el);
+                    } catch (err) {
+                        if (timePassed > timeout) {
+                            throw err;
+                        }
+                        await sleep(Math.min(timeout - timePassed, 10));
+                        return innerExec();
+                    }
                 }
-            });
-            const el = window.document.querySelector(selector) as EL;
-            if (expectation) {
-                expectation(el);
-            }
+            };
+            return innerExec();
         },
+        timeout,
         highlightSelector: selector,
     };
 };
@@ -314,24 +360,31 @@ export const expectElement = <EL extends HTMLElement | SVGElement>(
 export const expectElements = <SELECTORS extends string>(
     selectors: SELECTORS[],
     expectation?: (elements: Record<SELECTORS, Element>) => void,
-    title: string = 'expecting elements ' + selectors
+    title: string = 'expecting elements ' + selectors,
+    timeout = 2_000
 ): Action => {
     return {
         title,
+        timeout,
         async execute() {
-            await waitFor(() => {
-                const res = selectors.reduce((acc, selector) => {
-                    const el = window.document.querySelector(selector);
-                    if (!el) {
-                        throw new Error(title + ': element not found for selector ' + selector);
+            await waitFor(
+                () => {
+                    const res = selectors.reduce((acc, selector) => {
+                        const el = window.document.querySelector(selector);
+                        if (!el) {
+                            throw new Error(title + ': element not found for selector ' + selector);
+                        }
+                        acc[selector] = el;
+                        return acc;
+                    }, {} as Record<SELECTORS, Element>);
+                    if (expectation) {
+                        expectation(res);
                     }
-                    acc[selector] = el;
-                    return acc;
-                }, {} as Record<SELECTORS, Element>);
-                if (expectation) {
-                    expectation(res);
+                },
+                {
+                    timeout,
                 }
-            });
+            );
         },
     };
 };
@@ -339,17 +392,24 @@ export const expectElements = <SELECTORS extends string>(
 export const expectElementText = (
     selector: string,
     text: string,
-    title: string = 'expecting text ' + text + ' for selector ' + selector
+    title: string = 'expecting text ' + text + ' for selector ' + selector,
+    timeout = 2_000
 ): Action => {
     return {
         title,
+        timeout,
         execute() {
-            return expectElement(selector, (el) => {
-                if (!(el instanceof HTMLElement)) {
-                    throw new Error(title + ': element at ' + selector + 'is not an HTMLElement');
-                }
-                expect(el.innerText).to.equal(text);
-            }).execute();
+            return expectElement(
+                selector,
+                (el) => {
+                    if (!(el instanceof HTMLElement)) {
+                        throw new Error(title + ': element at ' + selector + 'is not an HTMLElement');
+                    }
+                    expect(el.innerText).to.equal(text);
+                },
+                title,
+                timeout
+            ).execute();
         },
         highlightSelector: selector,
     };
@@ -358,7 +418,8 @@ export const expectElementText = (
 export const expectElementStyle = (
     selector: string,
     expectedStyle: Partial<Record<keyof CSSStyleDeclaration, string>>,
-    title: string = 'expectElementStyle ' + selector
+    title: string = 'expectElementStyle ' + selector,
+    timeout = 2_000
 ): Action => {
     const exp = expectElement(
         selector,
@@ -376,6 +437,7 @@ export const expectElementStyle = (
             return exp.execute();
         },
         highlightSelector: selector,
+        timeout,
     };
 };
 
@@ -383,15 +445,17 @@ export const expectElementsStyle = (
     elements: {
         [selector: string]: Partial<Record<keyof CSSStyleDeclaration, string>>;
     },
-    title?: string
+    title?: string,
+    timeout = 2_000
 ): Action => {
     return {
         title: title || 'expectElementsStyle ' + Object.keys(elements),
         execute() {
             for (const [selector, styles] of Object.entries(elements)) {
-                expectElementStyle(selector, styles);
+                expectElementStyle(selector, styles, title, timeout);
             }
         },
+        timeout,
     };
 };
 
@@ -399,7 +463,8 @@ export const expectElementScroll = (
     selector: string,
     expectedScroll: number,
     isHorizontal = false,
-    title: string = 'expecting scroll ' + selector
+    title: string = 'expecting scroll ' + selector,
+    timeout = 2_000
 ): Action => {
     return expectElement(
         selector,
@@ -410,7 +475,8 @@ export const expectElementScroll = (
                 expect(el.scrollTop).to.eql(expectedScroll);
             }
         },
-        title
+        title,
+        timeout
     );
 };
 
@@ -428,5 +494,6 @@ export const expectWindowScroll = (
                 expect(window.scrollY).to.eql(expectedScroll);
             }
         },
+        timeout: 0,
     };
 };

@@ -17,10 +17,12 @@ export default createBoard({
                     {
                         title: 'click something',
                         execute: noop,
+                        timeout: 2000,
                     },
                     {
                         title: 'expect something',
                         execute: noop,
+                        timeout: 2000,
                     },
                 ]}
             />

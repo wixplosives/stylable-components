@@ -8,6 +8,7 @@ import { useScroll } from '../hooks/use-scroll';
 import { List, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
 import { useStateControls } from '../hooks/use-state-controls';
+import { defaultPos, usePositionInParent } from '../hooks/use-position';
 
 const defaultPreloader: ElementSlot<{}> = {
     el: Preloader,
@@ -16,7 +17,7 @@ const defaultPreloader: ElementSlot<{}> = {
     },
 };
 export type ScrollListRootMinimalProps = Pick<
-    React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>,
+    React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
     'children' | 'style' | 'ref' | 'className'
 >;
 export const ScrollListRootPropMapping: PropMapping<ScrollListRootMinimalProps> = {
@@ -72,12 +73,17 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      *   number: use the number as size
      */
     watchScrollWindoSize?: number | boolean;
+
     /**
-     * Scroll offset for initial render.
+     * Scroll offset if the scroll lists has a scroll window that is external to itself, it can have elements before it.
+     *
      *
      * For vertical lists, this affects scrollTop. For horizontal lists, this affects scrollLeft.
+     *  false: no remeasure,
+     *  true: measure on changes,
+     *  number: use the number as size
      */
-    initialScrollOffset?: number | undefined;
+    scrollOffset?: number | boolean;
 
     /**
      * Total number of items in the list. Note that only a few items will be rendered and displayed at a time.
@@ -158,7 +164,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     estimatedItemSize = 50,
     focusControl,
     loadMore,
-    initialScrollOffset = 0,
+    scrollOffset = 0,
     itemSize = false,
     scrollListRoot,
     listRoot,
@@ -173,6 +179,12 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     overlay,
     scrollPosition,
 }: ScrollListProps<T, EL>): JSX.Element {
+    const shouldMeasureOffset = typeof scrollOffset === 'number' ? defaultPos : scrollOffset;
+    const defaultRef = useRef<EL>();
+    const actualRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultRef;
+    const offsetFromParent = usePositionInParent(actualRef, shouldMeasureOffset);
+    const usedoffset =
+        (typeof scrollOffset === 'number' ? scrollOffset : isHorizontal ? offsetFromParent.x : offsetFromParent.y) || 0;
     const defaultListRef = useRef<HTMLElement>(null);
     const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
     const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
@@ -225,15 +237,14 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const avgSize = totalMeasured > 0 ? Math.ceil(totalSize / totalMeasured) : estimatedItemSize;
 
     const maxScrollSize =
-        avgSize * Math.ceil(itemCountForCalc / itemsInRow) +
-        initialScrollOffset +
-        itemGap * Math.ceil((itemCountForCalc - 1) / itemsInRow);
+        avgSize * Math.ceil(itemCountForCalc / itemsInRow) + itemGap * Math.ceil((itemCountForCalc - 1) / itemsInRow);
 
     const calcScrollPosition = () => {
-        const firstWantedPixel = unmountItems
-            ? Math.max(resolvedScroll - scrollWindowSize * extraRenderedItems - initialScrollOffset, 0)
-            : 0;
-        const lastWantedPixel = scrollWindowSize * (1 + extraRenderedItems) + resolvedScroll - initialScrollOffset;
+        const lastWantedPixel = Math.min(
+            scrollWindowSize * (1 + extraRenderedItems) + resolvedScroll - usedoffset,
+            maxScrollSize
+        );
+        const firstWantedPixel = unmountItems ? lastWantedPixel - scrollWindowSize * (2 + extraRenderedItems) : 0;
 
         if (typeof itemSize === 'number') {
             let endIdx = Math.ceil(lastWantedPixel / itemSize);
@@ -278,7 +289,6 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         }
         return {
             firstWantedPixel: firstTakenPixel || 0,
-            lastWantedPixel: maxScrollSize,
             startIdx,
             endIdx: Math.max(items.length, maxScrollSize / avgSize),
         };
@@ -327,6 +337,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             props={{
                 style,
                 className: classes.root,
+                ref: actualRef,
             }}
         >
             <List<T, EL>
@@ -351,7 +362,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             ) : null}
             <div
                 style={{
-                    height: maxScrollSize + 'px',
+                    height: `${maxScrollSize + 1}px`,
                 }}
             >
                 {loadingState === 'loading' ? <PreloaderSlot slot={preloader} /> : null}

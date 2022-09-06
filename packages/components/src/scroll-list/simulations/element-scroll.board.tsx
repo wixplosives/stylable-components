@@ -65,8 +65,6 @@ export default createBoard({
     plugins: [
         scenarioMixin.use({
             title: 'scroll list sanity',
-            timeout: 4000,
-            slowMo: 500,
             events: [
                 expectElement('[data-id="a3"]'),
                 hoverAction('[data-id="a3"]'),

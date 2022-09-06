@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { childrenById } from '../common/element-id-utils';
 import { unchanged, useDelayedUpdateState } from './use-delayed-update';
 
@@ -38,31 +38,38 @@ export const useElementDimension = (
     const startDim =
         typeof watchSize === 'number' ? watchSize : watchedSizeToDim(isVertical, elementOrWindowSize(element?.current));
     const [dimension, updateDimension] = useState(startDim);
-    useLayoutEffect(() => {
+
+    useEffect(() => {
         let observer: ResizeObserver;
         if (typeof watchSize === 'number') {
             return;
         }
         updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(element?.current)));
+
         if (watchSize) {
-            if (!element?.current) {
-                const listener = () => {
-                    updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize()));
-                };
-                window.addEventListener('resize', listener);
-                return () => window.removeEventListener('resize', listener);
-            } else if (element.current) {
-                observer = new ResizeObserver(() => {
-                    updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(element.current)));
-                });
-                observer.observe(element.current);
-                return () => {
-                    observer.disconnect();
-                };
-            }
+            const listener = () => {
+                updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize()));
+            };
+            window.addEventListener('resize', listener);
+            
+            return () => window.removeEventListener('resize', listener);
         }
+
+        if (element?.current) {
+            observer = new ResizeObserver(() => {
+                updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize(element.current)));
+            });
+
+            observer.observe(element.current);
+
+            return () => {
+                observer.disconnect();
+            };
+        }
+
         return undefined;
     }, [element, isVertical, startDim, watchSize]);
+
     return dimension;
 };
 
@@ -207,6 +214,7 @@ export function useIdBasedRects<T, EL extends HTMLElement>(
         if (ref.current && observeSubtree) {
             mutationObserver.observe(ref.current, {
                 childList: true,
+                subtree: true,
             });
         }
         return () => {
@@ -276,6 +284,7 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
         }
         return unMeasured;
     };
+    
     if (size !== undefined || !meassure || !ref.current) {
         let changed = false;
         const res = data.reduce((acc, item) => {
@@ -285,32 +294,40 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
             if (oldRes[id]?.height !== itemRes?.height || oldRes[id]?.width !== itemRes?.width) {
                 changed = true;
             }
+
             return acc;
         }, {} as SizesById);
+
         return { changed, res: changed ? res : oldRes };
     }
 
     const elements = childrenById(ref.current);
-    setObserveTargets?.(Object.values(elements));
     let changed = false;
+    
+    setObserveTargets?.(Object.values(elements));
 
     const res = data.reduce((acc, item) => {
         const id = getId(item);
         const element = elements[id];
         const cachedSize = sizeCache.get(id);
+        
         if (cachedSize) {
             acc[id] = cachedSize;
         } else if (element) {
             const measured = elementToSize(element);
+            
             acc[id] = measured;
             sizeCache.set(id, measured);
         } else {
             acc[id] = unMeasured;
         }
+        
         if (acc[id]?.height !== oldRes[id]?.height || acc[id]?.width !== oldRes[id]?.width) {
             changed = true;
         }
+        
         return acc;
     }, {} as SizesById);
+
     return { changed, res: changed ? res : oldRes };
 }
