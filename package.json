@@ -53,6 +53,5 @@
     "webpack-dev-server": "^4.11.0"
   },
   "license": "MIT",
-  "private": true,
-  "version": "v1.22.11"
+  "private": true
 }
