@@ -31,6 +31,7 @@ import items_change_size from './scroll-list/simulations/items-change-size.board
 import items_in_row from './scroll-list/simulations/items-in-row.board';
 import no_unmount from './scroll-list/simulations/no-unmount.board';
 import scroll_list from './scroll-list/simulations/scroll-list.board';
+import scroll_position from './scroll-list/simulations/scroll-position.board';
 import scroll_ref from './scroll-list/simulations/scroll-ref.board';
 import with_header from './scroll-list/simulations/with-header.board';
 import searchable_text from './searchable-text/simulations/searchable-text.board';
@@ -65,6 +66,7 @@ export default [
     items_in_row,
     no_unmount,
     scroll_list,
+    scroll_position,
     scroll_ref,
     with_header,
     searchable_text,
