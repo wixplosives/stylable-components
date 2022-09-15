@@ -6,7 +6,7 @@ import { ScrollList } from '../scroll-list';
 const items = createItems();
 
 export default createBoard({
-    name: 'ScrollList — With header',
+    name: 'ScrollList — with header',
     Board: () => (
         <div>
             <ScrollList

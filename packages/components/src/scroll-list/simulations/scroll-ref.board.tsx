@@ -20,7 +20,7 @@ const elementRef: React.RefObject<HTMLDivElement> = {
 };
 
 export default createBoard({
-    name: 'ScrollList with scroll Ref',
+    name: 'ScrollList — with scroll Ref',
     Board: () => (
         <ScrollList
             ItemRenderer={ItemRenderer}

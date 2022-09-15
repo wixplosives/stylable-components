@@ -29,7 +29,7 @@ const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     );
 };
 export default createBoard({
-    name: 'ScrollList element-scroll-items-change-size',
+    name: 'ScrollList — items change size',
     Board: () => (
         <ScrollList
             ItemRenderer={ItemRenderer}

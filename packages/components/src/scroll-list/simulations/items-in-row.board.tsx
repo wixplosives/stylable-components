@@ -15,7 +15,7 @@ import { ScrollList } from '../scroll-list';
 const items = createItems();
 
 export default createBoard({
-    name: 'ScrollList — itemsInRow',
+    name: 'ScrollList — items in row',
     Board: () => (
         <ScrollList
             ItemRenderer={ItemRenderer}
