@@ -1,17 +1,12 @@
 import { createBoard } from '@wixc3/react-board';
-import { ScrollList } from '../scroll-list';
 import React from 'react';
-import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
-const items = new Array(1000).fill(0).map(
-    (_, idx) =>
-        ({
-            id: 'a' + idx,
-            title: 'item number ' + idx,
-        } as ItemData)
-);
+import { createItems, ItemData, ItemRenderer } from '../../simulation-assets';
+import { ScrollList } from '../scroll-list';
+
+const items = createItems();
 
 export default createBoard({
-    name: 'scroll list with header',
+    name: 'ScrollList — With header',
     Board: () => (
         <div>
             <ScrollList

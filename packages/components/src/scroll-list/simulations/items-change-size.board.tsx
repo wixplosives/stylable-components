@@ -1,18 +1,14 @@
-import React, { useState } from 'react';
-import type { ItemData } from '../../simulation-assets/item-renderer';
-import { clickAction, scenarioMixin, expectElement } from '../../simulation-mixins/scenario';
-import { ScrollList } from '../scroll-list';
-import type { ListItemProps } from '../../list/list';
-import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { createBoard } from '@wixc3/react-board';
+import React, { useState } from 'react';
+import type { ListItemProps } from '../../list/list';
+import type { ItemData } from '../../simulation-assets';
+import { createItems } from '../../simulation-assets';
+import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
+import { clickAction, expectElement, scenarioMixin } from '../../simulation-mixins/scenario';
+import { ScrollList } from '../scroll-list';
 
-const items = new Array(1000).fill(0).map(
-    (_, idx) =>
-        ({
-            id: 'a' + idx,
-            title: 'item number ' + idx,
-        } as ItemData)
-);
+const items = createItems();
+
 const elementRef: React.RefObject<HTMLDivElement> = {
     current: null,
 };
@@ -33,7 +29,7 @@ const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     );
 };
 export default createBoard({
-    name: 'element-scroll-items-change-size',
+    name: 'ScrollList element-scroll-items-change-size',
     Board: () => (
         <ScrollList
             ItemRenderer={ItemRenderer}

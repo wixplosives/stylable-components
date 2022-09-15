@@ -1,24 +1,24 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createBoard } from '@wixc3/react-board';
 import React, { useCallback, useState } from 'react';
-import { ItemData, ItemRenderer } from '../../simulation-assets/item-renderer';
+import { ItemRenderer } from '../../simulation-assets/item-renderer';
 import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../../simulation-mixins/scenario';
 import { ScrollList, ScrollListLoadingState } from '../scroll-list';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { sleep } from 'promise-assist';
-import { createItems } from '../../simulation-assets/create-items';
+import { createItems, ItemData } from '../../simulation-assets/create-items';
 
 export default createBoard({
-    name: 'scroll-list-add-more',
+    name: 'ScrollList — infinite scroll',
     Board: () => {
-        const [items, updateItems] = useState(createItems(0));
+        const [items, updateItems] = useState(createItems());
 
         const [loadingState, updateLoadingState] = useState<ScrollListLoadingState>('idle');
         const loadMore = useCallback(
             async (count: number) => {
                 updateLoadingState('loading');
                 await sleep(500);
-                updateItems(items.concat(createItems(items.length, count)));
+                updateItems(items.concat(createItems(count, items.length)));
                 updateLoadingState('idle');
             },
             [items]

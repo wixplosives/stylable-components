@@ -1,11 +1,8 @@
 import React from 'react';
 import type { ListItemProps } from '../list/list';
 import { SearchableText } from '../searchable-text/searchable-text';
+import type { ItemData } from './create-items';
 import { classes, st } from './item-renderer.st.css';
-export interface ItemData {
-    title: string;
-    id: string;
-}
 
 export const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     return (

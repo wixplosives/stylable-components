@@ -1,5 +1,8 @@
+import { createBoard } from '@wixc3/react-board';
 import React from 'react';
-import type { ItemData } from '../../simulation-assets/item-renderer';
+import type { ItemData } from '../../simulation-assets';
+import { createItems, StatefulItemRenderer } from '../../simulation-assets';
+import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import {
     clickAction,
     expectElementsStyle,
@@ -9,23 +12,14 @@ import {
     scrollAction,
 } from '../../simulation-mixins/scenario';
 import { ScrollList } from '../scroll-list';
-import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
-import { createBoard } from '@wixc3/react-board';
-import { StatefullItemRenderer } from '../../simulation-assets/statefull-item-renderer';
 
-const items = new Array(1000).fill(0).map(
-    (_, idx) =>
-        ({
-            id: 'a' + idx,
-            title: 'item number ' + idx,
-        } as ItemData)
-);
+const items = createItems();
 
 export default createBoard({
-    name: 'no-unmount',
+    name: 'ScrollList — no unmount',
     Board: () => (
         <ScrollList
-            ItemRenderer={StatefullItemRenderer}
+            ItemRenderer={StatefulItemRenderer}
             items={items}
             getId={(item: ItemData) => item.id}
             watchScrollWindoSize={true}

@@ -1,25 +1,20 @@
-import React, { useState, useRef, memo } from 'react';
-import type { ItemData } from '../../simulation-assets/item-renderer';
-import {
-    scenarioMixin,
-    scrollAction,
-    expectElements,
-    writeAction,
-    expectElement,
-} from '../../simulation-mixins/scenario';
-import { ScrollList } from '../scroll-list';
-import type { ListItemProps } from '../../list/list';
-import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
+import React, { memo, useRef, useState } from 'react';
+import type { ListItemProps } from '../../list/list';
+import type { ItemData } from '../../simulation-assets';
+import { createItems } from '../../simulation-assets';
+import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
+import {
+    expectElement,
+    expectElements,
+    scenarioMixin,
+    scrollAction,
+    writeAction,
+} from '../../simulation-mixins/scenario';
+import { ScrollList } from '../scroll-list';
 
-const items = new Array(1000).fill(0).map(
-    (_, idx) =>
-        ({
-            id: 'a' + idx,
-            title: 'item number ' + idx,
-        } as ItemData)
-);
+const items = createItems();
 
 const ItemRenderer: React.FC<ListItemProps<ItemData>> = memo((props) => {
     const [isExpanded, setExpanded] = useState(true);
@@ -37,8 +32,9 @@ const ItemRenderer: React.FC<ListItemProps<ItemData>> = memo((props) => {
     );
 });
 ItemRenderer.displayName = 'ItemRenderer';
+
 export default createBoard({
-    name: 'element-scroll-items-scrolloffset',
+    name: 'ScrollList — scrollOffset',
     Board: () => {
         const ref = useRef<HTMLDivElement>(null);
         const [offsetHeight, setOffsetHeight] = useState(400);

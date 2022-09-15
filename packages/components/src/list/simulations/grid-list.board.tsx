@@ -1,19 +1,16 @@
-import React from 'react';
 import { createBoard } from '@wixc3/react-board';
-import { createItems } from '../../simulation-assets/create-items';
-import { ItemRenderer } from '../../simulation-assets/item-renderer';
+import React from 'react';
+import { createItems, ItemData, ItemRenderer } from '../../simulation-assets';
 import { List } from '../list';
-interface ItemData {
-    title: string;
-    id: string;
-}
+
+const items = createItems(100);
 
 export default createBoard({
     name: 'grid-list',
     Board: () => (
         <List
             ItemRenderer={ItemRenderer}
-            items={createItems()}
+            items={items}
             getId={(item: ItemData) => item.id}
             listRoot={{
                 el: 'div',

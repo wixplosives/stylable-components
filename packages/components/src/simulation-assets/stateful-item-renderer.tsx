@@ -1,12 +1,9 @@
 import React from 'react';
 import type { ListItemProps } from '../list/list';
+import type { ItemData } from './create-items';
 import { classes, st } from './item-renderer.st.css';
-export interface ItemData {
-    title: string;
-    id: string;
-}
 
-export const StatefullItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
+export const StatefulItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     return (
         <div
             className={st(classes.root, {
