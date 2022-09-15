@@ -1,9 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
-import React, { memo, useRef, useState } from 'react';
-import type { ListItemProps } from '../../list/list';
-import type { ItemData } from '../../simulation-assets';
-import { createItems } from '../../simulation-assets';
+import React, { useRef, useState } from 'react';
+import { createItems, ExpandableItemRenderer, getId } from '../../simulation-assets';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import {
     expectElement,
@@ -15,23 +13,6 @@ import {
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
-
-const ItemRenderer: React.FC<ListItemProps<ItemData>> = memo((props) => {
-    const [isExpanded, setExpanded] = useState(true);
-    return (
-        <div
-            data-id={props.id}
-            style={{
-                height: isExpanded ? '100px' : '12px',
-                outline: '1px solid ',
-            }}
-        >
-            <button onClick={() => setExpanded(!isExpanded)}>{isExpanded ? 'close' : 'open'}</button>
-            {isExpanded && <div>{props.data.title}</div>}
-        </div>
-    );
-});
-ItemRenderer.displayName = 'ItemRenderer';
 
 export default createBoard({
     name: 'ScrollList — scrollOffset',
@@ -62,9 +43,9 @@ export default createBoard({
                         ></input>
                     </div>
                     <ScrollList
-                        ItemRenderer={ItemRenderer}
+                        ItemRenderer={ExpandableItemRenderer}
                         items={items}
-                        getId={(item: ItemData) => item.id}
+                        getId={getId}
                         watchScrollWindoSize={true}
                         estimatedItemSize={50}
                         scrollWindow={ref}

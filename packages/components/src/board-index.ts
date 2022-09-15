@@ -33,6 +33,7 @@ import no_unmount from './scroll-list/simulations/no-unmount.board';
 import scroll_list from './scroll-list/simulations/scroll-list.board';
 import scroll_position from './scroll-list/simulations/scroll-position.board';
 import scroll_ref from './scroll-list/simulations/scroll-ref.board';
+import scroll_to_selected from './scroll-list/simulations/scroll-to-selected.board';
 import with_header from './scroll-list/simulations/with-header.board';
 import searchable_text from './searchable-text/simulations/searchable-text.board';
 import tree_with_lanes from './tree/simulations/tree-with-lanes.board';
@@ -68,6 +69,7 @@ export default [
     scroll_list,
     scroll_position,
     scroll_ref,
+    scroll_to_selected,
     with_header,
     searchable_text,
     tree_with_lanes,

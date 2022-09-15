@@ -1,12 +1,10 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { createBoard } from '@wixc3/react-board';
+import { sleep } from 'promise-assist';
 import React, { useCallback, useState } from 'react';
-import { ItemRenderer } from '../../simulation-assets/item-renderer';
+import { createItems, getId, ItemRenderer } from '../../simulation-assets';
+import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../../simulation-mixins/scenario';
 import { ScrollList, ScrollListLoadingState } from '../scroll-list';
-import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
-import { sleep } from 'promise-assist';
-import { createItems, ItemData } from '../../simulation-assets/create-items';
 
 export default createBoard({
     name: 'ScrollList — infinite scroll',
@@ -28,7 +26,7 @@ export default createBoard({
             <ScrollList
                 ItemRenderer={ItemRenderer}
                 items={items}
-                getId={(item: ItemData) => item.id}
+                getId={getId}
                 itemCount={-1}
                 watchScrollWindoSize={true}
                 loadMore={loadMore}

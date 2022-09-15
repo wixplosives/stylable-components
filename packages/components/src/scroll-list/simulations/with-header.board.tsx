@@ -1,6 +1,6 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
-import { createItems, ItemData, ItemRenderer } from '../../simulation-assets';
+import { createItems, getId, ItemRenderer } from '../../simulation-assets';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
@@ -12,7 +12,7 @@ export default createBoard({
             <ScrollList
                 ItemRenderer={ItemRenderer}
                 items={items}
-                getId={(item: ItemData) => item.id}
+                getId={getId}
                 scrollListRoot={{
                     el: 'div',
                     props: {

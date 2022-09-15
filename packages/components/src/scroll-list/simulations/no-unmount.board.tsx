@@ -1,7 +1,6 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
-import type { ItemData } from '../../simulation-assets';
-import { createItems, StatefulItemRenderer } from '../../simulation-assets';
+import { createItems, getId, StatefulItemRenderer } from '../../simulation-assets';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import {
     clickAction,
@@ -21,7 +20,7 @@ export default createBoard({
         <ScrollList
             ItemRenderer={StatefulItemRenderer}
             items={items}
-            getId={(item: ItemData) => item.id}
+            getId={getId}
             watchScrollWindoSize={true}
             unmountItems={false}
         />

@@ -1,8 +1,6 @@
 import { createBoard } from '@wixc3/react-board';
-import React, { useState } from 'react';
-import type { ListItemProps } from '../../list/list';
-import type { ItemData } from '../../simulation-assets';
-import { createItems } from '../../simulation-assets';
+import React from 'react';
+import { createItems, ExpandableItemRenderer, getId } from '../../simulation-assets';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
 import { clickAction, expectElement, scenarioMixin } from '../../simulation-mixins/scenario';
 import { ScrollList } from '../scroll-list';
@@ -13,28 +11,13 @@ const elementRef: React.RefObject<HTMLDivElement> = {
     current: null,
 };
 
-const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
-    const [isExpanded, setExpanded] = useState(true);
-    return (
-        <div
-            data-id={props.id}
-            style={{
-                height: isExpanded ? '100px' : '12px',
-                border: '1px solid ',
-            }}
-        >
-            <button onClick={() => setExpanded(!isExpanded)}>{isExpanded ? 'close' : 'open'}</button>
-            {isExpanded && <div>{props.data.title}</div>}
-        </div>
-    );
-};
 export default createBoard({
     name: 'ScrollList — items change size',
     Board: () => (
         <ScrollList
-            ItemRenderer={ItemRenderer}
+            ItemRenderer={ExpandableItemRenderer}
             items={items}
-            getId={(item: ItemData) => item.id}
+            getId={getId}
             watchScrollWindoSize={true}
             listRoot={{
                 el: 'div',

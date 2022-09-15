@@ -2,12 +2,13 @@ import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
 import { createItems, getId, ItemRenderer } from '../../simulation-assets';
 import { mixinProjectThemes } from '../../simulation-mixins/mixin-project-themes';
+import { scenarioMixin } from '../../simulation-mixins/scenario';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
 
 export default createBoard({
-    name: 'ScrollList — scrollPosition',
+    name: 'ScrollList — scrollToSelected',
     Board: () => {
         const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -43,5 +44,11 @@ export default createBoard({
         windowHeight: 300,
         windowWidth: 600,
     },
-    plugins: [mixinProjectThemes],
+    plugins: [
+        mixinProjectThemes,
+        scenarioMixin.use({
+            title: 'should scroll to selected item',
+            events: [],
+        }),
+    ],
 });

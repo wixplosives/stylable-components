@@ -3,6 +3,8 @@ export interface ItemData {
     id: string;
 }
 
+export const getId = ({ id }: ItemData) => id;
+
 /**
  * Used to generate a list of items for scroll list testing purposes.
  * @param {number} number — number of items to generate;
