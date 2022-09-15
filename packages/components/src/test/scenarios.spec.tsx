@@ -1,5 +1,5 @@
 import { sleep } from 'promise-assist';
-import type { ScenarioProps } from '../simulation-mixins/scenario';
+import type { ScenarioProps } from '../board-mixins/scenario';
 import boards from '../board-index';
 
 const asyncWaitFor = async (cb: () => Promise<void>, timeoutMessage: string, timeout: number) => {
@@ -37,7 +37,7 @@ for (const sim of boards) {
                             );
                         } catch (err) {
                             const errMessage = err instanceof Error ? err.message : String(err);
-                            throw new Error(`failed to run action ${title} 
+                            throw new Error(`failed to run action ${title}
                                 ${errMessage}`);
                         }
                     }
