@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
 import { useElementDimension, useIdBasedRects, WatchedSize } from '../hooks/use-element-rect';
-import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
-import { classes } from './scroll-list.st.css';
 import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
+import { defaultPos, usePositionInParent } from '../hooks/use-position';
 import { useScroll } from '../hooks/use-scroll';
+import { useStateControls } from '../hooks/use-state-controls';
 import { List, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
-import { useStateControls } from '../hooks/use-state-controls';
-import { defaultPos, usePositionInParent } from '../hooks/use-position';
+import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
+import { classes } from './scroll-list.st.css';
 
 const defaultPreloader: ElementSlot<{}> = {
     el: Preloader,
@@ -151,6 +151,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
     itemGap?: number;
     listRoot?: typeof listRoot;
 }
+
 export type ScrollListLoadingState = 'loading' | 'idle' | 'done';
 export type ScrollList<T, EL extends HTMLElement = HTMLDivElement> = (props: ScrollListProps<T, EL>) => JSX.Element;
 export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
