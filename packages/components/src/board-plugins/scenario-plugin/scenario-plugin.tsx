@@ -16,6 +16,7 @@ export interface Action {
 
 export interface ScenarioParams {
     title?: string;
+    resetBoard?: () => void;
     events: Action[];
     slowMo?: number;
     skip?: boolean;
@@ -68,6 +69,12 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
         }
     };
 
+    const resetAll = useCallback(() => {
+        resetBoard();
+        updateButtonText(propEvents[0]!.title);
+        updateEvents(propEvents);
+    }, [propEvents, resetBoard]);
+
     const runAction = useCallback(() => {
         const current = events[0];
         if (current) {
@@ -100,12 +107,10 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
                 return onTaskFailed(err);
             }
         } else {
-            resetBoard();
-            updateButtonText(propEvents[0]!.title);
-            updateEvents(propEvents);
+            resetAll();
         }
         setHighlightedElement(events[1]?.highlightSelector);
-    }, [events, propEvents, resetBoard, setHighlightedElement]);
+    }, [events, setHighlightedElement, resetAll]);
 
     const runActions = useCallback(() => {
         triggerAutoRun(true);
@@ -125,9 +130,9 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
     return (
         <div className={classes.root}>
             <div className={st(classes.header, { skipped: props.skip })}>
-                {props.title || 'unamedScenario'}
-                <button className={classes.reset} onClick={resetBoard}>
-                    🗘
+                {props.title || 'unnamedScenario'}
+                <button className={classes.reset} onClick={resetAll} disabled={events.length === 0}>
+                    Restart
                 </button>
                 <button
                     className={classes.reset}
@@ -135,11 +140,11 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
                         void runActions();
                     }}
                 >
-                    {'>>'}
+                    Run
                 </button>
             </div>
             <div className={classes.content}>
-                <div>{events.length} events left to run</div>
+                <div>{events.length > 0 ? `${events.length} events left to run` : ''}</div>
                 <div className={classes.controls}>
                     <button
                         onClick={() => {
@@ -157,7 +162,13 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
 };
 
 export const RenderWrapper = (props: ScenarioParams & { board: JSX.Element }) => {
-    const [boardKey, resetBoard] = useReducer((n: number) => n + 1, 0);
+    const [boardKey, rerenderBoard] = useReducer((n: number) => n + 1, 0);
+
+    const resetBoard = () => {
+        rerenderBoard();
+        props.resetBoard?.();
+    };
+
     return renderInPluginControls(
         <React.Fragment key={boardKey}>{props.board}</React.Fragment>,
         <ScenarioRenderer

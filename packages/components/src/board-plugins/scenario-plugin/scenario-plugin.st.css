@@ -37,8 +37,16 @@
 
 .content {
     margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .controls {}
 
 .reset {}
+
+.reset:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
