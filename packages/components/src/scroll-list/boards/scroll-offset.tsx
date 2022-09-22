@@ -40,11 +40,11 @@ export default createBoard({
                         ItemRenderer={ExpandableItemRenderer}
                         items={items}
                         getId={getId}
-                        watchScrollWindoSize={true}
+                        watchScrollWindowSize={true}
                         estimatedItemSize={50}
                         scrollWindow={ref}
                         itemGap={0}
-                        extraRenderedItems={0}
+                        extraRenderSize={0}
                         itemSize
                         scrollOffset={true}
                         listRoot={{

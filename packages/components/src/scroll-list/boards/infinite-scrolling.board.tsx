@@ -1,10 +1,11 @@
 import { createBoard } from '@wixc3/react-board';
 import { sleep } from 'promise-assist';
 import React, { useCallback, useState } from 'react';
+import type { ScrollListLoadingState } from '../hooks/use-scroll-list-maybe-load-more';
 import { createItems, getId, ItemRenderer } from '../../board-assets';
 import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
 import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../../board-mixins/scenario';
-import { ScrollList, ScrollListLoadingState } from '../scroll-list';
+import { ScrollList } from '../scroll-list';
 
 export default createBoard({
     name: 'ScrollList — infinite scroll',
@@ -27,7 +28,7 @@ export default createBoard({
                 items={items}
                 getId={getId}
                 itemCount={-1}
-                watchScrollWindoSize={true}
+                watchScrollWindowSize={true}
                 loadMore={loadMore}
                 loadingState={loadingState}
             />

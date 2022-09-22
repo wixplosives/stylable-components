@@ -1,5 +1,6 @@
 import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { noop } from '../board-assets/utils';
 import { childrenById } from '../common/element-id-utils';
 import { unchanged, useDelayedUpdateState } from './use-delayed-update';
 
@@ -7,6 +8,7 @@ export interface WatchedSize {
     width: null | number;
     height: null | number;
 }
+
 export interface SizesById {
     [id: string]: WatchedSize;
 }
@@ -51,7 +53,7 @@ export const useElementDimension = (
                 updateDimension(watchedSizeToDim(isVertical, elementOrWindowSize()));
             };
             window.addEventListener('resize', listener);
-            
+
             return () => window.removeEventListener('resize', listener);
         }
 
@@ -123,7 +125,6 @@ export const useElementSize = (
     return rect;
 };
 
-const noop = () => undefined;
 const useSetableObserver = (shouldMeasure: boolean) => {
     const listener = useRef<ResizeObserverCallback>(noop);
     const observerRef = useRef<ResizeObserver>();
@@ -171,6 +172,7 @@ const createSetableMutationObserver = () => {
         observer,
     };
 };
+
 export function useIdBasedRects<T, EL extends HTMLElement>(
     ref: React.RefObject<EL>,
     data: T[],
@@ -268,6 +270,7 @@ export const unMeasured: WatchedSize = {
     width: null,
     height: null,
 };
+
 export function calcUpdateSizes<T, EL extends HTMLElement>(
     ref: React.RefObject<EL>,
     data: T[],
@@ -284,7 +287,7 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
         }
         return unMeasured;
     };
-    
+
     if (size !== undefined || !meassure || !ref.current) {
         let changed = false;
         const res = data.reduce((acc, item) => {
@@ -303,29 +306,29 @@ export function calcUpdateSizes<T, EL extends HTMLElement>(
 
     const elements = childrenById(ref.current);
     let changed = false;
-    
+
     setObserveTargets?.(Object.values(elements));
 
     const res = data.reduce((acc, item) => {
         const id = getId(item);
         const element = elements[id];
         const cachedSize = sizeCache.get(id);
-        
+
         if (cachedSize) {
             acc[id] = cachedSize;
         } else if (element) {
             const measured = elementToSize(element);
-            
+
             acc[id] = measured;
             sizeCache.set(id, measured);
         } else {
             acc[id] = unMeasured;
         }
-        
+
         if (acc[id]?.height !== oldRes[id]?.height || acc[id]?.width !== oldRes[id]?.width) {
             changed = true;
         }
-        
+
         return acc;
     }, {} as SizesById);
 
