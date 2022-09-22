@@ -2,7 +2,7 @@
 import { createBoard } from '@wixc3/react-board';
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useMemo, useState } from 'react';
-import { projectThemesPlugin } from '../../board-plugins/project-themes-plugin';
+import { projectThemesPlugin } from '../../board-plugins';
 import type { ElementData } from '../../tree-items/lanes/element-item-renderer';
 import { lanesContext } from '../../tree-items/lanes/lane-context';
 import type { LaneData, LaneItem } from '../../tree-items/lanes/lane-item-renderer';

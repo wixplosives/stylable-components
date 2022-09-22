@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import { createBoard } from '@wixc3/react-board';
-import { expectElementText, scenarioPlugin } from '../../../board-plugins/scenario-plugin/scenario-plugin';
+import React, { useState } from 'react';
+import { expectElementText, scenarioPlugin } from '../../../board-plugins';
 import { ElmentDimHookSimulator } from './element-rect-hook-simulator';
 
 export default createBoard({

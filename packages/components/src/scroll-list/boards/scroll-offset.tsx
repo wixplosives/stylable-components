@@ -2,14 +2,14 @@ import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
 import React, { useRef, useState } from 'react';
 import { createItems, ExpandableItemRenderer, getId } from '../../board-assets';
-import { projectThemesPlugin } from '../../board-plugins/project-themes-plugin';
 import {
     expectElement,
     expectElements,
+    projectThemesPlugin,
     scenarioPlugin,
     scrollAction,
     writeAction,
-} from '../../board-plugins/scenario-plugin/scenario-plugin';
+} from '../../board-plugins';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();

@@ -1,9 +1,10 @@
-import React from 'react';
 import { createBoard } from '@wixc3/react-board';
-import { projectThemesPlugin } from '../../board-plugins/project-themes-plugin';
-import { Button } from '../button';
+import React from 'react';
+import { projectThemesPlugin } from '../../board-plugins';
 import { classes } from '../../common/common.st.css';
 import { AddFileIcon } from '../../icons';
+import { Button } from '../button';
+
 export default createBoard({
     name: 'button-with-icon',
     Board: () => (
@@ -14,7 +15,7 @@ export default createBoard({
     ),
     plugins: [projectThemesPlugin],
     environmentProps: {
-        windowBackgroundColor: '#ffffff',
+        windowBackgroundColor: '#fff',
         canvasWidth: 361,
         canvasHeight: 305,
     },

@@ -1,8 +1,8 @@
-import React from 'react';
 import { createBoard } from '@wixc3/react-board';
+import React from 'react';
+import { projectThemesPlugin } from '../../board-plugins';
 import { Preloader } from '../preloader';
 import { classes } from '../variants/circle-preloader.st.css';
-import { projectThemesPlugin } from '../../board-plugins/project-themes-plugin';
 
 export default createBoard({
     name: 'circle-preloader',

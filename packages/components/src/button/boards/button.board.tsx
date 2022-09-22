@@ -1,6 +1,6 @@
-import React from 'react';
 import { createBoard } from '@wixc3/react-board';
-import { projectThemesPlugin } from '../../board-plugins/project-themes-plugin';
+import React from 'react';
+import { projectThemesPlugin } from '../../board-plugins';
 import { Button } from '../button';
 
 export default createBoard({

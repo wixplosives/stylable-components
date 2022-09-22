@@ -1,6 +1,6 @@
 import { sleep } from 'promise-assist';
-import type { ScenarioProps } from '../board-plugins/scenario-plugin/scenario-plugin';
 import boards from '../board-index';
+import type { ScenarioProps } from '../board-plugins';
 
 const asyncWaitFor = async (cb: () => Promise<void>, timeoutMessage: string, timeout: number) => {
     let done = false;

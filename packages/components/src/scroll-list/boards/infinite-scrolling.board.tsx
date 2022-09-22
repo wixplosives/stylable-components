@@ -1,15 +1,9 @@
 import { createBoard } from '@wixc3/react-board';
 import { sleep } from 'promise-assist';
 import React, { useCallback, useState } from 'react';
-import type { ScrollListLoadingState } from '../hooks/use-scroll-list-maybe-load-more';
 import { createItems, getId, ItemRenderer } from '../../board-assets';
-import { projectThemesPlugin } from '../../board-plugins/project-themes-plugin';
-import {
-    clickAction,
-    hoverAction,
-    scenarioPlugin,
-    scrollAction,
-} from '../../board-plugins/scenario-plugin/scenario-plugin';
+import { clickAction, hoverAction, projectThemesPlugin, scenarioPlugin, scrollAction } from '../../board-plugins';
+import type { ScrollListLoadingState } from '../hooks/use-scroll-list-maybe-load-more';
 import { ScrollList } from '../scroll-list';
 
 export default createBoard({

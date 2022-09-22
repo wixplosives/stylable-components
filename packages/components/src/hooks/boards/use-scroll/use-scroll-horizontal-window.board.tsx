@@ -1,13 +1,7 @@
-import React from 'react';
 import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
-import {
-    expectElement,
-    expectElementText,
-    maxScroll,
-    scenarioPlugin,
-    scrollAction,
-} from '../../../board-plugins/scenario-plugin/scenario-plugin';
+import React from 'react';
+import { expectElement, expectElementText, maxScroll, scenarioPlugin, scrollAction } from '../../../board-plugins';
 import { ScrollHookSimulator } from './scroll-hook-simulator';
 
 export default createBoard({
