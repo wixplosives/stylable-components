@@ -1,4 +1,4 @@
-import { themeMixin, ThemeControls } from './theme-mixin';
+import { mixinTheme, ThemeControls } from './mixin-theme/mixin-theme';
 import { classes as white } from '../themes/white.st.css';
 import { classes as black } from '../themes/black.st.css';
 import React from 'react';
@@ -19,7 +19,7 @@ export const ProjectThemeControls = (
     />
 );
 
-export const mixinProjectThemes = themeMixin.use({
+export const mixinProjectThemes = mixinTheme.use({
     themes: [
         {
             themeTitle: 'White',

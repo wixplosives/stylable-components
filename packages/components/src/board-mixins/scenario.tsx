@@ -1,17 +1,19 @@
 import { createPlugin } from '@wixc3/board-core';
 import type { IReactBoard } from '@wixc3/react-board';
-import { classes, st } from './scenario.st.css';
-import { renderInMixinControls } from './mixin-controls';
 import { expect } from 'chai';
 import { sleep, waitFor } from 'promise-assist';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
+import { renderInMixinControls } from './mixin-controls/mixin-controls';
+import { classes, st } from './scenario.st.css';
+
 export interface Action {
     execute: () => void | Promise<void>;
     title: string;
     highlightSelector?: string;
     timeout: number;
 }
+
 export interface ScenarioParams {
     title?: string;
     events: Action[];
