@@ -24,7 +24,6 @@ export default createBoard({
                     style: {
                         display: 'grid',
                         gridTemplateColumns: '1fr',
-                        gridGap: '20px',
                     },
                 },
             }}
@@ -40,13 +39,12 @@ export default createBoard({
                 },
             }}
             scrollWindow={elementRef}
-            itemGap={20}
         />
     ),
     environmentProps: {
-        canvasWidth: 560,
-        windowHeight: 726,
-        windowWidth: 600,
+        windowWidth: 500,
+        canvasWidth: 400,
+        windowHeight: 500,
     },
     plugins: [
         scenarioPlugin.use({

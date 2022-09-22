@@ -1,7 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import { createItems, getId, StatefulItemRenderer } from '../../board-assets';
-import { projectThemesPlugin, scenarioPlugin } from '../../board-plugins';
+import { projectThemesPlugin } from '../../board-plugins';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
@@ -22,11 +22,5 @@ export default createBoard({
         windowHeight: 388,
         windowWidth: 600,
     },
-    plugins: [
-        scenarioPlugin.use({
-            skip: true,
-            events: [],
-        }),
-        projectThemesPlugin,
-    ],
+    plugins: [projectThemesPlugin],
 });

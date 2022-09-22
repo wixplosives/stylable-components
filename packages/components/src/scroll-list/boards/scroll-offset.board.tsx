@@ -15,7 +15,7 @@ import { ScrollList } from '../scroll-list';
 const items = createItems();
 
 export default createBoard({
-    name: 'ScrollList — scrollOffset',
+    name: 'ScrollList — with offset',
     Board: () => {
         const ref = useRef<HTMLDivElement>(null);
         const [offsetHeight, setOffsetHeight] = useState(400);
@@ -42,6 +42,7 @@ export default createBoard({
                             id="input"
                         ></input>
                     </div>
+
                     <ScrollList
                         ItemRenderer={ExpandableItemRenderer}
                         items={items}

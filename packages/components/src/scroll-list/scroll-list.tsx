@@ -83,6 +83,8 @@ export interface ScrollListProps<T, EL extends HTMLElement>
      *   false: no remeasure,
      *   true: measure on changes,
      *   number: use the number as size
+     *
+     * @default false
      */
     watchScrollWindowSize?: number | boolean;
     /**

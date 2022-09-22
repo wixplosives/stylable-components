@@ -1,16 +1,16 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import { createItems, getId, ItemRenderer } from '../../board-assets';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
 import {
     clickAction,
     expectElement,
     expectElementsStyle,
     expectElementStyle,
     hoverAction,
-    scenarioMixin,
+    projectThemesPlugin,
+    scenarioPlugin,
     scrollAction,
-} from '../../board-mixins/scenario';
+} from '../../board-plugins';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
@@ -20,47 +20,49 @@ const elementRef: React.RefObject<HTMLDivElement> = {
 };
 
 export default createBoard({
-    name: 'ScrollList — with scroll Ref',
-    Board: () => (
-        <ScrollList
-            ItemRenderer={ItemRenderer}
-            items={items}
-            getId={getId}
-            watchScrollWindoSize={true}
-            listRoot={{
-                el: 'div',
-                props: {
-                    style: {
-                        display: 'grid',
-                        gridTemplateColumns: '1fr',
-                        gridGap: '20px',
+    name: 'ScrollList — with scrollWindow reference',
+    Board: () => {
+        return (
+            <ScrollList
+                ItemRenderer={ItemRenderer}
+                items={items}
+                getId={getId}
+                scrollWindow={elementRef}
+                itemGap={20}
+                watchScrollWindowSize={true}
+                listRoot={{
+                    el: 'div',
+                    props: {
+                        style: {
+                            display: 'grid',
+                            gridTemplateColumns: '1fr',
+                            gridGap: '20px',
+                        },
                     },
-                },
-            }}
-            scrollListRoot={{
-                el: 'div',
-                props: {
-                    id: 'list',
+                }}
+                scrollListRoot={{
+                    el: 'div',
+                    props: {
+                        id: 'list',
 
-                    style: {
-                        width: '200px',
-                        height: '400px',
-                        overflow: 'auto',
+                        style: {
+                            width: '200px',
+                            height: '400px',
+                            overflow: 'auto',
+                        },
+                        ref: elementRef,
                     },
-                    ref: elementRef,
-                },
-            }}
-            scrollWindow={elementRef}
-            itemGap={20}
-        />
-    ),
+                }}
+            />
+        );
+    },
     environmentProps: {
-        canvasWidth: 560,
-        windowHeight: 726,
-        windowWidth: 600,
+        windowWidth: 500,
+        canvasWidth: 400,
+        windowHeight: 500,
     },
     plugins: [
-        scenarioMixin.use({
+        scenarioPlugin.use({
             title: 'scroll list sanity',
             events: [
                 expectElement('[data-id="a3"]'),
@@ -89,6 +91,6 @@ export default createBoard({
                 }),
             ],
         }),
-        mixinProjectThemes,
+        projectThemesPlugin,
     ],
 });
