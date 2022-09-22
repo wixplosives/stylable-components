@@ -4,8 +4,8 @@ import { expect } from 'chai';
 import { sleep, waitFor } from 'promise-assist';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
-import { renderInMixinControls } from './mixin-controls/mixin-controls';
-import { classes, st } from './scenario.st.css';
+import { renderInPluginControls } from '../plugin-controls/plugin-controls';
+import { classes, st } from './scenario-plugin.st.css';
 
 export interface Action {
     execute: () => void | Promise<void>;
@@ -156,24 +156,9 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
     );
 };
 
-export const scenarioMixin = createPlugin<IReactBoard>()(
-    'scenario',
-    {
-        title: 'scenario',
-        events: [],
-        timeout: 2000,
-        skip: false,
-    } as Partial<ScenarioParams>,
-    {
-        wrapRender(props, _r, board) {
-            return <RenderWrapper board={board} {...props} />;
-        },
-    }
-);
-
 export const RenderWrapper = (props: ScenarioParams & { board: JSX.Element }) => {
     const [boardKey, resetBoard] = useReducer((n: number) => n + 1, 0);
-    return renderInMixinControls(
+    return renderInPluginControls(
         <React.Fragment key={boardKey}>{props.board}</React.Fragment>,
         <ScenarioRenderer
             skip={props.skip}
@@ -499,3 +484,18 @@ export const expectWindowScroll = (
         timeout: 0,
     };
 };
+
+export const scenarioPlugin = createPlugin<IReactBoard>()(
+    'scenario',
+    {
+        title: 'scenario',
+        events: [],
+        timeout: 2000,
+        skip: false,
+    } as Partial<ScenarioParams>,
+    {
+        wrapRender(props, _r, board) {
+            return <RenderWrapper board={board} {...props} />;
+        },
+    }
+);

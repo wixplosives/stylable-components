@@ -1,8 +1,8 @@
 import { createPlugin } from '@wixc3/board-core';
 import type { IReactBoard } from '@wixc3/react-board';
 import React, { useCallback, useEffect, useState } from 'react';
-import { renderInMixinControls } from '../mixin-controls/mixin-controls';
-import { classes } from './mixin-theme.st.css';
+import { renderInPluginControls } from '../plugin-controls/plugin-controls';
+import { classes } from './theme-plugin.st.css';
 
 export interface ThemeItem {
     themeClass: string;
@@ -47,15 +47,15 @@ export const ThemeControls = ({ themes }: ThemeProps) => {
     );
 };
 
-export const mixinTheme = createPlugin<IReactBoard>()(
+export const themePlugin = createPlugin<IReactBoard>()(
     'theme',
     {
         themes: [],
     } as ThemeProps,
     {
-        wrapRender({ themes }, _r, demo) {
-            return renderInMixinControls(
-                demo,
+        wrapRender({ themes }, _r, board) {
+            return renderInPluginControls(
+                board,
                 <ThemeControls key="theme-controls" themes={themes} />,
                 'theme-controls'
             );

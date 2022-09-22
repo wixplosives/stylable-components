@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBoard } from '@wixc3/react-board';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
+import { projectThemesPlugin } from '../../board-plugins/project-themes-plugin';
 import { Button } from '../button';
 import { classes } from '../../common/common.st.css';
 import { AddFileIcon } from '../../icons';
@@ -12,7 +12,7 @@ export default createBoard({
             <span key="text">Click Me!</span>
         </Button>
     ),
-    plugins: [mixinProjectThemes],
+    plugins: [projectThemesPlugin],
     environmentProps: {
         windowBackgroundColor: '#ffffff',
         canvasWidth: 361,

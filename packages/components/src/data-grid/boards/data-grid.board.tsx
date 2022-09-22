@@ -2,7 +2,7 @@ import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import type { ListItemProps } from '../../list/list';
 import { DataGrid } from '../data-grid';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
+import { projectThemesPlugin } from '../../board-plugins/project-themes-plugin';
 
 function cellRenderer<T>(key: keyof T) {
     const renderer = (props: ListItemProps<T>) => {
@@ -70,7 +70,7 @@ export default createBoard({
             }}
         />
     ),
-    plugins: [mixinProjectThemes],
+    plugins: [projectThemesPlugin],
     environmentProps: {
         canvasWidth: 461,
         canvasHeight: 400,

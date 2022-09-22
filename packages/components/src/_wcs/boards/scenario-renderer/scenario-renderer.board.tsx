@@ -1,7 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useReducer } from 'react';
 import { noop } from '../../../board-assets/utils';
-import { ScenarioRenderer } from '../../../board-mixins/scenario';
+import { ScenarioRenderer } from '../../../board-plugins/scenario-plugin/scenario-plugin';
 
 export default createBoard({
     name: 'ScenarioRenderer',

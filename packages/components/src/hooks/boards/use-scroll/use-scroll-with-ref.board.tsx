@@ -5,9 +5,9 @@ import {
     expectElements,
     expectElementText,
     maxScroll,
-    scenarioMixin,
+    scenarioPlugin,
     scrollAction,
-} from '../../../board-mixins/scenario';
+} from '../../../board-plugins/scenario-plugin/scenario-plugin';
 import { ScrollHookSimulator } from './scroll-hook-simulator';
 
 export default createBoard({
@@ -20,7 +20,7 @@ export default createBoard({
         windowHeight: 640,
     },
     plugins: [
-        scenarioMixin.use({
+        scenarioPlugin.use({
             title: 'should watch scroll position of element',
             events: [
                 scrollAction(300, true, '#scroll-div'),

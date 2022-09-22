@@ -1,8 +1,8 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import { createItems, ExpandableItemRenderer, getId } from '../../board-assets';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
-import { clickAction, expectElement, scenarioMixin } from '../../board-mixins/scenario';
+import { projectThemesPlugin } from '../../board-plugins/project-themes-plugin';
+import { clickAction, expectElement, scenarioPlugin } from '../../board-plugins/scenario-plugin/scenario-plugin';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
@@ -50,7 +50,7 @@ export default createBoard({
         windowWidth: 600,
     },
     plugins: [
-        scenarioMixin.use({
+        scenarioPlugin.use({
             title: 'should listen to item resize',
             events: [
                 clickAction('[data-id="a0"] button'),
@@ -59,6 +59,6 @@ export default createBoard({
                 expectElement('[data-id="a5"]'),
             ],
         }),
-        mixinProjectThemes,
+        projectThemesPlugin,
     ],
 });
