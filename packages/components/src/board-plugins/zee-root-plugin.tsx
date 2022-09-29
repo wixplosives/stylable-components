@@ -3,8 +3,8 @@ import type { IReactBoard } from '@wixc3/react-board';
 import { Root } from '@zeejs/react';
 import React from 'react';
 
-export const ZeeRootPlugin = createPlugin<IReactBoard>()(
-    'ZeeRoot',
+export const zeeRootPlugin = createPlugin<IReactBoard>()(
+    'zeeRoot',
     {},
     {
         wrapRender: (_1, _2, el) => {
