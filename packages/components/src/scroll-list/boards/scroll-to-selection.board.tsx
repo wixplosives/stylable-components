@@ -1,19 +1,47 @@
 import { createBoard } from '@wixc3/react-board';
-import React, { useCallback, useState } from 'react';
-import { createItems, getId, ItemRenderer, noop } from '../../board-assets';
-import { clickAction, projectThemesPlugin, scenarioPlugin, writeAction } from '../../board-plugins';
+import { expect } from 'chai';
+import React, { useState } from 'react';
+import { createItems, getId, ItemData, noop } from '../../board-assets';
+import { expectElement, projectThemesPlugin, scenarioPlugin } from '../../board-plugins';
+import {
+    selectItemAction,
+    selectItemButton,
+    selectItemInput,
+} from '../../board-plugins/scenario-plugin/actions/select-item-action';
+import type { ListItemProps } from '../../list/list';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
-const inputId = 'input';
-const buttonId = 'button';
+const elementRef: React.RefObject<HTMLDivElement> = {
+    current: null,
+};
+
+/**
+ * Right now scrolling to selection is supported for non-infinite lists; and for those
+ * that provide ref to scrollWindow.
+ */
+
+const sizes = Array.from({ length: 1000 }, () => Math.random() * 60 + 30);
+
+const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
+    return (
+        <div
+            style={{
+                height: `${sizes[parseInt(props.id.substring(1))]!}px`,
+            }}
+            data-id={props.id}
+        >
+            {props.data.title} {props.isSelected && '(selected)'}
+        </div>
+    );
+};
 
 export default createBoard({
     name: 'ScrollList — scroll to selected item',
     Board: () => {
-        const [selectedItem, setSelectedItem] = useState('a0');
-        const [input, setInput] = useState('a0');
-        const select = useCallback(() => setSelectedItem(input), [input]);
+        const initialSelectedIndex = 555;
+        const [selectedItem, setSelectedItem] = useState(`a${initialSelectedIndex}`);
+        const [input, setInput] = useState(initialSelectedIndex);
 
         return (
             <>
@@ -27,31 +55,37 @@ export default createBoard({
                 >
                     <label>
                         ID:
-                        <input id={inputId} value={input} onChange={(event) => setInput(event.target.value)} />
+                        <input
+                            id={selectItemInput}
+                            value={input}
+                            onChange={(event) => setInput(parseInt(event.target.value))}
+                        />
                     </label>
-                    <button id={buttonId} onClick={select}>
+                    <button id={selectItemButton} onClick={() => setSelectedItem(`a${input}`)}>
                         Select
                     </button>
                 </div>
 
                 <ScrollList
+                    scrollWindow={elementRef}
+                    watchScrollWindowSize={true}
                     ItemRenderer={ItemRenderer}
                     items={items}
-                    scrollOffset={50}
                     getId={getId}
-                    watchScrollWindowSize={true}
                     selectionControl={[selectedItem, noop]}
-                    listRoot={{
+                    scrollListRoot={{
                         el: 'div',
                         props: {
+                            id: 'list',
+
                             style: {
-                                display: 'grid',
-                                gridTemplateColumns: '1fr',
-                                gridGap: '20px',
+                                width: '200px',
+                                height: '400px',
+                                overflow: 'auto',
                             },
+                            ref: elementRef,
                         },
                     }}
-                    itemGap={20}
                 />
             </>
         );
@@ -68,7 +102,22 @@ export default createBoard({
             resetBoard: () => {
                 window.scrollTo(0, 0);
             },
-            events: [writeAction(`#${inputId}`, 'a94'), clickAction(`#${buttonId}`)],
+            events: [
+                selectItemAction('123'),
+                // expectElement(
+                //     `[data-id='a555']`,
+                //     (el) => {
+                //         expect(el.getBoundingClientRect().height).to.not.equal(0);
+                //     },
+                //     'element is visible',
+                //     1_000
+                // ),
+                selectItemAction('321'),
+                selectItemAction('444'),
+                selectItemAction('777'),
+                selectItemAction('888'),
+                selectItemAction('999'),
+            ],
         }),
         projectThemesPlugin,
     ],

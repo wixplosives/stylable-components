@@ -52,7 +52,6 @@ export default createBoard({
                         scrollWindow={ref}
                         itemGap={0}
                         extraRenderSize={0}
-                        itemSize
                         scrollOffset={true}
                         listRoot={{
                             el: 'div',

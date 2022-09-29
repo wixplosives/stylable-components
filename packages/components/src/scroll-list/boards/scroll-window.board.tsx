@@ -28,7 +28,6 @@ export default createBoard({
                 items={items}
                 getId={getId}
                 scrollWindow={elementRef}
-                itemGap={20}
                 watchScrollWindowSize={true}
                 listRoot={{
                     el: 'div',
@@ -40,6 +39,7 @@ export default createBoard({
                         },
                     },
                 }}
+                itemGap={20}
                 scrollListRoot={{
                     el: 'div',
                     props: {

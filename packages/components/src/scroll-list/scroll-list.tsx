@@ -1,17 +1,17 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
 import { useElementDimension } from '../hooks/use-element-rect';
 import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
 import { useScroll } from '../hooks/use-scroll';
-import { useStateControls } from '../hooks/use-state-controls';
+import { useScrollListItemsSizes } from '../hooks/use-scroll-list-items-sizes';
+import { ScrollListInfiniteProps, useScrollListMaybeLoadMore } from '../hooks/use-scroll-list-maybe-load-more';
+import { ScrollListPositioningProps, useScrollListPosition } from '../hooks/use-scroll-list-position';
+import { useScrollListScrollToSelected } from '../hooks/use-scroll-list-scroll-to-selected';
+import { useScrollListStyles } from '../hooks/use-scroll-list-styles';
+import { ProcessedControlledState, useStateControls } from '../hooks/use-state-controls';
 import { List, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
 import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
-import { ScrollListItemsSizeProps, useScrollListItemsSizes } from './hooks/use-scroll-list-items-sizes';
-import { ScrollListInfiniteProps, useScrollListMaybeLoadMore } from './hooks/use-scroll-list-maybe-load-more';
-import { ScrollListPositioningProps, useScrollListPosition } from './hooks/use-scroll-list-position';
-import { useScrollListScrollToSelected } from './hooks/use-scroll-list-scroll-to-selected';
-import { useScrollListStyles } from './hooks/use-scroll-list-styles';
 import { classes } from './scroll-list.st.css';
 
 type ScrollListRootMinimalProps = Pick<
@@ -32,16 +32,7 @@ const ScrollListRootPropMapping: PropMapping<ScrollListRootMinimalProps> = {
 const { forward: forwardListRoot, slot: listRoot } = listRootParent(defaultRoot, ScrollListRootPropMapping);
 const { Slot: PreloaderSlot } = defineElementSlot(defaultPreloader, {});
 
-export const {
-    forward: forwardScrollListRoot,
-    slot: scrollListRoot,
-    Slot: RootSlot,
-} = defineElementSlot<ScrollListRootMinimalProps, typeof ScrollListRootPropMapping>(
-    defaultRoot,
-    ScrollListRootPropMapping
-);
-
-export interface ItemInfo<T> {
+export interface ScrollListItemInfo<T> {
     data: T;
     isSelected: boolean;
     isFocused: boolean;
@@ -54,20 +45,46 @@ export interface OverlayProps<T> {
     style?: React.CSSProperties;
 }
 
+export const {
+    forward: forwardScrollListRoot,
+    slot: scrollListRoot,
+    Slot: RootSlot,
+} = defineElementSlot<ScrollListRootMinimalProps, typeof ScrollListRootPropMapping>(
+    defaultRoot,
+    ScrollListRootPropMapping
+);
+
 export const { parentSlot: scrollListOverlayParent, Slot: ListOverlaySlot } = defineElementSlot<OverlayProps<any>, {}>(
     defaultPreloader,
     {}
 );
+/**
+ * size of the item in pixels or a method to compute according to data;
+ * if omitted, item size will be measured and watched for changes;
+ *
+ * @default false
+ */
+export type ItemSizeOptions<I> = number | ((info: I) => number) | false;
 
-export interface ScrollListProps<T, EL extends HTMLElement>
+export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollListItemInfo<T> = ScrollListItemInfo<T>>
     extends ListProps<T>,
-        ScrollListItemsSizeProps<T>,
         ScrollListPositioningProps,
         ScrollListInfiniteProps {
     /**
      * @default false
      */
     isHorizontal?: boolean;
+    /**
+     * @default false
+     */
+    itemSize?: ItemSizeOptions<I>;
+    /**
+     * size of the item ( height if vertical ) in pixels;
+     * used if item size is not fixed
+     *
+     * @default 50
+     */
+    estimatedItemSize?: number;
     /**
      * size to render after scroll window size
      * 0.5 means rendering the half the scroll window size
@@ -76,13 +93,15 @@ export interface ScrollListProps<T, EL extends HTMLElement>
      */
     extraRenderSize?: number;
     /**
-     * element to watch for scroll and size updates, if omitted will use the window
+     * element to watch for scroll and size updates;
+     *
+     * @default Window
      */
     scrollWindow?: React.RefObject<EL>;
-    /*
-     *   false: no remeasure,
-     *   true: measure on changes,
-     *   number: use the number as size
+    /**
+     * number: use it as size;
+     * true: measure on changes;
+     * false: no remeasure;
      *
      * @default false
      */
@@ -91,13 +110,14 @@ export interface ScrollListProps<T, EL extends HTMLElement>
      * allows replacing the root element of the scroll list
      */
     scrollListRoot?: typeof scrollListRoot;
-
+    /**
+     * allows replacing the element of the list
+     *
+     */
+    listRoot?: typeof listRoot;
     preloader?: ElementSlot<{}>;
     overlay?: ElementSlot<OverlayProps<T>>;
-    listRoot?: typeof listRoot;
 }
-
-export type ScrollList<T, EL extends HTMLElement = HTMLDivElement> = (props: ScrollListProps<T, EL>) => JSX.Element;
 
 export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     items,
@@ -111,7 +131,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     focusControl,
     loadMore,
     scrollOffset,
-    itemSize,
+    itemSize = false,
     scrollListRoot,
     listRoot,
     selectionControl,
@@ -119,53 +139,75 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     unmountItems,
     preloader,
     loadingState,
-    itemGap,
-    itemsInRow,
+    itemGap = 0,
+    itemsInRow = 1,
     transmitKeyPress,
     overlay,
 }: ScrollListProps<T, EL>): JSX.Element {
-    const defaultRef = useRef<EL>();
-    const actualRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultRef;
+    const defaultScrollListRef = useRef<EL>();
+    const scrollListRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultScrollListRef;
     const defaultListRef = useRef<HTMLElement>(null);
-    const actualListRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
+    const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
+    /**
+     * get scroll position of scrollWindow and trigger re-rendering on its change
+     */
     const scrollPosition = useScroll({
         isHorizontal,
         ref: scrollWindow,
     });
     const [selected, setSelected] = useStateControls(selectionControl, undefined);
     const [focused, setFocused] = useStateControls(focusControl, undefined);
-
     const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindowSize);
 
-    const { itemSizes, avgItemSize, sizes } = useScrollListItemsSizes({
-        items,
-        itemSize,
-        selected,
-        focused,
-        getId,
+    const getItemInfo = useCallback(
+        (data: T): ScrollListItemInfo<T> => ({
+            data,
+            isFocused: focused === getId(data),
+            isSelected: selected === getId(data),
+        }),
+        [getId, focused, selected]
+    );
+
+    const { itemsSizes, itemsDimensions, averageItemSize } = useScrollListItemsSizes({
+        listRef,
         isHorizontal,
+        items,
+        getId,
+        getItemInfo,
+        itemSize,
         estimatedItemSize,
-        actualListRef,
     });
 
-    const { maxScrollSize, firstShownItemIndex, lastShownItemIndex, firstWantedPixel } = useScrollListPosition({
+    const itemsNumber = useMemo(
+        () => (itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount),
+        [itemCount, items.length]
+    );
+
+    // THIS IS APPROXIMATION!
+    const maxScrollSize = useMemo(() => {
+        const rowsNumbers = Math.ceil(itemsNumber / itemsInRow);
+        const gapsNumber = Math.ceil((itemsNumber - 1) / itemsInRow);
+
+        return averageItemSize * rowsNumbers + itemGap * gapsNumber;
+    }, [itemGap, itemsInRow, itemsNumber, averageItemSize]);
+
+    const { firstShownItemIndex, lastShownItemIndex, firstWantedPixel } = useScrollListPosition({
         items,
-        itemCount,
+        getId,
+        getItemInfo,
+        maxScrollSize,
         itemSize,
         itemGap,
         itemsInRow,
-        getId,
-        focused,
-        selected,
-        avgItemSize,
+        averageItemSize,
         isHorizontal,
         unmountItems,
         extraRenderSize,
         scrollWindowSize,
-        sizes,
+        itemsDimensions,
         scrollPosition,
         scrollOffset,
-        actualRef,
+        scrollListRef,
     });
 
     useScrollListMaybeLoadMore({
@@ -174,59 +216,69 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         loadingState,
         scrollWindowSize,
         lastShownItemIndex,
-        avgItemSize,
+        averageItemSize,
         loadedItemsNumber: items.length,
     });
 
     useScrollListScrollToSelected({
         scrollWindow,
-        selected,
-        firstShownItemIndex,
-        lastShownItemIndex,
-        scrollWindowSize,
+        scrollListRef,
         items,
         getId,
-        avgItemSize,
+        selected,
+        averageItemSize,
+        isHorizontal,
         extraRenderSize,
-        maxScrollSize,
+        scrollWindowSize,
+        itemsDimensions,
     });
 
     const shownItems = useMemo(
         () => items.slice(firstShownItemIndex, lastShownItemIndex),
         [items, firstShownItemIndex, lastShownItemIndex]
     );
-    const { wrapperStyle, listStyle, overlayStyle } = useScrollListStyles({ isHorizontal, firstWantedPixel });
+    const { scrollListStyle, listStyle, overlayStyle } = useScrollListStyles({ isHorizontal, firstWantedPixel });
 
+    // TODO: causes re-rendering which I think is not needed
     const listRootWithStyle = forwardListRoot(listRoot || defaultRoot, {
         style: listStyle,
-        ref: actualListRef,
+        ref: listRef,
     });
+
+    const focusControlMemoized: ProcessedControlledState<string | undefined> = useMemo(
+        () => [focused, setFocused],
+        [focused, setFocused]
+    );
+    const selectionControlMemoized: ProcessedControlledState<string | undefined> = useMemo(
+        () => [selected, setSelected],
+        [selected, setSelected]
+    );
 
     return (
         <RootSlot
             slot={scrollListRoot}
             props={{
                 className: classes.root,
-                style: wrapperStyle,
-                ref: actualRef,
+                style: scrollListStyle,
+                ref: scrollListRef,
             }}
         >
             <List<T, EL>
+                items={shownItems}
                 getId={getId}
                 ItemRenderer={ItemRenderer}
                 listRoot={listRootWithStyle}
-                items={shownItems}
-                focusControl={[focused, setFocused]}
-                selectionControl={[selected, setSelected]}
+                focusControl={focusControlMemoized}
+                selectionControl={selectionControlMemoized}
                 transmitKeyPress={transmitKeyPress}
             />
             {overlay ? (
                 <ListOverlaySlot
                     slot={overlay}
                     props={{
-                        itemSizes,
+                        itemSizes: itemsSizes,
                         shownItems,
-                        avgSize: avgItemSize,
+                        avgSize: averageItemSize,
                         style: overlayStyle,
                     }}
                 />

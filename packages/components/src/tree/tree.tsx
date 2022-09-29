@@ -4,15 +4,16 @@ import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import { KeyCodes } from '../keycodes';
 import { forwardListRoot, ListItemProps } from '../list/list';
 import {
-    ItemInfo,
     OverlayProps,
     ScrollList,
+    ScrollListItemInfo,
     scrollListOverlayParent,
     ScrollListProps,
 } from '../scroll-list/scroll-list';
+
 // import { st, classes } from './tree.st.css';
 
-export interface TreeItemInfo<T> extends ItemInfo<T> {
+export interface TreeItemInfo<T> extends ScrollListItemInfo<T> {
     isOpen: boolean;
     hasChildren: boolean;
 }
@@ -20,17 +21,21 @@ export interface TreeItemInfo<T> extends ItemInfo<T> {
 export interface TreeItemProps<T> extends ListItemProps<T> {
     isOpen: boolean;
     hasChildren: boolean;
-    open(): void;
-    close(): void;
     indent: number;
+
+    open(): void;
+
+    close(): void;
 }
 
 export interface TreeItemProps<T> extends ListItemProps<T> {
     isOpen: boolean;
     hasChildren: boolean;
-    open(): void;
-    close(): void;
     indent: number;
+
+    open(): void;
+
+    close(): void;
 }
 
 export interface TreeOverlayProps<T> extends OverlayProps<T> {
@@ -53,16 +58,14 @@ export interface TreeAddedProps<T> {
     openItemsControls: StateControls<string[]>;
 
     ItemRenderer: React.ComponentType<TreeItemProps<T>>;
-    /**
-     * size of the item ( height if vertical ) in pixels or a method to compute according to data
-     * if omitted, item size will be measured
-     */
-    itemSize?: number | ((info: TreeItemInfo<T>) => number) | boolean;
 
     overlay?: typeof overlayRoot;
 }
 
-export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 'items' | 'ItemRenderer' | 'itemSize'> &
+export type TreeProps<T, EL extends HTMLElement> = Omit<
+    ScrollListProps<T, EL, TreeItemInfo<T>>,
+    'items' | 'ItemRenderer'
+> &
     TreeAddedProps<T>;
 
 export type Tree<T, EL extends HTMLElement = HTMLDivElement> = (props: TreeProps<T, EL>) => JSX.Element;
@@ -126,7 +129,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         if (typeof itemSize !== 'function') {
             return itemSize;
         }
-        return (info: ItemInfo<T>) => {
+        return (info: ScrollListItemInfo<T>) => {
             const isOpen = openItems.includes(getId(info.data));
             const hasChildren = getChildren(info.data).length > 0;
             return itemSize({
@@ -136,6 +139,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
             });
         };
     }, [getChildren, getId, itemSize, openItems]);
+
     return (
         <treeWrapperContext.Provider value={wrapperContext}>
             <ScrollList

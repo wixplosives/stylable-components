@@ -7,7 +7,7 @@ export const useScrollListStyles = ({
     isHorizontal: boolean;
     firstWantedPixel: number;
 }) => {
-    const wrapperStyle = useMemo(
+    const scrollListStyle = useMemo(
         () =>
             ({
                 position: 'relative', // non-static position so that overlay can be positioned absolutely in relation to it
@@ -36,7 +36,7 @@ export const useScrollListStyles = ({
     );
 
     return {
-        wrapperStyle,
+        scrollListStyle,
         listStyle,
         overlayStyle,
     };
