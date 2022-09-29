@@ -1,5 +1,6 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
+import { noop } from '../../board-assets';
 import { getChildren, getId, TreeItemData } from '../../board-assets/items';
 import { projectThemesPlugin } from '../../board-plugins';
 import { TreeItemRenderer } from '../../tree-items/tree-item-renderer';
@@ -12,7 +13,8 @@ const createTreeData = (maxChildren: number, maxDepth: number, currentDepth = 0,
     };
     ids.push(item.id);
     if (currentDepth < maxDepth) {
-        const numChildren = Math.floor(Math.random() * (maxChildren + 1));
+        const randomNumberOfChildren = Math.floor(Math.random() * (maxChildren + 1));
+        const numChildren = currentDepth === 0 ? Math.max(10, randomNumberOfChildren) : randomNumberOfChildren;
         item.children = new Array(numChildren).fill(undefined).map((_, idx) => {
             return createTreeData(maxChildren, maxDepth, currentDepth + 1, [...path, idx]);
         });
@@ -20,12 +22,13 @@ const createTreeData = (maxChildren: number, maxDepth: number, currentDepth = 0,
     return item;
 };
 const ids: string[] = [];
-const treeData = createTreeData(100, 1);
+const treeData = createTreeData(6, 3);
 
 export default createBoard({
     name: 'Tree',
     Board: () => {
         const [openItems, setOpenItems] = useState(ids);
+        const [selected] = useState(ids[Math.ceil(ids.length / 2)]);
 
         return (
             <Tree
@@ -34,6 +37,7 @@ export default createBoard({
                 getId={getId}
                 getChildren={getChildren}
                 openItemsControls={[openItems, setOpenItems]}
+                selectionControl={[selected, noop]}
             />
         );
     },
@@ -41,6 +45,7 @@ export default createBoard({
     environmentProps: {
         windowWidth: 500,
         canvasWidth: 400,
-        windowHeight: 500,
+        windowHeight: 575,
+        canvasHeight: 525,
     },
 });
