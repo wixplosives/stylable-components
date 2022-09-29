@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { createBoard } from '@wixc3/react-board';
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useMemo, useState } from 'react';
 import { projectThemesPlugin } from '../../board-plugins';
 import type { ElementData } from '../../tree-items/lanes/element-item-renderer';

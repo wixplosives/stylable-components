@@ -93,8 +93,8 @@ export const useScrollListItemsDimensions = <T, EL extends HTMLElement>(
     getItemSize: false | ElementDimensions | ((item: T) => ElementDimensions),
     observeSubtree = false
 ): DimensionsById => {
-    const shouldMeasure = useMemo(() => getItemSize === false, [getItemSize]);
-    const preMeasured = useMemo(() => (typeof getItemSize === 'boolean' ? undefined : getItemSize), [getItemSize]);
+    const shouldMeasure = getItemSize === false;
+    const preMeasured = typeof getItemSize === 'boolean' ? undefined : getItemSize;
     const cache = useRef(new Map<string, ElementDimensions>());
     const calculatedSize = useMemo(
         () => calculateDimensions(ref, items, preMeasured, getId, false, cache.current, {}).res,

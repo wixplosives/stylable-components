@@ -70,10 +70,9 @@ export interface IdBasedRectsItem {
 const getid = (item: IdBasedRectsItem) => item.id;
 const colors = ['red', 'blue'];
 export const IdBasedRectsHookSimulator: React.FC<{
-    watchSize?: false | ElementDimensions;
     width?: string;
     height?: string;
-}> = ({ watchSize = false, width, height }) => {
+}> = ({ width, height }) => {
     const [data, update] = useState<IdBasedRectsItem[]>([
         {
             id: 'a',
@@ -91,7 +90,7 @@ export const IdBasedRectsHookSimulator: React.FC<{
         },
     ]);
     const ref = useRef<HTMLDivElement>(null);
-    const res = useScrollListItemsDimensions(ref, data, getid, watchSize);
+    const res = useScrollListItemsDimensions(ref, data, getid, false);
     const updateItem = (idx: number, text: string) => {
         const newData = [...data];
         const newItem = { ...data[idx], text };

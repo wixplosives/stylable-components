@@ -1,3 +1,4 @@
+import { useScrollListItemsDimensions } from '../hooks';
 import React, { useCallback, useMemo, useRef } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
 import { useElementDimension } from '../hooks/use-element-rect';
@@ -168,13 +169,36 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         [getId, focused, selected]
     );
 
-    const { itemsSizes, itemsDimensions, averageItemSize } = useScrollListItemsSizes({
-        listRef,
+    const getItemSize = useMemo(() => {
+        if (itemSize === false) {
+            return itemSize;
+        }
+
+        if (typeof itemSize === 'number') {
+            return {
+                width: itemSize,
+                height: itemSize,
+            };
+        }
+
+        return (item: T) => {
+            const itemInfo = getItemInfo(item);
+            const dimension = itemSize(itemInfo) ?? 0;
+
+            return {
+                width: dimension,
+                height: dimension,
+            };
+        };
+    }, [itemSize, getItemInfo]);
+
+    const itemsDimensions = useScrollListItemsDimensions(listRef, items, getId, getItemSize, true);
+
+    const { itemsSizes, averageItemSize } = useScrollListItemsSizes({
+        itemsDimensions,
         isHorizontal,
         items,
         getId,
-        getItemInfo,
-        itemSize,
         estimatedItemSize,
     });
 

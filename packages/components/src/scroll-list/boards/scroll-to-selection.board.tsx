@@ -1,8 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
-import { expect } from 'chai';
 import React, { useState } from 'react';
 import { createItems, getId, ItemData, noop } from '../../board-assets';
-import { expectElement, projectThemesPlugin, scenarioPlugin } from '../../board-plugins';
+import { projectThemesPlugin, scenarioPlugin } from '../../board-plugins';
 import {
     selectItemAction,
     selectItemButton,
@@ -21,12 +20,13 @@ const elementRef: React.RefObject<HTMLDivElement> = {
  * that provide ref to scrollWindow.
  */
 
-const sizes = Array.from({ length: 1000 }, () => Math.random() * 60 + 30);
+const sizes = Array.from({ length: 1000 }, () => Math.random() * 500 + 10);
 
 const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     return (
         <div
             style={{
+                // height: '50px',
                 height: `${sizes[parseInt(props.id.substring(1))]!}px`,
             }}
             data-id={props.id}
@@ -71,6 +71,7 @@ export default createBoard({
                     watchScrollWindowSize={true}
                     ItemRenderer={ItemRenderer}
                     items={items}
+                    itemSize={() => 50}
                     getId={getId}
                     selectionControl={[selectedItem, noop]}
                     scrollListRoot={{

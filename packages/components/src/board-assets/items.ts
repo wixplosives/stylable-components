@@ -1,6 +1,10 @@
 export interface ItemData {
-    title: string;
     id: string;
+    title: string;
+}
+
+export interface TreeItemData extends ItemData {
+    children?: TreeItemData[];
 }
 
 export const getId = ({ id }: ItemData) => id;
@@ -18,3 +22,5 @@ export const createItems = (number = 1000, startingId = 0) =>
                 title: 'item number ' + (id + startingId),
             } as ItemData)
     );
+
+export const getChildren = (item: TreeItemData) => item.children || [];
