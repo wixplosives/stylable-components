@@ -1,6 +1,6 @@
-import { useScrollListItemsDimensions } from '../hooks';
 import React, { useCallback, useMemo, useRef } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
+import { useScrollListItemsDimensions } from '../hooks';
 import { useElementDimension } from '../hooks/use-element-rect';
 import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
 import { useScroll } from '../hooks/use-scroll';
@@ -169,7 +169,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         [getId, focused, selected]
     );
 
-    const getItemSize = useMemo(() => {
+    const getItemDimensions = useMemo(() => {
         if (itemSize === false) {
             return itemSize;
         }
@@ -192,7 +192,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         };
     }, [itemSize, getItemInfo]);
 
-    const itemsDimensions = useScrollListItemsDimensions(listRef, items, getId, getItemSize, true);
+    const itemsDimensions = useScrollListItemsDimensions(listRef, items, getId, getItemDimensions, true);
 
     const { itemsSizes, averageItemSize } = useScrollListItemsSizes({
         itemsDimensions,
@@ -207,7 +207,9 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         [itemCount, items.length]
     );
 
-    // THIS IS APPROXIMATION!
+    /**
+     * THIS IS APPROXIMATION! won't work on random size items; needs to be remade into state that's updated
+     */
     const maxScrollSize = useMemo(() => {
         const rowsNumbers = Math.ceil(itemsNumber / itemsInRow);
         const gapsNumber = Math.ceil((itemsNumber - 1) / itemsInRow);

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { MutableRefObject, useMemo } from 'react';
 import type { DimensionsById } from '../hooks/use-element-rect';
 import type { ListProps } from '../list/list';
 import type { ScrollListProps } from '../scroll-list/scroll-list';
@@ -14,14 +14,16 @@ export const useScrollListItemsSizes = <T, EL extends HTMLElement = HTMLDivEleme
     items: ListProps<T>['items'];
     getId: ListProps<T>['getId'];
     estimatedItemSize?: ScrollListProps<T, EL>['estimatedItemSize'];
-    itemsDimensions: DimensionsById;
+    itemsDimensions: MutableRefObject<DimensionsById>;
 }) => {
     const { totalSize, itemsSizes, measuredItemsNumber } = useMemo(
         () =>
             items.reduce(
                 (result, item) => {
                     const id = getId(item);
-                    const size = isHorizontal ? itemsDimensions[id]?.width : itemsDimensions[id]?.height;
+                    const size = isHorizontal
+                        ? itemsDimensions.current[id]?.width
+                        : itemsDimensions.current[id]?.height;
 
                     if (typeof size === 'number') {
                         result.totalSize += size;
@@ -37,7 +39,7 @@ export const useScrollListItemsSizes = <T, EL extends HTMLElement = HTMLDivEleme
                     measuredItemsNumber: 0,
                 }
             ),
-        [isHorizontal, getId, items, itemsDimensions]
+        [items, getId, isHorizontal, itemsDimensions]
     );
 
     const averageItemSize = useMemo(
@@ -47,7 +49,6 @@ export const useScrollListItemsSizes = <T, EL extends HTMLElement = HTMLDivEleme
 
     return {
         itemsSizes,
-        itemsDimensions,
         averageItemSize,
     };
 };

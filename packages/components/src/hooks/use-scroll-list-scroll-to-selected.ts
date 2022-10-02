@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
 import type { DimensionsById } from '../hooks/use-element-rect';
 import type { ListProps } from '../list/list';
 import type { ScrollListProps } from '../scroll-list/scroll-list';
@@ -21,15 +21,22 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     getId: ListProps<T>['getId'];
     selected: string | undefined;
     averageItemSize: number;
-    itemsDimensions: DimensionsById;
+    itemsDimensions: MutableRefObject<DimensionsById>;
     extraRenderSize: number;
     isHorizontal: boolean;
     scrollWindowSize: number;
 }) => {
-    const timer = useRef(0);
+    // Debug tools
+    const isDebugOn = true;
+    const step = useRef(0);
+
+    const isScrollingToSelection = useRef(false);
     const selectedIndex = useMemo(() => items.findIndex((i) => getId(i) === selected), [items, getId, selected]);
     const getRenderedIndexes = useCallback(() => {
         const list = scrollListRef?.current;
+        if (!list) {
+            return { firstIndex: null, lastIndex: null };
+        }
         const first = list?.querySelector(`[data-id]:first-child`);
         const last = list?.querySelector(`[data-id]:last-child`);
         const firstId = first?.attributes.getNamedItem('data-id')?.value;
@@ -42,10 +49,18 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
     const scrollTo = useCallback(
         (selectedIndex: number) => {
+            step.current += 1;
+            isDebugOn && console.debug(`#${step.current} scrollTo called`);
+
             const { firstIndex, lastIndex } = getRenderedIndexes();
 
+            if (firstIndex === null || lastIndex === null) {
+                return;
+            }
+
             if (firstIndex === -1 || lastIndex === -1) {
-                timer.current = window.setTimeout(() => scrollTo(selectedIndex));
+                isDebugOn && console.debug("… … … list haven't rendered yet, waiting … … …");
+                window.setTimeout(() => scrollTo(selectedIndex));
                 return;
             }
 
@@ -58,9 +73,9 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
                 for (let index = anchorIndex; index !== selectedIndex; 'from' in anchor ? index++ : index--) {
                     const item = items[index]!;
                     const id = getId(item);
-                    const { height, width } = itemsDimensions[id]!;
+                    const { height, width } = itemsDimensions.current[id]!;
                     const size = (isHorizontal ? width : height) ?? averageItemSize;
-                    // console.debug({ index, size });
+
                     distance += size;
                 }
 
@@ -70,64 +85,68 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
                     distance += scrollWindowSize;
                 }
 
-                return direction * distance;
+                return Math.floor(direction * distance);
             };
+
             const scrollIntoView = (selected: number) => {
                 const node = scrollListRef.current?.querySelector(`[data-id='${getId(items[selected]!)}']`);
                 if (node === null) {
-                    // console.debug(
-                    //     'called to be scrolled into view, but it is not rendered yet; triggering scrollTo once more'
-                    // );
-                    scrollTo(selected);
+                    isDebugOn &&
+                        console.debug(
+                            'called to be scrolled into view, but it is not rendered yet; triggering scrollTo once more'
+                        );
+                    window.setTimeout(() => scrollTo(selected));
                 } else {
-                    // console.debug('we have rendered element, just need to scroll it into view');
+                    isDebugOn && console.debug('we have rendered element, just need to scroll it into view');
                     node?.scrollIntoView({
                         block: 'center',
                         inline: 'center',
+                        // Not always scrolls from the "correct" side perspective-wise;
+                        // thus smoothness just adds to "uncanny valley" effect.
+                        // behavior: 'smooth',
                     });
+                    isScrollingToSelection.current = false;
+                    isDebugOn && console.groupEnd();
                 }
             };
 
             if (selectedIndex < firstIndex) {
                 const by = calculateDistance({ to: firstIndex });
-                // console.debug(`should scroll up from ${firstIndex} by ${by}`);
-                scrollTarget.scrollBy(0, by);
-
-                timer.current = window.setTimeout(() => scrollIntoView(selectedIndex));
+                scrollTarget.scrollBy({ behavior: 'auto', top: by });
+                isDebugOn && console.debug(`should scroll up from ${firstIndex} by ${by}`);
             } else if (lastIndex < selectedIndex) {
                 const by = calculateDistance({ from: lastIndex });
-                // console.debug(`should scroll down from ${lastIndex} by ${by}`);
-                scrollTarget.scrollBy(0, by);
-
-                timer.current = window.setTimeout(() => scrollIntoView(selectedIndex));
+                scrollTarget.scrollBy({ behavior: 'auto', top: by });
+                isDebugOn && console.debug(`should scroll down from ${lastIndex} by ${by}`);
             } else {
-                // console.debug('index in rendered items, scroll into view');
-
-                timer.current = window.setTimeout(() => scrollIntoView(selectedIndex));
+                isDebugOn && console.debug('index in rendered items, scroll into view');
             }
+
+            window.setTimeout(() => scrollIntoView(selectedIndex));
         },
-        // TODO: itemDimensions should not trigger re-rendering :-(
         [
+            isDebugOn,
             getRenderedIndexes,
             scrollWindow,
-            getId,
-            items,
-            scrollListRef,
-            averageItemSize,
-            isHorizontal,
-            extraRenderSize,
             scrollWindowSize,
+            extraRenderSize,
+            items,
+            getId,
+            itemsDimensions,
+            isHorizontal,
+            averageItemSize,
+            scrollListRef,
         ]
     );
 
     useEffect(() => {
-        if (selectedIndex > -1) {
-            // console.debug('scrollTo selected index', selectedIndex);
+        if (selectedIndex > -1 && !isScrollingToSelection.current) {
+            console.clear();
+            step.current = 0;
+            isScrollingToSelection.current = true;
+
+            console.group(`Selected index: ${selectedIndex}`);
             scrollTo(selectedIndex);
         }
-
-        return () => {
-            clearTimeout(timer.current);
-        };
     }, [scrollTo, selectedIndex]);
 };

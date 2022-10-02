@@ -1,4 +1,4 @@
-import { RefObject, useMemo, useRef } from 'react';
+import { MutableRefObject, RefObject, useMemo, useRef } from 'react';
 import type { ListProps } from '../list/list';
 import type { ScrollListItemInfo, ScrollListProps } from '../scroll-list/scroll-list';
 import type { DimensionsById } from './use-element-rect';
@@ -62,7 +62,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
     extraRenderSize: ScrollListProps<T, EL>['extraRenderSize'];
     averageItemSize: number;
     scrollWindowSize: number;
-    itemsDimensions: DimensionsById;
+    itemsDimensions: MutableRefObject<DimensionsById>;
     maxScrollSize: number;
     scrollPosition: number;
     scrollListRef: RefObject<EL>;
@@ -108,7 +108,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
 
         return {
             firstWantedPixel,
-            firstShownItemIndex,
+            firstShownItemIndex: firstShownItemIndex > 0 ? firstShownItemIndex : 0,
             lastShownItemIndex,
         };
     }
@@ -129,8 +129,8 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
             const size =
                 (itemSize === false
                     ? isHorizontal
-                        ? itemsDimensions[id]?.width
-                        : itemsDimensions[id]?.height
+                        ? itemsDimensions.current[id]?.width
+                        : itemsDimensions.current[id]?.height
                     : itemSize?.(getItemInfo(item))) ?? averageItemSize;
 
             maxRowSize = Math.max(size, maxRowSize);

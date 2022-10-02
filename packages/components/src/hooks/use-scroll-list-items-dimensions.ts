@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { MutableRefObject, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import { childrenById } from '../common/element-id-utils';
 import { unchanged, useDelayedUpdateState } from './use-delayed-update';
 import {
@@ -90,19 +90,23 @@ export const useScrollListItemsDimensions = <T, EL extends HTMLElement>(
     ref: React.RefObject<EL>,
     items: T[],
     getId: (item: T) => string,
-    getItemSize: false | ElementDimensions | ((item: T) => ElementDimensions),
+    getItemDimensions: false | ElementDimensions | ((item: T) => ElementDimensions),
     observeSubtree = false
-): DimensionsById => {
-    const shouldMeasure = getItemSize === false;
-    const preMeasured = typeof getItemSize === 'boolean' ? undefined : getItemSize;
+): MutableRefObject<DimensionsById> => {
+    const shouldMeasure = getItemDimensions === false;
+    const preMeasured = typeof getItemDimensions === 'boolean' ? undefined : getItemDimensions;
     const cache = useRef(new Map<string, ElementDimensions>());
     const calculatedSize = useMemo(
         () => calculateDimensions(ref, items, preMeasured, getId, false, cache.current, {}).res,
-        [ref, getId, items, preMeasured]
+        [getId, items, preMeasured, ref]
     );
-
-    // TODO: question, won't it re-render component on sizes changes? although its an object, it is shallow?
-    const [dimensions, updateDimensions] = useState(() => calculatedSize);
+    const unMeasuredDimensions = useRef(calculatedSize);
+    const dimensions = useRef(calculatedSize);
+    const updateDimensions = useCallback((newDimensions: Record<string, ElementDimensions>) => {
+        for (const item in newDimensions) {
+            dimensions.current[item] = newDimensions[item]!;
+        }
+    }, []);
     const delayedUpdateSizes = useDelayedUpdateState(updateDimensions);
     const { setTargets, listen } = useSetableObserver(shouldMeasure);
     const { observer: mutationObserver, listen: mutationListener } = useMemo(createSetableMutationObserver, []);
@@ -117,7 +121,7 @@ export const useScrollListItemsDimensions = <T, EL extends HTMLElement>(
                     getId,
                     true,
                     cache.current,
-                    dimensions,
+                    dimensions.current,
                     setTargets
                 );
 
@@ -175,17 +179,17 @@ export const useScrollListItemsDimensions = <T, EL extends HTMLElement>(
             getId,
             true,
             cache.current,
-            dimensions,
+            dimensions.current,
             setTargets
         );
 
         if (changed) {
             updateDimensions(res);
         }
-    }, [ref, getId, shouldMeasure, items, getItemSize, preMeasured, setTargets, dimensions]);
+    }, [ref, getId, shouldMeasure, items, getItemDimensions, preMeasured, setTargets, dimensions, updateDimensions]);
 
     if (!shouldMeasure) {
-        return calculatedSize;
+        return unMeasuredDimensions;
     }
 
     return dimensions;

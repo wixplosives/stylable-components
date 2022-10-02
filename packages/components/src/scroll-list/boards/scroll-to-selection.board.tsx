@@ -9,6 +9,7 @@ import {
 } from '../../board-plugins/scenario-plugin/actions/select-item-action';
 import type { ListItemProps } from '../../list/list';
 import { ScrollList } from '../scroll-list';
+import { classes } from '../../searchable-text/searchable-text.st.css';
 
 const items = createItems();
 const elementRef: React.RefObject<HTMLDivElement> = {
@@ -20,13 +21,15 @@ const elementRef: React.RefObject<HTMLDivElement> = {
  * that provide ref to scrollWindow.
  */
 
-const sizes = Array.from({ length: 1000 }, () => Math.random() * 500 + 10);
+const sizes = Array.from({ length: 1000 }, () => Math.random() * 100 + 10);
 
 const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     return (
         <div
             style={{
                 // height: '50px',
+                display: 'flex',
+                alignItems: 'center',
                 height: `${sizes[parseInt(props.id.substring(1))]!}px`,
             }}
             data-id={props.id}
@@ -39,7 +42,7 @@ const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
 export default createBoard({
     name: 'ScrollList — scroll to selected item',
     Board: () => {
-        const initialSelectedIndex = 555;
+        const initialSelectedIndex = 0;
         const [selectedItem, setSelectedItem] = useState(`a${initialSelectedIndex}`);
         const [input, setInput] = useState(initialSelectedIndex);
 
@@ -61,6 +64,7 @@ export default createBoard({
                             onChange={(event) => setInput(parseInt(event.target.value))}
                         />
                     </label>
+                    <div className={classes.qwe} />
                     <button id={selectItemButton} onClick={() => setSelectedItem(`a${input}`)}>
                         Select
                     </button>
@@ -71,14 +75,14 @@ export default createBoard({
                     watchScrollWindowSize={true}
                     ItemRenderer={ItemRenderer}
                     items={items}
-                    itemSize={() => 50}
+                    // itemSize={50}
+                    // itemSize={() => 50}
                     getId={getId}
                     selectionControl={[selectedItem, noop]}
                     scrollListRoot={{
                         el: 'div',
                         props: {
                             id: 'list',
-
                             style: {
                                 width: '200px',
                                 height: '400px',
