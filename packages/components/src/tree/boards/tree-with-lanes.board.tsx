@@ -1,19 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { createBoard } from '@wixc3/react-board';
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useMemo, useState } from 'react';
-import { createBoard } from '@wixc3/react-board';
 import { projectThemesPlugin } from '../../board-plugins';
-import {
-    calcItemSize,
-    TreeItemWithLaneData,
-    TreeItemWithLaneRenderer,
-} from '../../tree-items/tree-item-with-lane-renderer';
-import { createTreeOverlay, Tree } from '../tree';
 import type { ElementData } from '../../tree-items/lanes/element-item-renderer';
+import { lanesContext } from '../../tree-items/lanes/lane-context';
 import type { LaneData, LaneItem } from '../../tree-items/lanes/lane-item-renderer';
 import type { MarkerData } from '../../tree-items/lanes/marker-item-renderer';
-import { lanesContext } from '../../tree-items/lanes/lane-context';
 import { OverlayRenderer } from '../../tree-items/lanes/overlays-renderer';
+import { calcItemSize, TreeItemWithLaneData, TreeItemWithLaneRenderer } from '../../tree-items/tree-item-with-lane-renderer';
+import { createTreeOverlay, Tree } from '../tree';
 
 let idCounter = 0;
 const nextId = () => 'id' + idCounter++;

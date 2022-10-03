@@ -1,12 +1,12 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import { createItems, getId, ItemRenderer } from '../../board-assets';
-import { projectThemesPlugin } from '../../board-plugins';
 import {
     clickAction,
     expectElementsStyle,
     expectElementStyle,
     hoverAction,
+    projectThemesPlugin,
     scenarioPlugin,
     scrollAction,
 } from '../../board-plugins';

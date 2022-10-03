@@ -1,5 +1,5 @@
-import React from 'react';
 import { createBoard } from '@wixc3/react-board';
+import React from 'react';
 import { projectThemesPlugin } from '../../board-plugins';
 import { TreeItemData, TreeItemRenderer } from '../../tree-items/tree-item-renderer';
 import { Tree } from '../tree';

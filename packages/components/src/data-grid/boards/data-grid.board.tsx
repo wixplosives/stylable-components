@@ -1,8 +1,8 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
+import { projectThemesPlugin } from '../../board-plugins';
 import type { ListItemProps } from '../../list/list';
 import { DataGrid } from '../data-grid';
-import { projectThemesPlugin } from '../../board-plugins';
 
 function cellRenderer<T>(key: keyof T) {
     const renderer = (props: ListItemProps<T>) => {
@@ -21,9 +21,11 @@ interface GridItem {
 
 const fNames = ['Shlomo', 'shraga', 'benny', 'zolthar'];
 const lNames = ['ben shvili', 'hasarot', 'the destroyer', 'levi'];
+
 function randomFromArr<T>(arr: T[]): T {
     return arr[Math.floor(Math.random() * arr.length)]!;
 }
+
 const createItems = (count = 1000, from = 0) => {
     return new Array<string>(count).fill('').map(
         (_, idx) =>
