@@ -44,9 +44,9 @@ export default createBoard({
         />
     ),
     environmentProps: {
-        canvasWidth: 560,
-        windowHeight: 726,
-        windowWidth: 600,
+        windowWidth: 500,
+        canvasWidth: 400,
+        windowHeight: 500,
     },
     plugins: [
         scenarioPlugin.use({

@@ -1,14 +1,9 @@
 import React from 'react';
-import type { TreeItemProps } from '../tree/tree';
-import { SearchableText } from '../searchable-text/searchable-text';
-import { classes, st, vars } from './tree-item-renderer.st.css';
+import type { TreeItemData } from '../board-assets';
 import { ChevronRightWixUiIcon } from '../icons/wix-ui/chevron-right';
-
-export interface TreeItemData {
-    title: string;
-    id: string;
-    children?: TreeItemData[];
-}
+import { SearchableText } from '../searchable-text/searchable-text';
+import type { TreeItemProps } from '../tree/tree';
+import { classes, st, vars } from './tree-item-renderer.st.css';
 
 export const TreeItemRenderer: React.FC<TreeItemProps<TreeItemData>> = (props) => {
     return (
@@ -21,6 +16,7 @@ export const TreeItemRenderer: React.FC<TreeItemProps<TreeItemData>> = (props) =
             style={
                 {
                     [vars.indent!]: props.indent.toString(),
+                    height: '24px',
                 } as React.CSSProperties
             }
             data-id={props.id}

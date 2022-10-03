@@ -3,7 +3,13 @@ export interface ItemData {
     id: string;
 }
 
+export interface TreeItemData extends ItemData {
+    children?: TreeItemData[];
+}
+
 export const getId = ({ id }: ItemData) => id;
+
+export const getChildren = <T>(item: T) => (item as { children: T[] })?.children || [];
 
 /**
  * Used to generate a list of items for scroll list testing purposes.

@@ -34,7 +34,7 @@ export const {
     ScrollListRootPropMapping
 );
 
-export interface ItemInfo<T> {
+export interface ScrollListItemInfo<T> {
     data: T;
     isSelected: boolean;
     isFocused: boolean;
@@ -95,7 +95,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      * size of the item ( height if vertical ) in pixels or a method to compute according to data
      * if omitted, item size will be measured
      */
-    itemSize?: number | ((info: ItemInfo<T>) => number) | boolean;
+    itemSize?: number | ((info: ScrollListItemInfo<T>) => number) | boolean;
     /**
      * size of the item ( height if vertical ) in pixels
      * @default 50
@@ -204,7 +204,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const [focused, setFocused] = useStateControls(focusControl, undefined);
 
     const getItemInfo = useCallback(
-        (data: T): ItemInfo<T> => ({
+        (data: T): ScrollListItemInfo<T> => ({
             data,
             isFocused: focused === getId(data),
             isSelected: selected === getId(data),
@@ -373,8 +373,8 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 }
 
 export function dimToSize<T>(
-    itemSize: number | ((t: ItemInfo<T>) => number) | boolean,
-    getItemInfo: (t: T) => ItemInfo<T>
+    itemSize: number | ((t: ScrollListItemInfo<T>) => number) | boolean,
+    getItemInfo: (t: T) => ScrollListItemInfo<T>
 ): boolean | WatchedSize | ((t: T) => WatchedSize) {
     if (typeof itemSize === 'boolean') {
         return itemSize;

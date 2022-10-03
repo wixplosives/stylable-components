@@ -4,7 +4,7 @@ import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import { KeyCodes } from '../keycodes';
 import { forwardListRoot, ListItemProps } from '../list/list';
 import {
-    ItemInfo,
+    ScrollListItemInfo,
     OverlayProps,
     ScrollList,
     scrollListOverlayParent,
@@ -12,7 +12,7 @@ import {
 } from '../scroll-list/scroll-list';
 // import { st, classes } from './tree.st.css';
 
-export interface TreeItemInfo<T> extends ItemInfo<T> {
+export interface TreeItemInfo<T> extends ScrollListItemInfo<T> {
     isOpen: boolean;
     hasChildren: boolean;
 }
@@ -126,7 +126,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         if (typeof itemSize !== 'function') {
             return itemSize;
         }
-        return (info: ItemInfo<T>) => {
+        return (info: ScrollListItemInfo<T>) => {
             const isOpen = openItems.includes(getId(info.data));
             const hasChildren = getChildren(info.data).length > 0;
             return itemSize({
