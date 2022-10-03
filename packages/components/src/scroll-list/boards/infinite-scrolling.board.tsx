@@ -2,8 +2,7 @@ import { createBoard } from '@wixc3/react-board';
 import { sleep } from 'promise-assist';
 import React, { useCallback, useState } from 'react';
 import { createItems, getId, ItemRenderer } from '../../board-assets';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
-import { clickAction, hoverAction, scenarioMixin, scrollAction } from '../../board-mixins/scenario';
+import { clickAction, hoverAction, projectThemesPlugin, scenarioPlugin, scrollAction } from '../../board-plugins';
 import { ScrollList, ScrollListLoadingState } from '../scroll-list';
 
 export default createBoard({
@@ -39,10 +38,10 @@ export default createBoard({
         windowWidth: 744,
     },
     plugins: [
-        scenarioMixin.use({
+        scenarioPlugin.use({
             title: 'should load more items when reaching end',
             events: [hoverAction('[data-id="a8"]'), clickAction('[data-id="a8"]'), scrollAction(-1), scrollAction(0)],
         }),
-        mixinProjectThemes,
+        projectThemesPlugin,
     ],
 });

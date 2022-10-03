@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useMemo, useState } from 'react';
 import { createBoard } from '@wixc3/react-board';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
+import { projectThemesPlugin } from '../../board-plugins';
 import {
     calcItemSize,
     TreeItemWithLaneData,
@@ -316,7 +316,7 @@ export default createBoard({
             </lanesContext.Provider>
         );
     },
-    plugins: [mixinProjectThemes],
+    plugins: [projectThemesPlugin],
     environmentProps: {
         canvasWidth: 566,
         windowHeight: 600,

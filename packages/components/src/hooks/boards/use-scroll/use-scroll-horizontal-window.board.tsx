@@ -1,13 +1,7 @@
 import React from 'react';
 import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
-import {
-    expectElement,
-    expectElementText,
-    maxScroll,
-    scenarioMixin,
-    scrollAction,
-} from '../../../board-mixins/scenario';
+import { expectElement, expectElementText, maxScroll, scenarioPlugin, scrollAction } from '../../../board-plugins';
 import { ScrollHookSimulator } from './scroll-hook-simulator';
 
 export default createBoard({
@@ -20,7 +14,7 @@ export default createBoard({
         windowHeight: 640,
     },
     plugins: [
-        scenarioMixin.use({
+        scenarioPlugin.use({
             title: 'scrolls horizontally',
             events: [
                 scrollAction(200, false),

@@ -1,13 +1,7 @@
 import React from 'react';
 import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
-import {
-    expectElements,
-    expectElementText,
-    maxScroll,
-    scenarioMixin,
-    scrollAction,
-} from '../../../board-mixins/scenario';
+import { expectElements, expectElementText, maxScroll, scenarioPlugin, scrollAction } from '../../../board-plugins';
 import { ScrollHookSimulator } from './scroll-hook-simulator';
 
 export default createBoard({
@@ -20,7 +14,7 @@ export default createBoard({
         windowHeight: 640,
     },
     plugins: [
-        scenarioMixin.use({
+        scenarioPlugin.use({
             title: 'should watch scroll position of element',
             events: [
                 scrollAction(300, true, '#scroll-div'),

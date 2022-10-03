@@ -1,7 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
 import { createItems, getId, ItemRenderer } from '../../board-assets';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
+import { projectThemesPlugin } from '../../board-plugins';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
@@ -43,5 +43,5 @@ export default createBoard({
         windowHeight: 300,
         windowWidth: 600,
     },
-    plugins: [mixinProjectThemes],
+    plugins: [projectThemesPlugin],
 });

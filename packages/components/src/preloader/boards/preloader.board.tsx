@@ -1,8 +1,8 @@
-import React from 'react';
 import { createBoard } from '@wixc3/react-board';
+import React from 'react';
+import { projectThemesPlugin } from '../../board-plugins';
 import { Preloader } from '../preloader';
 import { classes } from '../variants/circle-preloader.st.css';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
 
 export default createBoard({
     name: 'circle-preloader',
@@ -14,5 +14,5 @@ export default createBoard({
         windowHeight: 300,
         windowBackgroundColor: '#190101',
     },
-    plugins: [mixinProjectThemes],
+    plugins: [projectThemesPlugin],
 });
