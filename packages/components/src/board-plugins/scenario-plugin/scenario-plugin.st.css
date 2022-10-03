@@ -42,9 +42,11 @@
     justify-content: space-between;
 }
 
-.controls {}
+.controls {
+}
 
-.reset {}
+.reset {
+}
 
 .reset:disabled {
     background-color: gray;

@@ -1,7 +1,15 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import { createItems, getId, StatefulItemRenderer } from '../../board-assets';
-import { projectThemesPlugin } from '../../board-plugins';
+import {
+    clickAction,
+    expectElementsStyle,
+    expectElementStyle,
+    hoverAction,
+    projectThemesPlugin,
+    scenarioPlugin,
+    scrollAction,
+} from '../../board-plugins';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();

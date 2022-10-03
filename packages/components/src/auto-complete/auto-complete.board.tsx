@@ -17,7 +17,7 @@ export default createBoard({
             getTextContent={(item: ItemData) => item.title}
         />
     ),
-    plugins: [zeeRootPlugin, projectThemesPlugin],
+    plugins: [projectThemesPlugin, zeeRootPlugin],
     environmentProps: {
         canvasHeight: 24,
         windowHeight: 576,
