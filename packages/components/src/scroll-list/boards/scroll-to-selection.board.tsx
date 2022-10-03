@@ -2,6 +2,7 @@ import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
 import { createItems, getId, ItemData, noop } from '../../board-assets';
 import { projectThemesPlugin, scenarioPlugin } from '../../board-plugins';
+import { checkItemVisibility } from '../../board-plugins/scenario-plugin/actions/check-item-visibility';
 import {
     selectItemAction,
     selectItemButton,
@@ -20,16 +21,16 @@ const elementRef: React.RefObject<HTMLDivElement> = {
  * that provide ref to scrollWindow.
  */
 
-const sizes = Array.from({ length: 1000 }, () => Math.random() * 100 + 10);
+// const sizes = Array.from({ length: 1000 }, () => Math.random() * 100 + 10);
 
 const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     return (
         <div
             style={{
-                // height: '50px',
+                height: '50px',
                 display: 'flex',
                 alignItems: 'center',
-                height: `${sizes[parseInt(props.id.substring(1))]!}px`,
+                // height: `${sizes[parseInt(props.id.substring(1))]!}px`,
             }}
             data-id={props.id}
         >
@@ -74,8 +75,7 @@ export default createBoard({
                     watchScrollWindowSize={true}
                     ItemRenderer={ItemRenderer}
                     items={items}
-                    // itemSize={50}
-                    // itemSize={() => 50}
+                    itemSize={() => 50}
                     getId={getId}
                     selectionControl={[selectedItem, noop]}
                     scrollListRoot={{
@@ -101,26 +101,17 @@ export default createBoard({
     },
     plugins: [
         scenarioPlugin.use({
-            skip: true,
+            // skip: true,
+            // slowMo: 1000,
             title: 'should scroll selected element into view',
             resetBoard: () => {
                 window.scrollTo(0, 0);
             },
             events: [
-                selectItemAction('123'),
-                // expectElement(
-                //     `[data-id='a555']`,
-                //     (el) => {
-                //         expect(el.getBoundingClientRect().height).to.not.equal(0);
-                //     },
-                //     'element is visible',
-                //     1_000
-                // ),
-                selectItemAction('321'),
-                selectItemAction('444'),
-                selectItemAction('777'),
-                selectItemAction('888'),
-                selectItemAction('999'),
+                ...[0, 555, 341, 999, 823, 543, 0, 123, 942].flatMap((index) => [
+                    selectItemAction(index.toString()),
+                    checkItemVisibility(`a${index}`, index.toString()),
+                ]),
             ],
         }),
         projectThemesPlugin,

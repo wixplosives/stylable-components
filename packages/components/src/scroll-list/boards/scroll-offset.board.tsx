@@ -13,6 +13,7 @@ import {
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
+const fixedItemSize = 100;
 
 export default createBoard({
     name: 'ScrollList — with offset',
@@ -48,7 +49,7 @@ export default createBoard({
                         items={items}
                         getId={getId}
                         watchScrollWindowSize={true}
-                        estimatedItemSize={50}
+                        estimatedItemSize={fixedItemSize}
                         scrollWindow={ref}
                         itemGap={0}
                         extraRenderSize={0}
@@ -84,7 +85,7 @@ export default createBoard({
                 expectElement(
                     '#scroll-element',
                     (el) => {
-                        expect(el.getBoundingClientRect().height).to.equal(1_000 * 100 + 401);
+                        expect(el.getBoundingClientRect().height).to.equal(1_000 * fixedItemSize + 401);
                     },
                     'max scroll is accurate',
                     5_000

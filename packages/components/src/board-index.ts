@@ -33,7 +33,6 @@ import no_unmount from './scroll-list/boards/no-unmount.board';
 import scroll_list from './scroll-list/boards/scroll-list.board';
 import scroll_offset from './scroll-list/boards/scroll-offset.board';
 import scroll_to_selection from './scroll-list/boards/scroll-to-selection.board';
-import scroll_window from './scroll-list/boards/scroll-window.board';
 import with_header from './scroll-list/boards/with-header.board';
 import searchable_text from './searchable-text/boards/searchable-text.board';
 import tree_with_lanes from './tree/boards/tree-with-lanes.board';
@@ -69,7 +68,6 @@ export default [
     scroll_list,
     scroll_offset,
     scroll_to_selection,
-    scroll_window,
     with_header,
     searchable_text,
     tree_with_lanes,

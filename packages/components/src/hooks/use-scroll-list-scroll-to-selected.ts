@@ -26,10 +26,6 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     isHorizontal: boolean;
     scrollWindowSize: number;
 }) => {
-    // Debug tools
-    const isDebugOn = true;
-    const step = useRef(0);
-
     const loadingTimeout = useRef(0);
     const timeout = useRef(0);
     const isScrollingToSelection = useRef(false);
@@ -48,12 +44,39 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
         return { firstIndex, lastIndex };
     }, [scrollListRef, getId, items]);
+    const calculateDistance = useCallback(
+        (anchor: { from: number } | { to: number }) => {
+            const direction = 'from' in anchor ? 1 : -1;
+            const anchorIndex = 'from' in anchor ? anchor.from : anchor.to;
+            let distance = 0;
 
+            for (let index = anchorIndex; index !== selectedIndex; 'from' in anchor ? index++ : index--) {
+                const item = items[index]!;
+                const id = getId(item);
+                const { height, width } = itemsDimensions.current[id]!;
+                const size = (isHorizontal ? width : height) ?? averageItemSize;
+
+                distance += size;
+            }
+
+            distance += scrollWindowSize * extraRenderSize;
+
+            if ('from' in anchor) {
+                distance += scrollWindowSize;
+            }
+
+            return Math.floor(direction * distance);
+        },
+        [averageItemSize, extraRenderSize, getId, isHorizontal, items, itemsDimensions, scrollWindowSize, selectedIndex]
+    );
+    const cleanUp = () => {
+        isScrollingToSelection.current = false;
+        loadingTimeout.current = 0;
+        clearTimeout(timeout.current);
+    };
     const scrollTo = useCallback(
         (selectedIndex: number) => {
             clearTimeout(timeout.current);
-            step.current += 1;
-            isDebugOn && console.debug(`#${step.current} scrollTo called`);
 
             const { firstIndex, lastIndex } = getRenderedIndexes();
 
@@ -63,106 +86,56 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
             if (firstIndex === -1 || lastIndex === -1) {
                 loadingTimeout.current++;
-                if (loadingTimeout.current < 100) {
+                // Try 10 times
+                if (loadingTimeout.current < 10) {
                     timeout.current = window.setTimeout(
                         () => isScrollingToSelection.current && scrollTo(selectedIndex),
-                        100
+                        100 // with 100ms delay
                     );
                 }
                 return;
             }
 
             const scrollTarget = scrollWindow?.current ?? window;
-            const calculateDistance = (anchor: { from: number } | { to: number }) => {
-                const direction = 'from' in anchor ? 1 : -1;
-                const anchorIndex = 'from' in anchor ? anchor.from : anchor.to;
-                let distance = 0;
-
-                for (let index = anchorIndex; index !== selectedIndex; 'from' in anchor ? index++ : index--) {
-                    const item = items[index]!;
-                    const id = getId(item);
-                    const { height, width } = itemsDimensions.current[id]!;
-                    const size = (isHorizontal ? width : height) ?? averageItemSize;
-
-                    distance += size;
-                }
-
-                distance += scrollWindowSize * extraRenderSize;
-
-                if ('from' in anchor) {
-                    distance += scrollWindowSize;
-                }
-
-                return Math.floor(direction * distance);
-            };
 
             const scrollIntoView = (selected: number) => {
                 const node = scrollListRef.current?.querySelector(`[data-id='${getId(items[selected]!)}']`);
                 if (node === null) {
-                    isDebugOn &&
-                        console.debug(
-                            'called to be scrolled into view, but it is not rendered yet; triggering scrollTo once more'
-                        );
-                    timeout.current = window.setTimeout(() => scrollTo(selected));
+                    timeout.current = window.setTimeout(() => isScrollingToSelection.current && scrollTo(selected));
                 } else {
-                    isDebugOn && console.debug('we have rendered element, just need to scroll it into view');
                     node?.scrollIntoView({
                         block: 'center',
                         inline: 'center',
-                        // Not always scrolls from the "correct" side perspective-wise;
-                        // thus smoothness just adds to "uncanny valley" effect.
+                        /**
+                         * Not always scrolls from the "correct" side perspective-wise;
+                         * thus smoothness just adds to "uncanny valley" effect.
+                         */
                         // behavior: 'smooth',
                     });
-                    isScrollingToSelection.current = false;
-                    isDebugOn && console.groupEnd();
+                    cleanUp();
                 }
             };
 
             if (selectedIndex < firstIndex) {
-                const by = calculateDistance({ to: firstIndex });
-                scrollTarget.scrollBy({ behavior: 'auto', top: by });
-                isDebugOn && console.debug(`should scroll up from ${firstIndex} by ${by}`);
-                timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
+                scrollTarget.scrollBy({ top: calculateDistance({ to: firstIndex }) });
             } else if (lastIndex < selectedIndex) {
-                const by = calculateDistance({ from: lastIndex });
-                scrollTarget.scrollBy({ behavior: 'auto', top: by });
-                isDebugOn && console.debug(`should scroll down from ${lastIndex} by ${by}`);
-                timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
-            } else {
-                isDebugOn && console.debug('index in rendered items, scroll into view');
-                timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
+                scrollTarget.scrollBy({ top: calculateDistance({ from: lastIndex }) });
             }
+
+            timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
         },
-        [
-            isDebugOn,
-            getRenderedIndexes,
-            scrollWindow,
-            scrollWindowSize,
-            extraRenderSize,
-            items,
-            getId,
-            itemsDimensions,
-            isHorizontal,
-            averageItemSize,
-            scrollListRef,
-        ]
+        [getRenderedIndexes, scrollWindow, scrollListRef, getId, items, calculateDistance]
     );
 
     useEffect(() => {
         if (selectedIndex > -1 && !isScrollingToSelection.current) {
-            console.clear();
-            step.current = 0;
             isScrollingToSelection.current = true;
 
-            console.group(`Selected index: ${selectedIndex}`);
             scrollTo(selectedIndex);
         }
 
         return () => {
-            console.debug('setting isScrolling on useEffect cleanup', isScrollingToSelection.current);
-            isScrollingToSelection.current = false;
-            loadingTimeout.current = 0;
-            clearTimeout(timeout.current);
+            cleanUp();
         };
     }, [scrollTo, selectedIndex]);
 };

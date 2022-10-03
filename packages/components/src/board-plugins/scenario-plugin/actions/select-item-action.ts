@@ -20,9 +20,11 @@ export const selectItemAction = (index: string): Action => {
             }
             const button = await waitForElement(`#${selectItemButton}`, title, timeout);
 
-            if (button && button instanceof HTMLButtonElement) {
-                button.click();
-            }
+            window.setTimeout(() => {
+                if (button && button instanceof HTMLButtonElement) {
+                    button.click();
+                }
+            }, 100);
         },
         timeout: timeout * 2,
     };
