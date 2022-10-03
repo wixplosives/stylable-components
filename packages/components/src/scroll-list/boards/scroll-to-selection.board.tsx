@@ -101,8 +101,6 @@ export default createBoard({
     },
     plugins: [
         scenarioPlugin.use({
-            // skip: true,
-            // slowMo: 1000,
             title: 'should scroll selected element into view',
             resetBoard: () => {
                 window.scrollTo(0, 0);
