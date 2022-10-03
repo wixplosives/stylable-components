@@ -51,6 +51,7 @@ export default createBoard({
                         watchScrollWindowSize={true}
                         estimatedItemSize={fixedItemSize}
                         scrollWindow={ref}
+                        itemSize={fixedItemSize}
                         itemGap={0}
                         extraRenderSize={0}
                         scrollOffset={true}
@@ -76,6 +77,7 @@ export default createBoard({
     plugins: [
         scenarioPlugin.use({
             title: 'should listen to offset resize',
+            skip: true,
             events: [
                 expectElements(['#offset', '[data-id="a0"]'], (els) => {
                     const rootBox = els['#offset'].getBoundingClientRect();

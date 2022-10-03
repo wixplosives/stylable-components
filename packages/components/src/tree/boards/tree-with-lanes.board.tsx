@@ -1,5 +1,6 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useMemo, useState } from 'react';
+import { getChildren } from '../../board-assets';
 import { projectThemesPlugin } from '../../board-plugins';
 import type { ElementData } from '../../tree-items/lanes/element-item-renderer';
 import { lanesContext } from '../../tree-items/lanes/lane-context';
@@ -290,7 +291,7 @@ export default createBoard({
                     ItemRenderer={TreeItemWithLaneRenderer}
                     data={data}
                     getId={(item: TreeItemWithLaneData) => item.id}
-                    getChildren={(item: TreeItemWithLaneData) => item.children || []}
+                    getChildren={getChildren}
                     scrollOffset={50}
                     openItemsControls={[openItems, updateOpen]}
                     selectionControl={[selection, updateSelection]}

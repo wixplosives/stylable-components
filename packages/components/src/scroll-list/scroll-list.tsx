@@ -111,6 +111,8 @@ export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollList
      * allows replacing the root element of the scroll list
      */
     scrollListRoot?: typeof scrollListRoot;
+    itemsInRow?: number;
+    itemGap?: number;
     /**
      * allows replacing the element of the list
      *
