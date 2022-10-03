@@ -30,6 +30,8 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     const isDebugOn = true;
     const step = useRef(0);
 
+    const loadingTimeout = useRef(0);
+    const timeout = useRef(0);
     const isScrollingToSelection = useRef(false);
     const selectedIndex = useMemo(() => items.findIndex((i) => getId(i) === selected), [items, getId, selected]);
     const getRenderedIndexes = useCallback(() => {
@@ -49,6 +51,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
     const scrollTo = useCallback(
         (selectedIndex: number) => {
+            clearTimeout(timeout.current);
             step.current += 1;
             isDebugOn && console.debug(`#${step.current} scrollTo called`);
 
@@ -59,8 +62,13 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
             }
 
             if (firstIndex === -1 || lastIndex === -1) {
-                isDebugOn && console.debug("… … … list haven't rendered yet, waiting … … …");
-                window.setTimeout(() => scrollTo(selectedIndex));
+                loadingTimeout.current++;
+                if (loadingTimeout.current < 100) {
+                    timeout.current = window.setTimeout(
+                        () => isScrollingToSelection.current && scrollTo(selectedIndex),
+                        100
+                    );
+                }
                 return;
             }
 
@@ -95,7 +103,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
                         console.debug(
                             'called to be scrolled into view, but it is not rendered yet; triggering scrollTo once more'
                         );
-                    window.setTimeout(() => scrollTo(selected));
+                    timeout.current = window.setTimeout(() => scrollTo(selected));
                 } else {
                     isDebugOn && console.debug('we have rendered element, just need to scroll it into view');
                     node?.scrollIntoView({
@@ -114,15 +122,16 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
                 const by = calculateDistance({ to: firstIndex });
                 scrollTarget.scrollBy({ behavior: 'auto', top: by });
                 isDebugOn && console.debug(`should scroll up from ${firstIndex} by ${by}`);
+                timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
             } else if (lastIndex < selectedIndex) {
                 const by = calculateDistance({ from: lastIndex });
                 scrollTarget.scrollBy({ behavior: 'auto', top: by });
                 isDebugOn && console.debug(`should scroll down from ${lastIndex} by ${by}`);
+                timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
             } else {
                 isDebugOn && console.debug('index in rendered items, scroll into view');
+                timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
             }
-
-            window.setTimeout(() => scrollIntoView(selectedIndex));
         },
         [
             isDebugOn,
@@ -148,5 +157,12 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
             console.group(`Selected index: ${selectedIndex}`);
             scrollTo(selectedIndex);
         }
+
+        return () => {
+            console.debug('setting isScrolling on useEffect cleanup', isScrollingToSelection.current);
+            isScrollingToSelection.current = false;
+            loadingTimeout.current = 0;
+            clearTimeout(timeout.current);
+        };
     }, [scrollTo, selectedIndex]);
 };

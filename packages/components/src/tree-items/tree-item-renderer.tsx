@@ -16,6 +16,7 @@ export const TreeItemRenderer: React.FC<TreeItemProps<TreeItemData>> = (props) =
             style={
                 {
                     [vars.indent!]: props.indent.toString(),
+                    height: '24px',
                 } as React.CSSProperties
             }
             data-id={props.id}

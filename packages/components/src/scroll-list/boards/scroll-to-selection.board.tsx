@@ -9,7 +9,6 @@ import {
 } from '../../board-plugins/scenario-plugin/actions/select-item-action';
 import type { ListItemProps } from '../../list/list';
 import { ScrollList } from '../scroll-list';
-import { classes } from '../../searchable-text/searchable-text.st.css';
 
 const items = createItems();
 const elementRef: React.RefObject<HTMLDivElement> = {
@@ -42,7 +41,7 @@ const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
 export default createBoard({
     name: 'ScrollList — scroll to selected item',
     Board: () => {
-        const initialSelectedIndex = 0;
+        const initialSelectedIndex = 442;
         const [selectedItem, setSelectedItem] = useState(`a${initialSelectedIndex}`);
         const [input, setInput] = useState(initialSelectedIndex);
 
@@ -64,7 +63,7 @@ export default createBoard({
                             onChange={(event) => setInput(parseInt(event.target.value))}
                         />
                     </label>
-                    <div className={classes.qwe} />
+
                     <button id={selectItemButton} onClick={() => setSelectedItem(`a${input}`)}>
                         Select
                     </button>
