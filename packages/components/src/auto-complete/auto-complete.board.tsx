@@ -2,8 +2,7 @@ import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import type { ItemData } from '../board-assets';
 import { createItems, ItemRenderer } from '../board-assets';
-import { mixinProjectThemes } from '../board-mixins/mixin-project-themes';
-import { ZeeRoot } from '../board-mixins/mixin-zee-root';
+import { projectThemesPlugin, zeeRootPlugin } from '../board-plugins';
 import { AutoComplete } from './auto-complete';
 
 const items = createItems(30000);
@@ -18,7 +17,7 @@ export default createBoard({
             getTextContent={(item: ItemData) => item.title}
         />
     ),
-    plugins: [ZeeRoot, mixinProjectThemes],
+    plugins: [projectThemesPlugin, zeeRootPlugin],
     environmentProps: {
         canvasHeight: 24,
         windowHeight: 576,

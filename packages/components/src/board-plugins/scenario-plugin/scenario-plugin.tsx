@@ -1,19 +1,22 @@
 import { createPlugin } from '@wixc3/board-core';
 import type { IReactBoard } from '@wixc3/react-board';
-import { classes, st } from './scenario.st.css';
-import { renderInMixinControls } from './mixin-controls';
 import { expect } from 'chai';
 import { sleep, waitFor } from 'promise-assist';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
+import { renderInPluginControls } from '../plugin-controls/plugin-controls';
+import { classes, st } from './scenario-plugin.st.css';
+
 export interface Action {
     execute: () => void | Promise<void>;
     title: string;
     highlightSelector?: string;
     timeout: number;
 }
+
 export interface ScenarioParams {
     title?: string;
+    resetBoard?: () => void;
     events: Action[];
     slowMo?: number;
     skip?: boolean;
@@ -66,6 +69,12 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
         }
     };
 
+    const resetAll = useCallback(() => {
+        resetBoard();
+        updateButtonText(propEvents[0]!.title);
+        updateEvents(propEvents);
+    }, [propEvents, resetBoard]);
+
     const runAction = useCallback(() => {
         const current = events[0];
         if (current) {
@@ -98,12 +107,10 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
                 return onTaskFailed(err);
             }
         } else {
-            resetBoard();
-            updateButtonText(propEvents[0]!.title);
-            updateEvents(propEvents);
+            resetAll();
         }
         setHighlightedElement(events[1]?.highlightSelector);
-    }, [events, propEvents, resetBoard, setHighlightedElement]);
+    }, [events, setHighlightedElement, resetAll]);
 
     const runActions = useCallback(() => {
         triggerAutoRun(true);
@@ -123,9 +130,9 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
     return (
         <div className={classes.root}>
             <div className={st(classes.header, { skipped: props.skip })}>
-                {props.title || 'unamedScenario'}
-                <button className={classes.reset} onClick={resetBoard}>
-                    🗘
+                {props.title || 'unnamedScenario'}
+                <button className={classes.reset} onClick={resetAll} disabled={events.length === 0}>
+                    Restart
                 </button>
                 <button
                     className={classes.reset}
@@ -133,11 +140,11 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
                         void runActions();
                     }}
                 >
-                    {'>>'}
+                    Run
                 </button>
             </div>
             <div className={classes.content}>
-                <div>{events.length} events left to run</div>
+                <div>{events.length > 0 ? `${events.length} events left to run` : ''}</div>
                 <div className={classes.controls}>
                     <button
                         onClick={() => {
@@ -154,24 +161,15 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
     );
 };
 
-export const scenarioMixin = createPlugin<IReactBoard>()(
-    'scenario',
-    {
-        title: 'scenario',
-        events: [],
-        timeout: 2000,
-        skip: false,
-    } as Partial<ScenarioParams>,
-    {
-        wrapRender(props, _r, board) {
-            return <RenderWrapper board={board} {...props} />;
-        },
-    }
-);
-
 export const RenderWrapper = (props: ScenarioParams & { board: JSX.Element }) => {
-    const [boardKey, resetBoard] = useReducer((n: number) => n + 1, 0);
-    return renderInMixinControls(
+    const [boardKey, rerenderBoard] = useReducer((n: number) => n + 1, 0);
+
+    const resetBoard = () => {
+        rerenderBoard();
+        props.resetBoard?.();
+    };
+
+    return renderInPluginControls(
         <React.Fragment key={boardKey}>{props.board}</React.Fragment>,
         <ScenarioRenderer
             skip={props.skip}
@@ -497,3 +495,18 @@ export const expectWindowScroll = (
         timeout: 0,
     };
 };
+
+export const scenarioPlugin = createPlugin<IReactBoard>()(
+    'scenario',
+    {
+        title: 'scenario',
+        events: [],
+        timeout: 2000,
+        skip: false,
+    } as Partial<ScenarioParams>,
+    {
+        wrapRender(props, _r, board) {
+            return <RenderWrapper board={board} {...props} />;
+        },
+    }
+);

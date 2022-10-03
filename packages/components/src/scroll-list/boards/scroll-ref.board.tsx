@@ -1,16 +1,16 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import { createItems, getId, ItemRenderer } from '../../board-assets';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
 import {
     clickAction,
     expectElement,
     expectElementsStyle,
     expectElementStyle,
     hoverAction,
-    scenarioMixin,
+    projectThemesPlugin,
+    scenarioPlugin,
     scrollAction,
-} from '../../board-mixins/scenario';
+} from '../../board-plugins';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
@@ -60,7 +60,7 @@ export default createBoard({
         windowWidth: 600,
     },
     plugins: [
-        scenarioMixin.use({
+        scenarioPlugin.use({
             title: 'scroll list sanity',
             events: [
                 expectElement('[data-id="a3"]'),
@@ -89,6 +89,6 @@ export default createBoard({
                 }),
             ],
         }),
-        mixinProjectThemes,
+        projectThemesPlugin,
     ],
 });

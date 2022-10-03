@@ -2,8 +2,14 @@ import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
 import React, { useRef, useState } from 'react';
 import { createItems, ExpandableItemRenderer, getId } from '../../board-assets';
-import { mixinProjectThemes } from '../../board-mixins/mixin-project-themes';
-import { expectElement, expectElements, scenarioMixin, scrollAction, writeAction } from '../../board-mixins/scenario';
+import {
+    expectElement,
+    expectElements,
+    projectThemesPlugin,
+    scenarioPlugin,
+    scrollAction,
+    writeAction,
+} from '../../board-plugins';
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
@@ -67,7 +73,7 @@ export default createBoard({
         canvasHeight: 600,
     },
     plugins: [
-        scenarioMixin.use({
+        scenarioPlugin.use({
             title: 'should listen to offset resize',
             events: [
                 expectElements(['#offset', '[data-id="a0"]'], (els) => {
@@ -108,6 +114,6 @@ export default createBoard({
                 }),
             ],
         }),
-        mixinProjectThemes,
+        projectThemesPlugin,
     ],
 });

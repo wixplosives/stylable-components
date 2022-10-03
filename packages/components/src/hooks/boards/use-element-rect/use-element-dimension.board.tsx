@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import { createBoard } from '@wixc3/react-board';
-import { expectElementText, scenarioMixin } from '../../../board-mixins/scenario';
+import React, { useState } from 'react';
+import { expectElementText, scenarioPlugin } from '../../../board-plugins';
 import { ElmentDimHookSimulator } from './element-rect-hook-simulator';
 
 export default createBoard({
@@ -21,7 +21,7 @@ export default createBoard({
         windowHeight: 640,
     },
     plugins: [
-        scenarioMixin.use({
+        scenarioPlugin.use({
             title: 'should measure elements',
             events: [expectElementText('#res', '100', 'expect measure text to equal 100', 4000)],
         }),
