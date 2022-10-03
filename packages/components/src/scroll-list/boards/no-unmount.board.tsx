@@ -13,7 +13,7 @@ export default createBoard({
             ItemRenderer={StatefulItemRenderer}
             items={items}
             getId={getId}
-            watchScrollWindoSize={true}
+            watchScrollWindowSize={true}
             unmountItems={false}
         />
     ),

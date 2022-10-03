@@ -47,7 +47,7 @@ export default createBoard({
                         ItemRenderer={ExpandableItemRenderer}
                         items={items}
                         getId={getId}
-                        watchScrollWindoSize={true}
+                        watchScrollWindowSize={true}
                         scrollWindow={ref}
                         itemSize={fixedItemSize}
                         itemGap={0}
