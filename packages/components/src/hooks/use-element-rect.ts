@@ -1,6 +1,5 @@
 import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { noop } from '../board-assets/utils';
 
 export interface ElementDimensions {
     width: null | number;
@@ -120,6 +119,8 @@ export const useElementSize = (
     }, [element, watchSize]);
     return rect;
 };
+
+const noop = () => undefined;
 
 export const useSetableObserver = (shouldMeasure: boolean) => {
     const listener = useRef<ResizeObserverCallback>(noop);

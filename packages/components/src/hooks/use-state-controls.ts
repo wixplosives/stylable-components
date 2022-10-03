@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { noop } from '../board-assets/utils';
 
 export type NotAnArray<T> = T extends any[] ? never : T;
 
@@ -9,6 +8,8 @@ export type LockedState<T> = [defaultValue: T | (() => T), isDisabled: true];
 
 export type ProcessedControlledState<T> = [value: T, setValue: (t: T) => void];
 export type StateControls<T> = ControlledState<T> | UnControlledState<T> | LockedState<T>;
+
+const noop = () => undefined;
 
 export function useStateControls<T>(
     options: StateControls<T> | undefined,
