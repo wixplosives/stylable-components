@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { useRef } from 'react';
-import { useElementSize, WatchedSize, unMeasured, useElementDimension, useIdBasedRects } from '../../use-element-rect';
+import React, { useRef, useState } from 'react';
+import { unMeasured, useElementDimension, useElementSize, useIdBasedRects, WatchedSize } from '../../use-element-rect';
+
 export const ElementSizeHookSimulator: React.FC<{
     watchSize?: WatchedSize | boolean;
     width?: string;
@@ -49,7 +49,9 @@ export const ElmentDimHookSimulator: React.FC<{
                 <input value={size} onChange={(ev) => updateSize(ev.target.value)}></input>
             </div>
             <div ref={ref} style={{ width: '100%', height: usedSize + 'px', background: 'lightblue' }}>
-                <div style={{ position: 'fixed', top: '50%', left: '50%' }} id="res">{res}</div>
+                <div style={{ position: 'fixed', top: '50%', left: '50%' }} id="res">
+                    {res}
+                </div>
             </div>
         </div>
     );
@@ -59,11 +61,13 @@ const lorem = `Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do 
  Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
   Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
+
 export interface IdBasedRectsItem {
     id: string;
     style?: React.CSSProperties;
     text: string;
 }
+
 const getid = (item: IdBasedRectsItem) => item.id;
 const colors = ['red', 'blue'];
 export const IdBasedRectsHookSimulator: React.FC<{

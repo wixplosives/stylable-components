@@ -43,6 +43,7 @@ export default createBoard({
                             id="input"
                         ></input>
                     </div>
+
                     <ScrollList
                         ItemRenderer={ExpandableItemRenderer}
                         items={items}

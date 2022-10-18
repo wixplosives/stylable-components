@@ -24,7 +24,6 @@ export default createBoard({
                     style: {
                         display: 'grid',
                         gridTemplateColumns: '1fr',
-                        gridGap: '20px',
                     },
                 },
             }}
@@ -40,7 +39,6 @@ export default createBoard({
                 },
             }}
             scrollWindow={elementRef}
-            itemGap={20}
         />
     ),
     environmentProps: {
