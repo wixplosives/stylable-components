@@ -2,10 +2,25 @@
 @st-import Icon from "../../icons/icon.st.css";
 
 .root {
-    -st-states: focused, selected, open;
+    -st-states: focused, selected, open, lane;
     --indent: 0;
-    height: 0px;
-    margin-left: calc(var(--indent) * 8px);
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    margin-left: calc(var(--indent) * 8px)
+}
+
+.root:lane {
+    background: orange;
+    color: white
+}
+
+.lane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    background: orange;
 }
 
 .root:focused {
@@ -14,7 +29,6 @@
 
 .root:selected {
     text-decoration: underline;
-    height: 30px;
 }
 
 .root:open .chevron {
@@ -31,11 +45,4 @@
 .chevron {
     -st-extends: Icon;
     -st-mixin: small;
-}
-
-.rect {
-    position: relative;
-    top: 5px;
-    width: 5px;
-    height: 5px
 }

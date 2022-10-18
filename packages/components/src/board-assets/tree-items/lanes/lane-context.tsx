@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TreeItemWithLaneData } from '../tree-item-with-lane-renderer';
+import type { TreeItemWithLaneData } from '../../tree-items/tree-item-with-lane-renderer';
 
 export const lanesContext = React.createContext({
     getIndent(_item: TreeItemWithLaneData): number {

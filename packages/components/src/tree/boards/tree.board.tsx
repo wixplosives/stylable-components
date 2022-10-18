@@ -4,7 +4,7 @@ import { noop } from '../../board-assets';
 import { getChildren, getId, TreeItemData } from '../../board-assets/items';
 import { selectItemButton, selectItemInput } from '../../board-plugins/scenario-plugin/actions/select-item-action';
 import { projectThemesPlugin } from '../../board-plugins';
-import { TreeItemRenderer } from '../../tree-items/tree-item-renderer';
+import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer';
 import { Tree } from '../tree';
 
 const createTreeData = (maxChildren: number, maxDepth: number, currentDepth = 0, path: number[] = []) => {
