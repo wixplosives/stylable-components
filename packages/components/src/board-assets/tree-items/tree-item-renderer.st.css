@@ -6,7 +6,8 @@
     --indent: 0;
     display: flex;
     justify-content: space-between;
-    margin-left: calc(var(--indent) * 8px)
+    margin-left: calc(var(--indent) * 8px);
+    height: 24px;
 }
 
 .root:focused {
