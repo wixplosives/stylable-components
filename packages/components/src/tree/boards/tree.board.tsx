@@ -2,7 +2,7 @@ import { createBoard } from '@wixc3/react-board';
 import React from 'react';
 import { getChildren, TreeItemData } from '../../board-assets';
 import { projectThemesPlugin } from '../../board-plugins';
-import { TreeItemRenderer } from '../../tree-items/tree-item-renderer';
+import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer';
 import { Tree } from '../tree';
 
 const createItem = (maxChildren: number, maxDepth: number, currentDepth = 0, path: number[] = []) => {

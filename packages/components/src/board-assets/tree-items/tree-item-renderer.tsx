@@ -1,9 +1,9 @@
 import React from 'react';
-import type { TreeItemData } from '../board-assets';
-import { ChevronRightWixUiIcon } from '../icons/wix-ui/chevron-right';
-import { SearchableText } from '../searchable-text/searchable-text';
-import type { TreeItemProps } from '../tree/tree';
-import { classes, st, vars } from './tree-item-renderer.st.css';
+import type { TreeItemData } from '../';
+import { ChevronRightWixUiIcon } from '../../icons/wix-ui/chevron-right';
+import { SearchableText } from '../../searchable-text/searchable-text';
+import type { TreeItemProps } from '../../tree/tree';
+import { classes, st, vars } from '../tree-items/tree-item-renderer.st.css';
 
 export const TreeItemRenderer: React.FC<TreeItemProps<TreeItemData>> = (props) => {
     return (

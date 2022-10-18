@@ -1,8 +1,8 @@
 import React from 'react';
-import { LaneData, calcLaneSize } from './lanes/lane-item-renderer';
-import { ElementData, ElementRenderer, calcElementSize } from './lanes/element-item-renderer';
-import { MarkerData, MarkerRenderer, calcMarkerSize } from './lanes/marker-item-renderer';
-import type { TreeItemInfo, TreeItemProps } from '../tree/tree';
+import { LaneData, calcLaneSize } from '../tree-items/lanes/lane-item-renderer';
+import { ElementData, ElementRenderer, calcElementSize } from '../tree-items/lanes/element-item-renderer';
+import { MarkerData, MarkerRenderer, calcMarkerSize } from '../tree-items/lanes/marker-item-renderer';
+import type { TreeItemInfo, TreeItemProps } from '../../tree/tree';
 
 export type TreeItemWithLaneData =
     | LaneData<TreeItemWithLaneData>

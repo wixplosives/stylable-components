@@ -1,5 +1,5 @@
-@st-import [small] from "../../icons/variants.st.css";
-@st-import Icon from "../../icons/icon.st.css";
+@st-import [small] from "../../../icons/variants.st.css";
+@st-import Icon from "../../../icons/icon.st.css";
 
 .root {
     -st-states: focused, selected, open, empty;

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import type { TreeOverlayProps } from '../../tree/tree';
-import type { TreeItemWithLaneData } from '../tree-item-with-lane-renderer';
-import { lanesContext } from './lane-context';
-import { st, classes, vars } from './overlays-renderer.st.css';
+import type { TreeOverlayProps } from '../../../tree/tree';
+import { lanesContext } from '../../tree-items/lanes/lane-context';
+import type { TreeItemWithLaneData } from '../../tree-items/tree-item-with-lane-renderer';
+import { classes, st, vars } from '../../tree-items/lanes/overlays-renderer.st.css';
 
 export const OverlayRenderer = (props: TreeOverlayProps<TreeItemWithLaneData>) => {
     const laneCtx = useContext(lanesContext);

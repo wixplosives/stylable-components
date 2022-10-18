@@ -5,6 +5,7 @@
     -st-states: focused, selected, open;
     --indent: 0;
     display: flex;
+    justify-content: space-between;
     margin-left: calc(var(--indent) * 8px)
 }
 
@@ -30,20 +31,4 @@
 .chevron {
     -st-extends: Icon;
     -st-mixin: small;
-}
-
-.icon {
-    -st-mixin: small;
-    position: relative;
-    margin-right: 3px;
-}
-
-.elementIcon {
-    position: absolute;
-    height: 50%;
-    width: 50%;
-    top: 25%;
-    left: 25%;
-    border: 1px solid black;
-    border-radius: 3px;
 }
