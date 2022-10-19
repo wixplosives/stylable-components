@@ -5,7 +5,7 @@
 import React, { useMemo } from 'react';
 import type { ElementSlot, PropMapping } from '../common/types';
 
-// here bacause in issue with ts transformers in WCS
+// here because in issue with ts transformers in WCS
 export const a = (): JSX.Element => <div></div>;
 
 export const defaultRoot: ElementSlot<React.ComponentPropsWithRef<'div'>, 'div'> = {

@@ -25,17 +25,17 @@ export default createBoard({
                 ItemRenderer={ItemRenderer}
                 items={items}
                 getId={getId}
+                watchScrollWindowSize={true}
                 itemCount={-1}
-                watchScrollWindoSize={true}
                 loadMore={loadMore}
                 loadingState={loadingState}
             />
         );
     },
     environmentProps: {
-        canvasWidth: 560,
-        windowHeight: 552,
-        windowWidth: 744,
+        windowWidth: 500,
+        canvasWidth: 400,
+        windowHeight: 500,
     },
     plugins: [
         scenarioPlugin.use({

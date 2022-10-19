@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react';
-import type { ListItemProps } from '../list/list';
-import type { ItemData } from './index';
+import type { ListItemProps } from '../../list/list';
+import type { ItemData } from '../items';
 
 export const ExpandableItemRenderer: React.FC<ListItemProps<ItemData>> = memo(function ExpandableItemRenderer(props) {
     const [isExpanded, setExpanded] = useState(true);
@@ -8,7 +8,7 @@ export const ExpandableItemRenderer: React.FC<ListItemProps<ItemData>> = memo(fu
         <div
             data-id={props.id}
             style={{
-                height: isExpanded ? '100px' : '12px',
+                height: isExpanded ? '100px' : '24px',
                 outline: '1px solid ',
             }}
         >

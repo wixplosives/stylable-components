@@ -21,7 +21,7 @@ export default createBoard({
             ItemRenderer={ItemRenderer}
             items={items}
             getId={getId}
-            watchScrollWindoSize={true}
+            watchScrollWindowSize={true}
             listRoot={{
                 props: {
                     style: {
@@ -43,9 +43,9 @@ export default createBoard({
         />
     ),
     environmentProps: {
-        canvasWidth: 560,
-        windowHeight: 300,
-        windowWidth: 600,
+        windowWidth: 500,
+        canvasWidth: 400,
+        windowHeight: 500,
     },
     plugins: [
         scenarioPlugin.use({

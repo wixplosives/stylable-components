@@ -16,29 +16,11 @@ const items = createItems();
 
 export default createBoard({
     name: 'ScrollList',
-    Board: () => (
-        <ScrollList
-            ItemRenderer={ItemRenderer}
-            items={items}
-            getId={getId}
-            watchScrollWindoSize={true}
-            listRoot={{
-                el: 'div',
-                props: {
-                    style: {
-                        display: 'grid',
-                        gridTemplateColumns: '1fr',
-                        gridGap: '20px',
-                    },
-                },
-            }}
-            itemGap={20}
-        />
-    ),
+    Board: () => <ScrollList ItemRenderer={ItemRenderer} items={items} getId={getId} watchScrollWindowSize={true} />,
     environmentProps: {
-        canvasWidth: 560,
-        windowHeight: 300,
-        windowWidth: 600,
+        windowWidth: 500,
+        canvasWidth: 400,
+        windowHeight: 500,
     },
     plugins: [
         scenarioPlugin.use({

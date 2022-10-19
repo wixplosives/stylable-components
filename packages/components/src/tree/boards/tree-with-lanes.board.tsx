@@ -1,14 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { createBoard } from '@wixc3/react-board';
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useMemo, useState } from 'react';
+import { getChildren } from '../../board-assets';
 import { projectThemesPlugin } from '../../board-plugins';
-import type { ElementData } from '../../tree-items/lanes/element-item-renderer';
-import { lanesContext } from '../../tree-items/lanes/lane-context';
-import type { LaneData, LaneItem } from '../../tree-items/lanes/lane-item-renderer';
-import type { MarkerData } from '../../tree-items/lanes/marker-item-renderer';
-import { OverlayRenderer } from '../../tree-items/lanes/overlays-renderer';
-import { calcItemSize, TreeItemWithLaneData, TreeItemWithLaneRenderer } from '../../tree-items/tree-item-with-lane-renderer';
+import type { ElementData } from '../../board-assets/tree-items/lanes/element-item-renderer';
+import { lanesContext } from '../../board-assets/tree-items/lanes/lane-context';
+import type { LaneData, LaneItem } from '../../board-assets/tree-items/lanes/lane-item-renderer';
+import type { MarkerData } from '../../board-assets/tree-items/lanes/marker-item-renderer';
+import { OverlayRenderer } from '../../board-assets/tree-items/lanes/overlays-renderer';
+import {
+    calcItemSize,
+    TreeItemWithLaneData,
+    TreeItemWithLaneRenderer,
+} from '../../board-assets/tree-items/tree-item-with-lane-renderer';
 import { createTreeOverlay, Tree } from '../tree';
 
 let idCounter = 0;
@@ -288,7 +291,7 @@ export default createBoard({
                     ItemRenderer={TreeItemWithLaneRenderer}
                     data={data}
                     getId={(item: TreeItemWithLaneData) => item.id}
-                    getChildren={(item: TreeItemWithLaneData) => item.children || []}
+                    getChildren={getChildren}
                     scrollOffset={50}
                     openItemsControls={[openItems, updateOpen]}
                     selectionControl={[selection, updateSelection]}

@@ -1,7 +1,8 @@
-import React from 'react';
 import { createBoard } from '@wixc3/react-board';
-import { ItemRenderer } from '../../board-assets/item-renderer';
+import React from 'react';
+import { ItemRenderer } from '../../board-assets';
 import { List } from '../list';
+
 interface ItemData {
     title: string;
     id: string;

@@ -34,7 +34,7 @@ export const {
     ScrollListRootPropMapping
 );
 
-export interface ItemInfo<T> {
+export interface ScrollListItemInfo<T> {
     data: T;
     isSelected: boolean;
     isFocused: boolean;
@@ -72,7 +72,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      *   true: measure on changes,
      *   number: use the number as size
      */
-    watchScrollWindoSize?: number | boolean;
+    watchScrollWindowSize?: number | boolean;
 
     /**
      * Scroll offset if the scroll lists has a scroll window that is external to itself, it can have elements before it.
@@ -95,7 +95,7 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      * size of the item ( height if vertical ) in pixels or a method to compute according to data
      * if omitted, item size will be measured
      */
-    itemSize?: number | ((info: ItemInfo<T>) => number) | boolean;
+    itemSize?: number | ((info: ScrollListItemInfo<T>) => number) | boolean;
     /**
      * size of the item ( height if vertical ) in pixels
      * @default 50
@@ -142,11 +142,6 @@ export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T>
      * allows replacing the root element of the scroll list
      */
     scrollListRoot?: typeof scrollListRoot;
-
-    /**
-     * sets a custom scroll position instead of watching container's scroll event
-     */
-    scrollPosition?: number;
     itemsInRow?: number;
     itemGap?: number;
     listRoot?: typeof listRoot;
@@ -158,7 +153,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     items,
     isHorizontal = false,
     scrollWindow,
-    watchScrollWindoSize,
+    watchScrollWindowSize,
     itemCount,
     getId,
     ItemRenderer,
@@ -178,7 +173,6 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     itemsInRow = 1,
     transmitKeyPress,
     overlay,
-    scrollPosition,
 }: ScrollListProps<T, EL>): JSX.Element {
     const shouldMeasureOffset = typeof scrollOffset === 'number' ? defaultPos : scrollOffset;
     const defaultRef = useRef<EL>();
@@ -188,9 +182,8 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         (typeof scrollOffset === 'number' ? scrollOffset : isHorizontal ? offsetFromParent.x : offsetFromParent.y) || 0;
     const defaultListRef = useRef<HTMLElement>(null);
     const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
-    const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindoSize);
-    const currentScroll = useScroll({ isHorizontal, ref: scrollWindow, disabled: scrollPosition !== undefined });
-    const resolvedScroll = scrollPosition ?? currentScroll;
+    const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindowSize);
+    const scrollPosition = useScroll({ isHorizontal, ref: scrollWindow });
     const lastRenderedItem = useRef({
         items,
         last: 0,
@@ -204,7 +197,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const [focused, setFocused] = useStateControls(focusControl, undefined);
 
     const getItemInfo = useCallback(
-        (data: T): ItemInfo<T> => ({
+        (data: T): ScrollListItemInfo<T> => ({
             data,
             isFocused: focused === getId(data),
             isSelected: selected === getId(data),
@@ -242,7 +235,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 
     const calcScrollPosition = () => {
         const lastWantedPixel = Math.min(
-            scrollWindowSize * (1 + extraRenderedItems) + resolvedScroll - usedoffset,
+            scrollWindowSize * (1 + extraRenderedItems) + scrollPosition - usedoffset,
             maxScrollSize
         );
         const firstWantedPixel = unmountItems ? lastWantedPixel - scrollWindowSize * (2 + extraRenderedItems) : 0;
@@ -373,8 +366,8 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 }
 
 export function dimToSize<T>(
-    itemSize: number | ((t: ItemInfo<T>) => number) | boolean,
-    getItemInfo: (t: T) => ItemInfo<T>
+    itemSize: number | ((t: ScrollListItemInfo<T>) => number) | boolean,
+    getItemInfo: (t: T) => ScrollListItemInfo<T>
 ): boolean | WatchedSize | ((t: T) => WatchedSize) {
     if (typeof itemSize === 'boolean') {
         return itemSize;

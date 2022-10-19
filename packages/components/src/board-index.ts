@@ -31,7 +31,7 @@ import items_change_size from './scroll-list/boards/items-change-size.board';
 import items_in_row from './scroll-list/boards/items-in-row.board';
 import no_unmount from './scroll-list/boards/no-unmount.board';
 import scroll_list from './scroll-list/boards/scroll-list.board';
-import scroll_position from './scroll-list/boards/scroll-position.board';
+import scroll_offset from './scroll-list/boards/scroll-offset.board';
 import scroll_ref from './scroll-list/boards/scroll-ref.board';
 import with_header from './scroll-list/boards/with-header.board';
 import searchable_text from './searchable-text/boards/searchable-text.board';
@@ -66,7 +66,7 @@ export default [
     items_in_row,
     no_unmount,
     scroll_list,
-    scroll_position,
+    scroll_offset,
     scroll_ref,
     with_header,
     searchable_text,
