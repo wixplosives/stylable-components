@@ -4,9 +4,9 @@ import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import { KeyCodes } from '../keycodes';
 import { forwardListRoot, ListItemProps } from '../list/list';
 import {
+    ScrollListItemInfo,
     OverlayProps,
     ScrollList,
-    ScrollListItemInfo,
     scrollListOverlayParent,
     ScrollListProps,
 } from '../scroll-list/scroll-list';
@@ -21,11 +21,9 @@ export interface TreeItemInfo<T> extends ScrollListItemInfo<T> {
 export interface TreeItemProps<T> extends ListItemProps<T> {
     isOpen: boolean;
     hasChildren: boolean;
-    indent: number;
-
     open(): void;
-
     close(): void;
+    indent: number;
 }
 
 export interface TreeItemProps<T> extends ListItemProps<T> {
@@ -139,7 +137,6 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
             });
         };
     }, [getChildren, getId, itemSize, openItems]);
-
     return (
         <treeWrapperContext.Provider value={wrapperContext}>
             <ScrollList

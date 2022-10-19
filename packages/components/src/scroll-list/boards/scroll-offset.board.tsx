@@ -49,11 +49,9 @@ export default createBoard({
                         items={items}
                         getId={getId}
                         watchScrollWindowSize={true}
-                        estimatedItemSize={fixedItemSize}
                         scrollWindow={ref}
                         itemSize={fixedItemSize}
                         itemGap={0}
-                        extraRenderSize={0}
                         scrollOffset={true}
                         listRoot={{
                             el: 'div',
