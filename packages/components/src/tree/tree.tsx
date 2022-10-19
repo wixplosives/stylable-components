@@ -26,16 +26,6 @@ export interface TreeItemProps<T> extends ListItemProps<T> {
     indent: number;
 }
 
-export interface TreeItemProps<T> extends ListItemProps<T> {
-    isOpen: boolean;
-    hasChildren: boolean;
-    indent: number;
-
-    open(): void;
-
-    close(): void;
-}
-
 export interface TreeOverlayProps<T> extends OverlayProps<T> {
     expandedItems: string[];
 }

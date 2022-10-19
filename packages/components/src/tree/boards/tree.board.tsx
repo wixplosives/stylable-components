@@ -1,10 +1,8 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
-import { noop } from '../../board-assets';
 import { getChildren, getId, TreeItemData } from '../../board-assets/items';
 import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer';
 import { projectThemesPlugin } from '../../board-plugins';
-import { selectItemButton, selectItemInput } from '../../board-plugins/scenario-plugin/actions/select-item-action';
 import { Tree } from '../tree';
 
 const createTreeData = (maxChildren: number, maxDepth: number, currentDepth = 0, path: number[] = []) => {
@@ -31,59 +29,31 @@ const elementRef: React.RefObject<HTMLDivElement> = {
 export default createBoard({
     name: 'Tree',
     Board: () => {
-        const initialSelectedIndex = Math.ceil(ids.length / 2);
-        const initialSelectedId = ids[initialSelectedIndex];
-        const [selectedItem, setSelectedItem] = useState(initialSelectedId);
         const [openItems, setOpenItems] = useState(ids);
-        const [input, setInput] = useState(initialSelectedIndex);
 
         return (
-            <>
-                <div
-                    style={{
-                        position: 'sticky',
-                        textAlign: 'right',
-                        top: 0,
-                        zIndex: 1,
-                    }}
-                >
-                    <label>
-                        Index:
-                        <input
-                            id={selectItemInput}
-                            value={input}
-                            onChange={(event) => setInput(parseInt(event.target.value))}
-                        />
-                    </label>
-                    <button id={selectItemButton} onClick={() => setSelectedItem(ids[input])}>
-                        Select
-                    </button>
-                </div>
-
-                <Tree
-                    scrollWindow={elementRef}
-                    watchScrollWindowSize={true}
-                    ItemRenderer={TreeItemRenderer}
-                    data={treeData}
-                    getId={getId}
-                    getChildren={getChildren}
-                    itemSize={() => 24}
-                    scrollListRoot={{
-                        el: 'div',
-                        props: {
-                            id: 'list',
-                            style: {
-                                width: '200px',
-                                height: '400px',
-                                overflow: 'auto',
-                            },
-                            ref: elementRef,
+            <Tree
+                scrollWindow={elementRef}
+                watchScrollWindowSize={true}
+                ItemRenderer={TreeItemRenderer}
+                data={treeData}
+                getId={getId}
+                getChildren={getChildren}
+                itemSize={() => 24}
+                scrollListRoot={{
+                    el: 'div',
+                    props: {
+                        id: 'list',
+                        style: {
+                            width: '200px',
+                            height: '400px',
+                            overflow: 'auto',
                         },
-                    }}
-                    openItemsControls={[openItems, setOpenItems]}
-                    selectionControl={[selectedItem, noop]}
-                />
-            </>
+                        ref: elementRef,
+                    },
+                }}
+                openItemsControls={[openItems, setOpenItems]}
+            />
         );
     },
     plugins: [projectThemesPlugin],
