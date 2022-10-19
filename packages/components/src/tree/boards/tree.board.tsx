@@ -1,6 +1,6 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
-import { getChildren, getId, TreeItemData } from '../../board-assets/items';
+import { getChildren, getId, TreeItemData } from '../../board-assets';
 import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer';
 import { projectThemesPlugin } from '../../board-plugins';
 import { Tree } from '../tree';

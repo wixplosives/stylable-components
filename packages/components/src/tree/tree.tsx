@@ -10,7 +10,6 @@ import {
     scrollListOverlayParent,
     ScrollListProps,
 } from '../scroll-list/scroll-list';
-
 // import { st, classes } from './tree.st.css';
 
 export interface TreeItemInfo<T> extends ScrollListItemInfo<T> {
