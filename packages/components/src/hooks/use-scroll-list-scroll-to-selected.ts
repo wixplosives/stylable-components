@@ -53,7 +53,10 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
             for (let index = anchorIndex; index !== selectedIndex; 'from' in anchor ? index++ : index--) {
                 const item = items[index]!;
                 const id = getId(item);
-                const { height, width } = itemsDimensions.current[id]!;
+                const { height, width } = itemsDimensions.current[id] || {
+                    height: averageItemSize,
+                    width: averageItemSize,
+                };
                 const size = (isHorizontal ? width : height) ?? averageItemSize;
 
                 distance += size;
