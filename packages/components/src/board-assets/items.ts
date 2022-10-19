@@ -1,10 +1,6 @@
 export interface ItemData {
-    id: string;
     title: string;
-}
-
-export interface TreeItemData extends ItemData {
-    children?: TreeItemData[];
+    id: string;
 }
 
 export interface TreeItemData extends ItemData {

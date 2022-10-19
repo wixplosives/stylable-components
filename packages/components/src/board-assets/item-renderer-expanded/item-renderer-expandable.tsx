@@ -8,7 +8,6 @@ export const ExpandableItemRenderer: React.FC<ListItemProps<ItemData>> = memo(fu
         <div
             data-id={props.id}
             style={{
-                width: '100%',
                 height: isExpanded ? '100px' : '24px',
                 outline: '1px solid ',
             }}

@@ -2,9 +2,9 @@ import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
 import { noop } from '../../board-assets';
 import { getChildren, getId, TreeItemData } from '../../board-assets/items';
-import { selectItemButton, selectItemInput } from '../../board-plugins/scenario-plugin/actions/select-item-action';
 import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer';
 import { projectThemesPlugin } from '../../board-plugins';
+import { selectItemButton, selectItemInput } from '../../board-plugins/scenario-plugin/actions/select-item-action';
 import { Tree } from '../tree';
 
 const createTreeData = (maxChildren: number, maxDepth: number, currentDepth = 0, path: number[] = []) => {
