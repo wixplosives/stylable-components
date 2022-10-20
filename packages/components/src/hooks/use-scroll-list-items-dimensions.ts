@@ -26,7 +26,7 @@ const calculateDimensions = <T, EL extends HTMLElement>(
     oldRes: Record<string, ElementDimensions>,
     setObserveTargets?: (targets: Element[]) => void
 ): { changed: boolean; res: Record<string, ElementDimensions> } => {
-    const itemSize = (item: T) => {
+    const getDimensions = (item: T) => {
         if (size !== undefined) {
             return typeof size === 'function' ? size(item) : size;
         }
@@ -37,9 +37,10 @@ const calculateDimensions = <T, EL extends HTMLElement>(
         let changed = false;
         const res = items.reduce((acc, item) => {
             const id = getId(item);
-            const itemRes = itemSize(item);
-            acc[id] = itemRes;
-            if (oldRes[id]?.height !== itemRes?.height || oldRes[id]?.width !== itemRes?.width) {
+            const itemDimensions = getDimensions(item);
+
+            acc[id] = itemDimensions;
+            if (oldRes[id]?.height !== itemDimensions?.height || oldRes[id]?.width !== itemDimensions?.width) {
                 changed = true;
             }
 
@@ -189,6 +190,7 @@ export const useScrollListItemsDimensions = <T, EL extends HTMLElement>(
     }, [ref, getId, shouldMeasure, items, getItemDimensions, preMeasured, setTargets, dimensions, updateDimensions]);
 
     if (!shouldMeasure) {
+        unMeasuredDimensions.current = calculatedSize;
         return unMeasuredDimensions;
     }
 

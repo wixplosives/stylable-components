@@ -71,7 +71,10 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     } = props;
     const [openItems, updateOpenItems] = useStateControls(openItemsControls, []);
     const [focused, updateFocused] = useStateControls(focusControl, undefined);
-    const { items, depths } = getItems({ data, getChildren, getId, openItems });
+    const { items, depths } = useMemo(
+        () => getItems({ data, getChildren, getId, openItems }),
+        [data, getChildren, getId, openItems]
+    );
     const itemRenderer = useMemo(() => TreeItemWrapper(ItemRenderer), [ItemRenderer]);
 
     const wrapperContext = useMemo(
