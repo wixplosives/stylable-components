@@ -2,12 +2,12 @@ import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
 import { createItems, getId, ItemData, noop } from '../../board-assets';
 import { projectThemesPlugin, scenarioPlugin } from '../../board-plugins';
-import { checkItemVisibility } from '../../board-plugins/scenario-plugin/actions/check-item-visibility';
+import { checkItemRenderState } from '../../board-plugins/scenario-plugin/actions/check-item-render-state';
 import {
-    selectItemAction,
+    selectItemByIndex,
     selectItemButton,
     selectItemInput,
-} from '../../board-plugins/scenario-plugin/actions/select-item-action';
+} from '../../board-plugins/scenario-plugin/actions/select-item-by-index';
 import type { ListItemProps } from '../../list/list';
 import { ScrollList } from '../scroll-list';
 
@@ -107,8 +107,8 @@ export default createBoard({
             },
             events: [
                 ...[0, 555, 341, 999, 823, 543, 0, 123, 942].flatMap((index) => [
-                    selectItemAction(index.toString()),
-                    checkItemVisibility(`a${index}`, index.toString()),
+                    selectItemByIndex(index.toString()),
+                    checkItemRenderState(`a${index}`),
                 ]),
             ],
         }),

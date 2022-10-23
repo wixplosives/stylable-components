@@ -4,21 +4,20 @@ import { Action, waitForElement } from '../scenario-plugin';
 export const selectItemInput = 'input';
 export const selectItemButton = 'button';
 
-export const selectItemAction = (index: string): Action => {
-    const timeout = 1_000;
+export const selectItemByIndex = (index: string): Action => {
     const title = `Select element with index #${index}`;
 
     return {
         title,
         execute: async () => {
-            const input = await waitForElement(`#${selectItemInput}`, title, timeout);
+            const input = await waitForElement(`#${selectItemInput}`, title);
             if (input && input instanceof HTMLInputElement) {
                 input.value = index;
                 ReactTestUtils.Simulate.change(input, {
                     target: input,
                 });
             }
-            const button = await waitForElement(`#${selectItemButton}`, title, timeout);
+            const button = await waitForElement(`#${selectItemButton}`, title);
 
             window.setTimeout(() => {
                 if (button && button instanceof HTMLButtonElement) {
@@ -26,6 +25,6 @@ export const selectItemAction = (index: string): Action => {
                 }
             }, 100);
         },
-        timeout: timeout * 2,
+        timeout: 2_000,
     };
 };
