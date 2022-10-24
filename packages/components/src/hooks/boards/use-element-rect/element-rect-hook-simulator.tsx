@@ -1,32 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { ElementDimensions, unMeasured, useElementDimension, useElementSize } from '../../use-element-rect';
-import { useScrollListItemsDimensions } from '../../use-scroll-list-items-dimensions';
+import { useElementDimensions } from '../../use-element-dimensions';
+import { useElementDimension } from '../../use-element-rect';
 
-export const ElementSizeHookSimulator: React.FC<{
-    watchSize?: ElementDimensions | boolean;
-    width?: string;
-    height?: string;
-}> = ({ watchSize = unMeasured, height, width }) => {
-    const ref = useRef<HTMLDivElement>(null);
-    const res = useElementSize(ref, watchSize);
-    return (
-        <div
-            style={{
-                height,
-                width,
-            }}
-        >
-            <div ref={ref} style={{ width: '100%', height: '100%', background: 'red' }}>
-                <div style={{ position: 'fixed', top: '50%', left: '50%' }}>
-                    <div>width: ${res.width}</div>
-                    <div>height: ${res.height}</div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export const ElmentDimHookSimulator: React.FC<{
+export const ElementDimHookSimulator: React.FC<{
     isVertical: boolean;
     watchSize: number | boolean;
     width?: string;
@@ -92,7 +68,7 @@ export const IdBasedRectsHookSimulator: React.FC<{
         },
     ]);
     const ref = useRef<HTMLDivElement>(null);
-    const res = useScrollListItemsDimensions(ref, data, getid, false);
+    const res = useElementDimensions(ref, data, getid, false);
     const updateItem = (idx: number, text: string) => {
         const newData = [...data];
         const newItem = { ...data[idx], text };

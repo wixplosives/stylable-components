@@ -3,7 +3,7 @@ import { sleep } from 'promise-assist';
 import React, { useCallback, useState } from 'react';
 import { createItems, getId, ItemRenderer } from '../../board-assets';
 import { clickAction, hoverAction, projectThemesPlugin, scenarioPlugin, scrollAction } from '../../board-plugins';
-import type { ScrollListLoadingState } from '../../hooks';
+import type { ScrollListLoadingState } from '../hooks/use-scroll-list-maybe-load-more';
 import { ScrollList } from '../scroll-list';
 
 export default createBoard({

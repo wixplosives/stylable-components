@@ -1,8 +1,8 @@
-import { MutableRefObject, RefObject, useMemo, useRef } from 'react';
-import type { ListProps } from '../list/list';
-import type { ScrollListItemInfo, ScrollListProps } from '../scroll-list/scroll-list';
-import type { DimensionsById } from './use-element-rect';
-import { defaultPos, usePositionInParent } from './use-position';
+import { MutableRefObject, RefObject, useEffect, useMemo, useRef } from 'react';
+import type { DimensionsById } from '../../common';
+import { defaultPos, usePositionInParent } from '../../hooks/use-position';
+import type { ListProps } from '../../list/list';
+import type { ScrollListItemInfo, ScrollListProps } from '../../scroll-list/scroll-list';
 
 export interface ScrollListPositioningProps {
     /**
@@ -72,10 +72,12 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
         last: 0,
     });
 
-    if (lastRenderedItem.current.items !== items) {
-        lastRenderedItem.current.items = items;
-        lastRenderedItem.current.last = 0;
-    }
+    useEffect(() => {
+        if (lastRenderedItem.current.items !== items) {
+            lastRenderedItem.current.items = items;
+            lastRenderedItem.current.last = 0;
+        }
+    }, [items]);
 
     const shouldMeasureOffset = typeof scrollOffset === 'number' ? defaultPos : scrollOffset;
     const offsetFromParent = usePositionInParent(scrollListRef, shouldMeasureOffset);
@@ -138,8 +140,6 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
 
         taken += maxRowSize + itemGap;
 
-        //  TODO check: not sure this is needed
-        // taken > firstWantedPixel
         if (unmountItems && taken > firstWantedPixel && firstTakenPixel === null) {
             firstTakenPixel = taken - maxRowSize;
             firstShownItemIndex = rowIndex;

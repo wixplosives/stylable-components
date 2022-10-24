@@ -13,8 +13,8 @@ import button from './button/boards/button.board';
 import cancel_button from './button/boards/cancel-button.board';
 import emphasis_button from './button/boards/emphasis-button.board';
 import data_grid from './data-grid/boards/data-grid.board';
+import use_element_dimensions from './hooks/boards/use-element-dimensions.board';
 import use_element_dimension from './hooks/boards/use-element-rect/use-element-dimension.board';
-import use_element_size from './hooks/boards/use-element-rect/use-element-size.board';
 import use_id_based_rects from './hooks/boards/use-element-rect/use-id-based-rects.board';
 import use_scroll_horizontal_window from './hooks/boards/use-scroll/use-scroll-horizontal-window.board';
 import use_scroll_vertical_window from './hooks/boards/use-scroll/use-scroll-vertical-window.board';
@@ -49,8 +49,8 @@ export default [
     cancel_button,
     emphasis_button,
     data_grid,
+    use_element_dimensions,
     use_element_dimension,
-    use_element_size,
     use_id_based_rects,
     use_scroll_horizontal_window,
     use_scroll_vertical_window,

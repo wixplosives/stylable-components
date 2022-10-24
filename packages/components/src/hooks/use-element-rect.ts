@@ -1,14 +1,6 @@
 import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-
-export interface ElementDimensions {
-    width: null | number;
-    height: null | number;
-}
-
-export interface DimensionsById {
-    [id: string]: ElementDimensions;
-}
+import { ElementDimensions, unMeasured } from '../common';
 
 export const useElementDimension = (
     element?: React.RefObject<HTMLElement>,
@@ -84,10 +76,7 @@ export const rectToDimensions = (rect?: DOMRect): ElementDimensions => {
               width: rect.width,
               height: rect.height,
           }
-        : {
-              width: null,
-              height: null,
-          };
+        : unMeasured;
 };
 
 export const useElementSize = (
@@ -168,9 +157,4 @@ export const createSetableMutationObserver = () => {
         listen,
         observer,
     };
-};
-
-export const unMeasured: ElementDimensions = {
-    width: null,
-    height: null,
 };

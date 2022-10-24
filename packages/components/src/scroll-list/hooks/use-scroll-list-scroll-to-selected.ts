@@ -1,7 +1,7 @@
 import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
-import type { DimensionsById } from '../hooks/use-element-rect';
-import type { ListProps } from '../list/list';
-import type { ScrollListProps } from '../scroll-list/scroll-list';
+import type { DimensionsById } from '../../common';
+import type { ListProps } from '../../list/list';
+import type { ScrollListProps } from '../../scroll-list/scroll-list';
 
 export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     scrollWindow,

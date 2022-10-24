@@ -1,18 +1,24 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import type { ElementSlot, PropMapping } from '../common/types';
-import { useScrollListItemsDimensions } from '../hooks';
+import type { ElementSlot, PropMapping } from '../common';
+import {
+    concatClasses,
+    defaultRoot,
+    defineElementSlot,
+    mergeObjectInternalWins,
+    ProcessedControlledState,
+    useScroll,
+    useStateControls,
+} from '../hooks';
+import { useElementDimensions } from '../hooks/use-element-dimensions';
 import { useElementDimension } from '../hooks/use-element-rect';
-import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
-import { useScroll } from '../hooks/use-scroll';
-import { useScrollListItemsSizes } from '../hooks/use-scroll-list-items-sizes';
-import { ScrollListInfiniteProps, useScrollListMaybeLoadMore } from '../hooks/use-scroll-list-maybe-load-more';
-import { ScrollListPositioningProps, useScrollListPosition } from '../hooks/use-scroll-list-position';
-import { useScrollListScrollToSelected } from '../hooks/use-scroll-list-scroll-to-selected';
-import { useScrollListStyles } from '../hooks/use-scroll-list-styles';
-import { ProcessedControlledState, useStateControls } from '../hooks/use-state-controls';
 import { List, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
 import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
+import { getItemSizes } from './helpers/get-item-sizes';
+import { ScrollListInfiniteProps, useScrollListMaybeLoadMore } from './hooks/use-scroll-list-maybe-load-more';
+import { ScrollListPositioningProps, useScrollListPosition } from './hooks/use-scroll-list-position';
+import { useScrollListScrollToSelected } from './hooks/use-scroll-list-scroll-to-selected';
+import { useScrollListStyles } from './hooks/use-scroll-list-styles';
 import { classes } from './scroll-list.st.css';
 
 type ScrollListRootMinimalProps = Pick<
@@ -194,15 +200,19 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         };
     }, [itemSize, getItemInfo]);
 
-    const itemsDimensions = useScrollListItemsDimensions(listRef, items, getId, getItemDimensions, true);
+    const itemsDimensions = useElementDimensions(listRef, items, getId, getItemDimensions, true);
 
-    const { itemsSizes, averageItemSize } = useScrollListItemsSizes({
-        itemsDimensions,
-        isHorizontal,
-        items,
-        getId,
-        estimatedItemSize,
-    });
+    const { itemsSizes, averageItemSize } = useMemo(
+        () =>
+            getItemSizes({
+                itemsDimensions: itemsDimensions.current,
+                isHorizontal,
+                items,
+                getId,
+                estimatedItemSize,
+            }),
+        [itemsDimensions, isHorizontal, items, getId, estimatedItemSize]
+    );
 
     const itemsNumber = useMemo(
         () => (itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount),

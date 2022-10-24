@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { childrenById } from '../common/element-id-utils';
+import { childrenById } from '../common';
 import { KeyCodes } from '../keycodes';
 
 export const useIdBasedKeyboardNav = (

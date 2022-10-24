@@ -1,14 +1,12 @@
 import React, { MutableRefObject, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
-import { childrenById } from '../common/element-id-utils';
-import { unchanged, useDelayedUpdateState } from './use-delayed-update';
+import { childrenById, DimensionsById, ElementDimensions, unMeasured } from '../common';
 import {
     createSetableMutationObserver,
-    DimensionsById,
-    ElementDimensions,
     rectToDimensions,
-    unMeasured,
+    unchanged,
+    useDelayedUpdateState,
     useSetableObserver,
-} from './use-element-rect';
+} from '../hooks';
 
 const elementDimensions = (element?: Element): ElementDimensions => {
     const rect = element?.getBoundingClientRect();
@@ -87,7 +85,7 @@ const calculateDimensions = <T, EL extends HTMLElement>(
     };
 };
 
-export const useScrollListItemsDimensions = <T, EL extends HTMLElement>(
+export const useElementDimensions = <T, EL extends HTMLElement>(
     ref: React.RefObject<EL>,
     items: T[],
     getId: (item: T) => string,

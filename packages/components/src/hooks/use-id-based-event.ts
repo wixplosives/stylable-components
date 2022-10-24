@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { getElementWithId } from '../common/element-id-utils';
+import { getElementWithId } from '../common';
 
 export function useIdListener<EVType extends React.KeyboardEvent | React.MouseEvent>(
     idSetter: (id: string | undefined, element?: Element) => void

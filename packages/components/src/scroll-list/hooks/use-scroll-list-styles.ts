@@ -1,5 +1,9 @@
 import React, { useMemo } from 'react';
 
+const RELATIVE_POSITION = {
+    position: 'relative', // non-static position so that overlay can be positioned absolutely in relation to it
+} as React.CSSProperties;
+
 export const useScrollListStyles = ({
     isHorizontal,
     firstWantedPixel,
@@ -7,14 +11,6 @@ export const useScrollListStyles = ({
     isHorizontal: boolean;
     firstWantedPixel: number;
 }) => {
-    const scrollListStyle = useMemo(
-        () =>
-            ({
-                position: 'relative', // non-static position so that overlay can be positioned absolutely in relation to it
-            } as React.CSSProperties),
-        []
-    );
-
     const listStyle = useMemo(
         () =>
             ({
@@ -36,7 +32,7 @@ export const useScrollListStyles = ({
     );
 
     return {
-        scrollListStyle,
+        scrollListStyle: RELATIVE_POSITION,
         listStyle,
         overlayStyle,
     };
