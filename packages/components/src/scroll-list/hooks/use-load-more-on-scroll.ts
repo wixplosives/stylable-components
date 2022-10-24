@@ -27,7 +27,7 @@ export interface ScrollListInfiniteProps {
     itemCount?: number;
 }
 
-export const useScrollListMaybeLoadMore = ({
+export const useLoadMoreOnScroll = ({
     loadMore,
     loadingState,
     renderSize,

@@ -18,7 +18,7 @@ import { getItemSizes } from './helpers';
 import {
     ScrollListInfiniteProps,
     ScrollListPositioningProps,
-    useScrollListMaybeLoadMore,
+    useLoadMoreOnScroll,
     useScrollListPosition,
     useScrollListScrollToSelected,
 } from './hooks';
@@ -255,7 +255,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         scrollListRef,
     });
 
-    useScrollListMaybeLoadMore({
+    useLoadMoreOnScroll({
         loadMore,
         loadingState,
         renderSize: scrollWindowSize * (1 + extraRenderSize),
