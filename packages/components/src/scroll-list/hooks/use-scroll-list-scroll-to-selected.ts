@@ -2,6 +2,7 @@ import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } 
 import type { DimensionsById } from '../../common';
 import type { ListProps } from '../../list/list';
 import type { ScrollListProps } from '../../scroll-list/scroll-list';
+import { getRenderedIndexes } from '../helpers';
 
 export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     scrollWindow,
@@ -30,20 +31,6 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     const timeout = useRef(0);
     const isScrollingToSelection = useRef(false);
     const selectedIndex = useMemo(() => items.findIndex((i) => getId(i) === selected), [items, getId, selected]);
-    const getRenderedIndexes = useCallback(() => {
-        const list = scrollListRef?.current;
-        if (!list) {
-            return { firstIndex: null, lastIndex: null };
-        }
-        const first = list?.querySelector(`[data-id]:first-child`);
-        const last = list?.querySelector(`[data-id]:last-child`);
-        const firstId = first?.attributes.getNamedItem('data-id')?.value;
-        const lastId = last?.attributes.getNamedItem('data-id')?.value;
-        const firstIndex = items.findIndex((i) => getId(i) === firstId);
-        const lastIndex = items.findIndex((i) => getId(i) === lastId);
-
-        return { firstIndex, lastIndex };
-    }, [scrollListRef, getId, items]);
     const calculateDistance = useCallback(
         ({ itemIndex, direction }: { itemIndex: number; direction: 'up' | 'down' }) => {
             let distance = 0;
@@ -79,7 +66,11 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
         (selectedIndex: number) => {
             clearTimeout(timeout.current);
 
-            const { firstIndex, lastIndex } = getRenderedIndexes();
+            const { firstIndex, lastIndex } = getRenderedIndexes({
+                list: scrollListRef.current,
+                items,
+                getId,
+            });
 
             if (firstIndex === null || lastIndex === null) {
                 return;
@@ -125,7 +116,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
             timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
         },
-        [getRenderedIndexes, scrollWindow, scrollListRef, getId, items, calculateDistance]
+        [scrollWindow, scrollListRef, getId, items, calculateDistance]
     );
 
     useEffect(() => {

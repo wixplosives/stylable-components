@@ -282,25 +282,11 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         [items, firstShownItemIndex, lastShownItemIndex]
     );
 
-    const listStyle = useMemo(
-        () =>
-            ({
-                position: 'absolute',
-                top: isHorizontal ? 0 : `${firstWantedPixel}px`,
-                left: isHorizontal ? `${firstWantedPixel}px` : 0,
-            } as React.CSSProperties),
-        [isHorizontal, firstWantedPixel]
-    );
-
-    const overlayStyle = useMemo(
-        () =>
-            ({
-                ...listStyle,
-                width: '100%',
-                height: '100%',
-            } as React.CSSProperties),
-        [listStyle]
-    );
+    const listStyle = {
+        position: 'absolute',
+        top: isHorizontal ? 0 : `${firstWantedPixel}px`,
+        left: isHorizontal ? `${firstWantedPixel}px` : 0,
+    } as React.CSSProperties;
 
     // TODO: causes re-rendering which I think is not needed
     const listRootWithStyle = forwardListRoot(listRoot || defaultRoot, {
@@ -342,7 +328,11 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                         itemSizes: itemsSizes,
                         shownItems,
                         avgSize: averageItemSize,
-                        style: overlayStyle,
+                        style: {
+                            ...listStyle,
+                            width: '100%',
+                            height: '100%',
+                        },
                     }}
                 />
             ) : null}
