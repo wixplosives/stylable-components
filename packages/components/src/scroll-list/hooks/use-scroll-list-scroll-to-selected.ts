@@ -45,12 +45,10 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
         return { firstIndex, lastIndex };
     }, [scrollListRef, getId, items]);
     const calculateDistance = useCallback(
-        (anchor: { from: number } | { to: number }) => {
-            const direction = 'from' in anchor ? 1 : -1;
-            const anchorIndex = 'from' in anchor ? anchor.from : anchor.to;
+        ({ itemIndex, direction }: { itemIndex: number; direction: 'up' | 'down' }) => {
             let distance = 0;
 
-            for (let index = anchorIndex; index !== selectedIndex; 'from' in anchor ? index++ : index--) {
+            for (let index = itemIndex; index !== selectedIndex; direction === 'down' ? index++ : index--) {
                 const item = items[index]!;
                 const id = getId(item);
                 const { height, width } = itemsDimensions.current[id] || {
@@ -64,11 +62,11 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
             distance += scrollWindowSize * extraRenderSize;
 
-            if ('from' in anchor) {
+            if (direction === 'down') {
                 distance += scrollWindowSize;
             }
 
-            return Math.floor(direction * distance);
+            return Math.floor((direction === 'down' ? 1 : -1) * distance);
         },
         [averageItemSize, extraRenderSize, getId, isHorizontal, items, itemsDimensions, scrollWindowSize, selectedIndex]
     );
@@ -120,9 +118,9 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
             };
 
             if (selectedIndex < firstIndex) {
-                scrollTarget.scrollBy({ top: calculateDistance({ to: firstIndex }) });
+                scrollTarget.scrollBy({ top: calculateDistance({ itemIndex: firstIndex, direction: 'up' }) });
             } else if (lastIndex < selectedIndex) {
-                scrollTarget.scrollBy({ top: calculateDistance({ from: lastIndex }) });
+                scrollTarget.scrollBy({ top: calculateDistance({ itemIndex: lastIndex, direction: 'down' }) });
             }
 
             timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
