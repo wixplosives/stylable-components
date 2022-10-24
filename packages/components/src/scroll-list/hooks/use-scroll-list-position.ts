@@ -1,6 +1,7 @@
 import { MutableRefObject, RefObject, useEffect, useMemo, useRef } from 'react';
+import { defaultPosition } from '../../common';
 import type { DimensionsById } from '../../common';
-import { defaultPos, usePositionInParent } from '../../hooks/use-position';
+import { usePositionInParent } from '../../hooks/use-position';
 import type { ListProps } from '../../list/list';
 import type { ScrollListItemInfo, ScrollListProps } from '../../scroll-list/scroll-list';
 
@@ -79,7 +80,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
         }
     }, [items]);
 
-    const shouldMeasureOffset = typeof scrollOffset === 'number' ? defaultPos : scrollOffset;
+    const shouldMeasureOffset = typeof scrollOffset === 'number' ? defaultPosition : scrollOffset;
     const offsetFromParent = usePositionInParent(scrollListRef, shouldMeasureOffset);
     const usedOffset =
         (typeof scrollOffset === 'number' ? scrollOffset : isHorizontal ? offsetFromParent.x : offsetFromParent.y) || 0;
@@ -94,9 +95,6 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
         [unmountItems, scrollWindowSize, lastWantedPixel]
     );
 
-    /**
-     * Fixed and equal-sized items are simple to calculate
-     */
     if (typeof itemSize === 'number') {
         const firstShownItemIndex = unmountItems ? Math.ceil(firstWantedPixel / itemSize) : 0;
         let lastShownItemIndex = Math.ceil(lastWantedPixel / itemSize);
@@ -115,10 +113,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
         };
     }
 
-    /**
-     * Variable-sized items are more complex
-     */
-    let taken = -itemGap; // Initializing with -itemGap to compensate for adding gap for every item
+    let amountOfTakenPixels = -itemGap; // Initializing with -itemGap to compensate for adding gap for every item
     let firstTakenPixel: null | number = null;
     let firstShownItemIndex = 0;
 
@@ -138,14 +133,14 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
             maxRowSize = Math.max(size, maxRowSize);
         }
 
-        taken += maxRowSize + itemGap;
+        amountOfTakenPixels += maxRowSize + itemGap;
 
-        if (unmountItems && taken > firstWantedPixel && firstTakenPixel === null) {
-            firstTakenPixel = taken - maxRowSize;
+        if (unmountItems && amountOfTakenPixels > firstWantedPixel && firstTakenPixel === null) {
+            firstTakenPixel = amountOfTakenPixels - maxRowSize;
             firstShownItemIndex = rowIndex;
         }
 
-        if (taken > lastWantedPixel) {
+        if (amountOfTakenPixels > lastWantedPixel) {
             let lastShownItemIndex = rowIndex;
 
             if (!unmountItems) {

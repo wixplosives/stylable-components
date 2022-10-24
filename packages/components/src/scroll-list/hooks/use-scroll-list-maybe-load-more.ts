@@ -30,34 +30,22 @@ export interface ScrollListInfiniteProps {
 export const useScrollListMaybeLoadMore = ({
     loadMore,
     loadingState,
-    extraRenderSize,
-    scrollWindowSize,
+    renderSize,
     lastShownItemIndex,
     loadedItemsNumber,
     averageItemSize,
 }: ScrollListInfiniteProps & {
-    extraRenderSize: number;
-    scrollWindowSize: number;
+    renderSize: number;
     lastShownItemIndex: number;
     loadedItemsNumber: number;
     averageItemSize: number;
 }) => {
     useEffect(() => {
         if (loadMore && loadingState === 'idle' && lastShownItemIndex > loadedItemsNumber) {
-            const itemsToFetchCount = Math.ceil(
-                lastShownItemIndex - loadedItemsNumber + (scrollWindowSize * (1 + extraRenderSize)) / averageItemSize
-            );
+            const itemsToFetchCount = Math.ceil(lastShownItemIndex - loadedItemsNumber + renderSize / averageItemSize);
             if (itemsToFetchCount > 0) {
                 loadMore(itemsToFetchCount);
             }
         }
-    }, [
-        loadMore,
-        extraRenderSize,
-        loadingState,
-        scrollWindowSize,
-        lastShownItemIndex,
-        loadedItemsNumber,
-        averageItemSize,
-    ]);
+    }, [loadMore, renderSize, loadingState, lastShownItemIndex, loadedItemsNumber, averageItemSize]);
 };

@@ -6,19 +6,22 @@ import {
     defineElementSlot,
     mergeObjectInternalWins,
     ProcessedControlledState,
+    useElementDimension,
+    useElementDimensions,
     useScroll,
     useStateControls,
 } from '../hooks';
-import { useElementDimensions } from '../hooks/use-element-dimensions';
-import { useElementDimension } from '../hooks/use-element-rect';
 import { List, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
 import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
-import { getItemSizes } from './helpers/get-item-sizes';
-import { ScrollListInfiniteProps, useScrollListMaybeLoadMore } from './hooks/use-scroll-list-maybe-load-more';
-import { ScrollListPositioningProps, useScrollListPosition } from './hooks/use-scroll-list-position';
-import { useScrollListScrollToSelected } from './hooks/use-scroll-list-scroll-to-selected';
-import { useScrollListStyles } from './hooks/use-scroll-list-styles';
+import { getItemSizes } from './helpers';
+import {
+    ScrollListInfiniteProps,
+    ScrollListPositioningProps,
+    useScrollListMaybeLoadMore,
+    useScrollListPosition,
+    useScrollListScrollToSelected,
+} from './hooks';
 import { classes } from './scroll-list.st.css';
 
 type ScrollListRootMinimalProps = Pick<
@@ -72,6 +75,10 @@ export const { parentSlot: scrollListOverlayParent, Slot: ListOverlaySlot } = de
  * @default false
  */
 export type ItemSizeOptions<I> = number | ((info: I) => number) | false;
+
+const RELATIVE_POSITION = {
+    position: 'relative', // non-static position so that overlay can be positioned absolutely in relation to it
+} as React.CSSProperties;
 
 export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollListItemInfo<T> = ScrollListItemInfo<T>>
     extends ListProps<T>,
@@ -250,9 +257,8 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 
     useScrollListMaybeLoadMore({
         loadMore,
-        extraRenderSize,
         loadingState,
-        scrollWindowSize,
+        renderSize: scrollWindowSize * (1 + extraRenderSize),
         lastShownItemIndex,
         averageItemSize,
         loadedItemsNumber: items.length,
@@ -275,7 +281,26 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         () => items.slice(firstShownItemIndex, lastShownItemIndex),
         [items, firstShownItemIndex, lastShownItemIndex]
     );
-    const { scrollListStyle, listStyle, overlayStyle } = useScrollListStyles({ isHorizontal, firstWantedPixel });
+
+    const listStyle = useMemo(
+        () =>
+            ({
+                position: 'absolute',
+                top: isHorizontal ? 0 : `${firstWantedPixel}px`,
+                left: isHorizontal ? `${firstWantedPixel}px` : 0,
+            } as React.CSSProperties),
+        [isHorizontal, firstWantedPixel]
+    );
+
+    const overlayStyle = useMemo(
+        () =>
+            ({
+                ...listStyle,
+                width: '100%',
+                height: '100%',
+            } as React.CSSProperties),
+        [listStyle]
+    );
 
     // TODO: causes re-rendering which I think is not needed
     const listRootWithStyle = forwardListRoot(listRoot || defaultRoot, {
@@ -297,7 +322,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             slot={scrollListRoot}
             props={{
                 className: classes.root,
-                style: scrollListStyle,
+                style: RELATIVE_POSITION,
                 ref: scrollListRef,
             }}
         >
