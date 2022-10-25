@@ -4,8 +4,8 @@ import { createItems, getId, ItemData, noop } from '../../board-assets';
 import { projectThemesPlugin, scenarioPlugin } from '../../board-plugins';
 import { checkItemRenderState } from '../../board-plugins/scenario-plugin/actions/check-item-render-state';
 import {
-    selectItemByIndex,
     selectItemButton,
+    selectItemByIndex,
     selectItemInput,
 } from '../../board-plugins/scenario-plugin/actions/select-item-by-index';
 import type { ListItemProps } from '../../list/list';
