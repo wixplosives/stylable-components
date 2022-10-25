@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import type { ElementSlot, PropMapping } from '../common';
 import {
     concatClasses,
@@ -11,7 +11,7 @@ import {
     useScroll,
     useStateControls,
 } from '../hooks';
-import { List, ListProps, listRootParent } from '../list/list';
+import { List, ListItemProps, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
 import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
 import { getItemSizes } from './helpers';
@@ -175,6 +175,8 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const [focused, setFocused] = useStateControls(focusControl, undefined);
     const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindowSize);
 
+    const mountedItems = useRef(new Set(''));
+
     const getItemInfo = useCallback(
         (data: T): ScrollListItemInfo<T> => ({
             data,
@@ -271,6 +273,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         getId,
         selected,
         averageItemSize,
+        mountedItems,
         isHorizontal,
         extraRenderSize,
         scrollWindowSize,
@@ -303,6 +306,17 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         [selected, setSelected]
     );
 
+    const ItemRendererWrapped = (props: ListItemProps<T>) => {
+        useEffect(() => {
+            mountedItems.current.add(props.id);
+            return () => {
+                mountedItems.current.delete(props.id);
+            };
+        });
+
+        return <ItemRenderer {...props} />;
+    };
+
     return (
         <RootSlot
             slot={scrollListRoot}
@@ -315,7 +329,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             <List<T, EL>
                 items={shownItems}
                 getId={getId}
-                ItemRenderer={ItemRenderer}
+                ItemRenderer={ItemRendererWrapped}
                 listRoot={listRootWithStyle}
                 focusControl={focusControlMemoized}
                 selectionControl={selectionControlMemoized}

@@ -2,7 +2,6 @@ import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } 
 import type { DimensionsById } from '../../common';
 import type { ListProps } from '../../list/list';
 import type { ScrollListProps } from '../../scroll-list/scroll-list';
-import { getRenderedIndexes } from '../helpers';
 
 export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     scrollWindow,
@@ -12,6 +11,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     selected,
     averageItemSize,
     itemsDimensions,
+    mountedItems,
     isHorizontal,
     extraRenderSize,
     scrollWindowSize,
@@ -23,6 +23,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     selected: string | undefined;
     averageItemSize: number;
     itemsDimensions: MutableRefObject<DimensionsById>;
+    mountedItems: MutableRefObject<Set<string>>;
     extraRenderSize: number;
     isHorizontal: boolean;
     scrollWindowSize: number;
@@ -64,31 +65,11 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     };
     const scrollTo = useCallback(
         (selectedIndex: number) => {
+            if (!scrollListRef.current) {
+                return;
+            }
+
             clearTimeout(timeout.current);
-
-            const { firstIndex, lastIndex } = getRenderedIndexes({
-                list: scrollListRef.current,
-                items,
-                getId,
-            });
-
-            if (firstIndex === null || lastIndex === null) {
-                return;
-            }
-
-            if (firstIndex === -1 || lastIndex === -1) {
-                loadingTimeout.current++;
-                // Try 10 times
-                if (loadingTimeout.current < 10) {
-                    timeout.current = window.setTimeout(
-                        () => isScrollingToSelection.current && scrollTo(selectedIndex),
-                        100 // with 100ms delay
-                    );
-                }
-                return;
-            }
-
-            const scrollTarget = scrollWindow?.current ?? window;
 
             const scrollIntoView = (selected: number) => {
                 const node = scrollListRef.current?.querySelector(`[data-id='${getId(items[selected]!)}']`);
@@ -108,6 +89,11 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
                 }
             };
 
+            const scrollTarget = scrollWindow?.current ?? window;
+            const mount = [...mountedItems.current];
+            const firstIndex = items.findIndex((i) => getId(i) === mount[0]);
+            const lastIndex = items.findIndex((i) => getId(i) === mount[mount.length - 1]);
+
             if (selectedIndex < firstIndex) {
                 scrollTarget.scrollBy({ top: calculateDistance({ itemIndex: firstIndex, direction: 'up' }) });
             } else if (lastIndex < selectedIndex) {
@@ -116,11 +102,11 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
             timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
         },
-        [scrollWindow, scrollListRef, getId, items, calculateDistance]
+        [scrollListRef, scrollWindow, mountedItems, items, getId, calculateDistance]
     );
 
     useEffect(() => {
-        if (selectedIndex > -1 && !isScrollingToSelection.current) {
+        if (selectedIndex > -1 && !isScrollingToSelection.current && mountedItems.current.size > 0) {
             isScrollingToSelection.current = true;
 
             scrollTo(selectedIndex);
@@ -129,5 +115,5 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
         return () => {
             cleanUp();
         };
-    }, [scrollTo, selectedIndex]);
+    }, [mountedItems, scrollTo, selectedIndex]);
 };
