@@ -1,7 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
 import React, { useRef, useState } from 'react';
-import { createItems, ExpandableItemRenderer, getId } from '../../board-assets';
+import { createItems, getId, ItemRenderer } from '../../board-assets';
 import {
     expectElement,
     expectElements,
@@ -13,7 +13,7 @@ import {
 import { ScrollList } from '../scroll-list';
 
 const items = createItems();
-const fixedItemSize = 100;
+const fixedItemSize = 50; // board-assets/item-renderer/item-renderer.st.css
 
 export default createBoard({
     name: 'ScrollList — with offset',
@@ -45,7 +45,7 @@ export default createBoard({
                     </div>
 
                     <ScrollList
-                        ItemRenderer={ExpandableItemRenderer}
+                        ItemRenderer={ItemRenderer}
                         items={items}
                         getId={getId}
                         watchScrollWindowSize={true}
