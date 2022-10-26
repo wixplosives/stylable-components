@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDelayedUpdate } from './use-delayed-update';
 
 /** if ref is not supplied use scroll will return the window scroll */
@@ -15,7 +15,7 @@ export const useScroll = ({
 
     useEffect(() => {
         if (!disabled) {
-            const target = ref ? ref.current : typeof window !== 'undefined' ? window : undefined;
+            const target = ref ? ref.current : window;
             target?.addEventListener('scroll', trigger);
 
             return () => target?.removeEventListener('scroll', trigger);
