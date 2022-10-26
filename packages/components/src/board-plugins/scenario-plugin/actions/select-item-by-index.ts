@@ -19,11 +19,12 @@ export const selectItemByIndex = (index: string): Action => {
             }
             const button = await waitForElement(`#${selectItemButton}`, title);
 
+            // Needs to happen after ReactTestUtils.Simulate.change would simulate change and board would handle it
             window.setTimeout(() => {
                 if (button && button instanceof HTMLButtonElement) {
                     button.click();
                 }
-            }, 100);
+            });
         },
         timeout: 2_000,
     };

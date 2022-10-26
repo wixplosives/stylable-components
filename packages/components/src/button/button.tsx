@@ -1,5 +1,6 @@
 import React from 'react';
-import { st, classes } from './button.st.css';
+import { classes, st } from './button.st.css';
+
 export const Button: React.FC<React.HTMLAttributes<HTMLButtonElement>> = (
     props: React.HTMLAttributes<HTMLButtonElement>
 ) => {

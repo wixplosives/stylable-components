@@ -79,11 +79,6 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
                     node?.scrollIntoView({
                         block: 'center',
                         inline: 'center',
-                        /**
-                         * Not always scrolls from the "correct" side perspective-wise;
-                         * thus smoothness just adds to "uncanny valley" effect.
-                         */
-                        // behavior: 'smooth',
                     });
                     cleanUp();
                 }

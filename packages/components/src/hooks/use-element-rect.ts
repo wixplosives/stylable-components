@@ -53,10 +53,6 @@ const getElementDimensions = (element?: HTMLElement | null): ElementDimensions =
     }
 
     if (element === undefined) {
-        if (typeof window === 'undefined') {
-            return unMeasured;
-        }
-
         return {
             height: window.innerHeight,
             width: window.innerWidth,

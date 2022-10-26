@@ -16,13 +16,6 @@ const elementRef: React.RefObject<HTMLDivElement> = {
     current: null,
 };
 
-/**
- * Right now scrolling to selection is supported for non-infinite lists; and for those
- * that provide ref to scrollWindow.
- */
-
-// const sizes = Array.from({ length: 1000 }, () => Math.random() * 100 + 10);
-
 const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     return (
         <div
@@ -30,7 +23,6 @@ const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
                 height: '50px',
                 display: 'flex',
                 alignItems: 'center',
-                // height: `${sizes[parseInt(props.id.substring(1))]!}px`,
             }}
             data-id={props.id}
         >
@@ -38,6 +30,10 @@ const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
         </div>
     );
 };
+
+/**
+ * Right now scrolling to selection is supported for finite lists that provide ref to scrollWindow.
+ */
 
 export default createBoard({
     name: 'ScrollList — scroll to selected item',

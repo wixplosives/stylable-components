@@ -1,6 +1,6 @@
 import { MutableRefObject, RefObject, useEffect, useMemo, useRef } from 'react';
-import { defaultPosition } from '../../common';
 import type { DimensionsById } from '../../common';
+import { defaultPosition } from '../../common';
 import { usePositionInParent } from '../../hooks/use-position';
 import type { ListProps } from '../../list/list';
 import type { ScrollListItemInfo, ScrollListProps } from '../../scroll-list/scroll-list';
@@ -73,6 +73,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
         last: 0,
     });
 
+    // Refreshing lastRenderedItem in case items go out of sync
     useEffect(() => {
         if (lastRenderedItem.current.items !== items) {
             lastRenderedItem.current.items = items;
@@ -85,66 +86,27 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
     const usedOffset =
         (typeof scrollOffset === 'number' ? scrollOffset : isHorizontal ? offsetFromParent.x : offsetFromParent.y) || 0;
 
-    const lastWantedPixel = useMemo(
-        () => Math.min((1 + extraRenderSize) * scrollWindowSize + scrollPosition - usedOffset, maxScrollSize),
-        [extraRenderSize, scrollWindowSize, usedOffset, scrollPosition, maxScrollSize]
-    );
+    // Last wanted pixel is either the position of scroll window with extra taking offset and scroll into account;
+    // or the potential last pixel of the scroll list
+    const lastWantedPixel = useMemo(() => {
+        const scrollWindowSizeWithExtra = (1 + extraRenderSize) * scrollWindowSize;
 
+        return Math.min(scrollWindowSizeWithExtra - usedOffset + scrollPosition, maxScrollSize);
+    }, [extraRenderSize, scrollWindowSize, usedOffset, scrollPosition, maxScrollSize]);
+
+    // First wanted pixel (always greater or equal to 0) is counted backwards from last wanted pixel;
+    // it can't be more than scrollWindow 2 times (as extra is between 0 and 1);
     const firstWantedPixel = useMemo(
-        () => (unmountItems ? lastWantedPixel - 2 * scrollWindowSize : 0),
+        () => Math.min(unmountItems ? lastWantedPixel - 2 * scrollWindowSize : 0, 0),
         [unmountItems, scrollWindowSize, lastWantedPixel]
     );
 
-    if (typeof itemSize === 'number') {
-        const firstShownItemIndex = unmountItems ? Math.ceil(firstWantedPixel / itemSize) : 0;
-        let lastShownItemIndex = Math.ceil(lastWantedPixel / itemSize);
-
-        if (!unmountItems) {
-            lastShownItemIndex = lastRenderedItem.current.last = Math.max(
-                lastShownItemIndex,
-                lastRenderedItem.current.last
-            );
-        }
-
-        return {
-            firstWantedPixel,
-            firstShownItemIndex: firstShownItemIndex > 0 ? firstShownItemIndex : 0,
-            lastShownItemIndex,
-        };
-    }
-
-    let amountOfTakenPixels = -itemGap; // Initializing with -itemGap to compensate for adding gap for every item
-    let firstTakenPixel: null | number = null;
-    let firstShownItemIndex = 0;
-
-    for (let rowIndex = 0; rowIndex < items.length; rowIndex += itemsInRow) {
-        let maxRowSize = 0;
-
-        for (let columnIndex = 0; columnIndex < itemsInRow && rowIndex + columnIndex < items.length; columnIndex++) {
-            const item = items[rowIndex + columnIndex]!;
-            const id = getId(item);
-            const size =
-                (itemSize === false
-                    ? isHorizontal
-                        ? itemsDimensions.current[id]?.width
-                        : itemsDimensions.current[id]?.height
-                    : itemSize?.(getItemInfo(item))) ?? averageItemSize;
-
-            maxRowSize = Math.max(size, maxRowSize);
-        }
-
-        amountOfTakenPixels += maxRowSize + itemGap;
-
-        if (unmountItems && amountOfTakenPixels > firstWantedPixel && firstTakenPixel === null) {
-            firstTakenPixel = amountOfTakenPixels - maxRowSize;
-            firstShownItemIndex = rowIndex;
-        }
-
-        if (amountOfTakenPixels > lastWantedPixel) {
-            let lastShownItemIndex = rowIndex;
+    return useMemo(() => {
+        if (typeof itemSize === 'number') {
+            const firstShownItemIndex = unmountItems ? Math.ceil(firstWantedPixel / itemSize) : 0;
+            let lastShownItemIndex = Math.ceil(lastWantedPixel / itemSize);
 
             if (!unmountItems) {
-                lastRenderedItem.current.items = items;
                 lastShownItemIndex = lastRenderedItem.current.last = Math.max(
                     lastShownItemIndex,
                     lastRenderedItem.current.last
@@ -152,16 +114,80 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
             }
 
             return {
-                firstWantedPixel: firstTakenPixel ?? 0,
-                firstShownItemIndex: firstShownItemIndex,
+                firstWantedPixel,
+                firstShownItemIndex: firstShownItemIndex > 0 ? firstShownItemIndex : 0,
                 lastShownItemIndex,
             };
         }
-    }
 
-    return {
-        firstWantedPixel: firstTakenPixel ?? 0,
-        firstShownItemIndex: firstShownItemIndex,
-        lastShownItemIndex: Math.max(items.length, maxScrollSize / averageItemSize),
-    };
+        let amountOfTakenPixels = -itemGap; // Initializing with -itemGap to compensate for adding gap for every item
+        let firstTakenPixel: null | number = null;
+        let firstShownItemIndex = 0;
+
+        for (let rowIndex = 0; rowIndex < items.length; rowIndex += itemsInRow) {
+            let maxRowSize = 0;
+
+            for (
+                let columnIndex = 0;
+                columnIndex < itemsInRow && rowIndex + columnIndex < items.length;
+                columnIndex++
+            ) {
+                const item = items[rowIndex + columnIndex]!;
+                const id = getId(item);
+                const size =
+                    (itemSize === false
+                        ? isHorizontal
+                            ? itemsDimensions.current[id]?.width
+                            : itemsDimensions.current[id]?.height
+                        : itemSize?.(getItemInfo(item))) ?? averageItemSize;
+
+                maxRowSize = Math.max(size, maxRowSize);
+            }
+
+            amountOfTakenPixels += maxRowSize + itemGap;
+
+            if (unmountItems && amountOfTakenPixels > firstWantedPixel && firstTakenPixel === null) {
+                firstTakenPixel = amountOfTakenPixels - maxRowSize;
+                firstShownItemIndex = rowIndex;
+            }
+
+            if (amountOfTakenPixels > lastWantedPixel) {
+                let lastShownItemIndex = rowIndex;
+
+                if (!unmountItems) {
+                    lastRenderedItem.current.items = items;
+                    lastShownItemIndex = lastRenderedItem.current.last = Math.max(
+                        lastShownItemIndex,
+                        lastRenderedItem.current.last
+                    );
+                }
+
+                return {
+                    firstWantedPixel: firstTakenPixel ?? 0,
+                    firstShownItemIndex: firstShownItemIndex,
+                    lastShownItemIndex,
+                };
+            }
+        }
+
+        return {
+            firstWantedPixel: firstTakenPixel ?? 0,
+            firstShownItemIndex: firstShownItemIndex,
+            lastShownItemIndex: Math.max(items.length, maxScrollSize / averageItemSize),
+        };
+    }, [
+        averageItemSize,
+        firstWantedPixel,
+        getId,
+        getItemInfo,
+        isHorizontal,
+        itemGap,
+        itemSize,
+        items,
+        itemsDimensions,
+        itemsInRow,
+        lastWantedPixel,
+        maxScrollSize,
+        unmountItems,
+    ]);
 };
