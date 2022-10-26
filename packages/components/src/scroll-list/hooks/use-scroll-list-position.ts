@@ -1,4 +1,4 @@
-import { MutableRefObject, RefObject, useEffect, useMemo, useRef } from 'react';
+import { MutableRefObject, RefObject, useMemo, useRef } from 'react';
 import type { DimensionsById } from '../../common';
 import { defaultPosition } from '../../common';
 import { usePositionInParent } from '../../hooks/use-position';
@@ -68,23 +68,40 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
     scrollPosition: number;
     scrollListRef: RefObject<EL>;
 }) => {
-    const lastRenderedItem = useRef({
-        items,
-        last: 0,
-    });
-
-    // Refreshing lastRenderedItem in case items go out of sync
-    useEffect(() => {
-        if (lastRenderedItem.current.items !== items) {
-            lastRenderedItem.current.items = items;
-            lastRenderedItem.current.last = 0;
-        }
-    }, [items]);
-
+    const lastRenderedItem = useRef(0);
     const shouldMeasureOffset = typeof scrollOffset === 'number' ? defaultPosition : scrollOffset;
     const offsetFromParent = usePositionInParent(scrollListRef, shouldMeasureOffset);
     const usedOffset =
         (typeof scrollOffset === 'number' ? scrollOffset : isHorizontal ? offsetFromParent.x : offsetFromParent.y) || 0;
+
+    //                Scroll List
+    //            ┌─────────────────┐
+    //            │                 │
+    //            │                 │firstWantedPixel
+    //            ├─────────────────┼────────────────────┐
+    //            │                 │                    │
+    //            │                 │                    │
+    //            │                 │ ScrollWindow       │
+    //       ┌────┴─────────────────┴─────────────┐      │
+    //       │▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓│      │
+    //       │    │                 │    ▲        │      │  shownItems
+    //       │    │                 │    │        │      │◄─────────────────────
+    //   ────┴───►│                 │    │ Offset │      │  to be passed to List
+    //   Scrolled │                 │             │      │
+    //       │    │                 │             │      │
+    //       └────┼─────────────────┼─────────────┘      │
+    //            │                 │                    │
+    //            │                 │                    │
+    //            │                 │ lastWantedPixel    │
+    //   ┌► ──────┼─────────────────┼────────────────────┘
+    //   │        │                 │ if accounted for
+    //   │        │                 │
+    //   │        │                 │ scroll position
+    //   │        │                 │
+    //   │        │                 │ and offset
+    //   │        │                 │
+    //   │        └─────────────────┘
+    //   └─ Extra render size (0.5 for this example)
 
     // Last wanted pixel is either the position of scroll window with extra taking offset and scroll into account;
     // or the potential last pixel of the scroll list
@@ -94,10 +111,10 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
         return Math.min(scrollWindowSizeWithExtra - usedOffset + scrollPosition, maxScrollSize);
     }, [extraRenderSize, scrollWindowSize, usedOffset, scrollPosition, maxScrollSize]);
 
-    // First wanted pixel (always greater or equal to 0) is counted backwards from last wanted pixel;
+    // First wanted pixel is counted backwards from last wanted pixel;
     // it can't be more than scrollWindow 2 times (as extra is between 0 and 1);
     const firstWantedPixel = useMemo(
-        () => Math.min(unmountItems ? lastWantedPixel - 2 * scrollWindowSize : 0, 0),
+        () => (unmountItems ? lastWantedPixel - 2 * scrollWindowSize : 0),
         [unmountItems, scrollWindowSize, lastWantedPixel]
     );
 
@@ -107,10 +124,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
             let lastShownItemIndex = Math.ceil(lastWantedPixel / itemSize);
 
             if (!unmountItems) {
-                lastShownItemIndex = lastRenderedItem.current.last = Math.max(
-                    lastShownItemIndex,
-                    lastRenderedItem.current.last
-                );
+                lastShownItemIndex = lastRenderedItem.current = Math.max(lastShownItemIndex, lastRenderedItem.current);
             }
 
             return {
@@ -155,10 +169,9 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
                 let lastShownItemIndex = rowIndex;
 
                 if (!unmountItems) {
-                    lastRenderedItem.current.items = items;
-                    lastShownItemIndex = lastRenderedItem.current.last = Math.max(
+                    lastShownItemIndex = lastRenderedItem.current = Math.max(
                         lastShownItemIndex,
-                        lastRenderedItem.current.last
+                        lastRenderedItem.current
                     );
                 }
 
