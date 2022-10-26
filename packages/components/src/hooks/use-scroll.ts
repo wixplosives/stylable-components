@@ -15,7 +15,7 @@ export const useScroll = ({
 
     useEffect(() => {
         if (!disabled) {
-            const target = ref ? ref.current : typeof window !== 'undefined' ? window : undefined;
+            const target = ref ? ref.current : window;
             target?.addEventListener('scroll', trigger);
 
             return () => target?.removeEventListener('scroll', trigger);
