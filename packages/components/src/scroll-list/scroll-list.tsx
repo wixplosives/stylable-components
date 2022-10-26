@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import type { ElementSlot, PropMapping } from '../common';
 import {
     concatClasses,
@@ -11,7 +11,7 @@ import {
     useScroll,
     useStateControls,
 } from '../hooks';
-import { List, ListItemProps, ListProps, listRootParent } from '../list/list';
+import { List, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
 import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
 import { getItemSizes } from './helpers';
@@ -306,16 +306,8 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         [selected, setSelected]
     );
 
-    const ItemRendererWrapped = (props: ListItemProps<T>) => {
-        useEffect(() => {
-            mountedItems.current.add(props.id);
-            return () => {
-                mountedItems.current.delete(props.id);
-            };
-        });
-
-        return <ItemRenderer {...props} />;
-    };
+    const onItemMount = useCallback((item: T) => mountedItems.current.add(getId(item)), [getId]);
+    const onItemUnmount = useCallback((item: T) => mountedItems.current.delete(getId(item)), [getId]);
 
     return (
         <RootSlot
@@ -329,7 +321,9 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             <List<T, EL>
                 items={shownItems}
                 getId={getId}
-                ItemRenderer={ItemRendererWrapped}
+                ItemRenderer={ItemRenderer}
+                onItemMount={onItemMount}
+                onItemUnmount={onItemUnmount}
                 listRoot={listRootWithStyle}
                 focusControl={focusControlMemoized}
                 selectionControl={selectionControlMemoized}
