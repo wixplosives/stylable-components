@@ -1,14 +1,33 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import type { ElementSlot, PropMapping } from '../common/types';
-import { useElementDimension, useIdBasedRects, WatchedSize } from '../hooks/use-element-rect';
-import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
-import { defaultPos, usePositionInParent } from '../hooks/use-position';
-import { useScroll } from '../hooks/use-scroll';
-import { useStateControls } from '../hooks/use-state-controls';
+import React, { useCallback, useMemo, useRef } from 'react';
+import type { ElementSlot, PropMapping } from '../common';
+import {
+    concatClasses,
+    defaultRoot,
+    defineElementSlot,
+    mergeObjectInternalWins,
+    ProcessedControlledState,
+    useElementDimension,
+    useElementDimensions,
+    useScroll,
+    useStateControls,
+} from '../hooks';
 import { List, ListProps, listRootParent } from '../list/list';
 import { Preloader } from '../preloader/preloader';
 import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
+import { getItemSizes } from './helpers';
+import {
+    ScrollListInfiniteProps,
+    ScrollListPositioningProps,
+    useLoadMoreOnScroll,
+    useScrollListPosition,
+    useScrollListScrollToSelected,
+} from './hooks';
 import { classes } from './scroll-list.st.css';
+
+type ScrollListRootMinimalProps = Pick<
+    React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
+    'children' | 'style' | 'ref' | 'className'
+>;
 
 const defaultPreloader: ElementSlot<{}> = {
     el: Preloader,
@@ -16,23 +35,12 @@ const defaultPreloader: ElementSlot<{}> = {
         className: preloaderCSS.root,
     },
 };
-export type ScrollListRootMinimalProps = Pick<
-    React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
-    'children' | 'style' | 'ref' | 'className'
->;
-export const ScrollListRootPropMapping: PropMapping<ScrollListRootMinimalProps> = {
+const ScrollListRootPropMapping: PropMapping<ScrollListRootMinimalProps> = {
     style: mergeObjectInternalWins,
     className: concatClasses,
 };
-export const {
-    forward: forwardScrollListRoot,
-    slot: scrollListRoot,
-    parentSlot: scrollListRootParent,
-    Slot: RootSlot,
-} = defineElementSlot<ScrollListRootMinimalProps, typeof ScrollListRootPropMapping>(
-    defaultRoot,
-    ScrollListRootPropMapping
-);
+const { forward: forwardListRoot, slot: listRoot } = listRootParent(defaultRoot, ScrollListRootPropMapping);
+const { Slot: PreloaderSlot } = defineElementSlot(defaultPreloader, {});
 
 export interface ScrollListItemInfo<T> {
     data: T;
@@ -47,108 +55,86 @@ export interface OverlayProps<T> {
     style?: React.CSSProperties;
 }
 
-export const { forward: forwardListRoot, slot: listRoot } = listRootParent(defaultRoot, ScrollListRootPropMapping);
 export const {
-    forward: forwardPreloader,
-    slot: scrollListPreloader,
-    parentSlot: scrollListPreloaderParent,
-    Slot: PreloaderSlot,
-} = defineElementSlot(defaultPreloader, {});
+    forward: forwardScrollListRoot,
+    slot: scrollListRoot,
+    Slot: RootSlot,
+} = defineElementSlot<ScrollListRootMinimalProps, typeof ScrollListRootPropMapping>(
+    defaultRoot,
+    ScrollListRootPropMapping
+);
 
-export const {
-    forward: forwardListOverlay,
-    slot: scrollListOverlay,
-    parentSlot: scrollListOverlayParent,
-    Slot: ListOverlaySlot,
-} = defineElementSlot<OverlayProps<any>, {}>(defaultPreloader, {});
+export const { parentSlot: scrollListOverlayParent, Slot: ListOverlaySlot } = defineElementSlot<OverlayProps<any>, {}>(
+    defaultPreloader,
+    {}
+);
+/**
+ * size of the item in pixels or a method to compute according to data;
+ * if omitted, item size will be measured and watched for changes;
+ *
+ * @default false
+ */
+export type ItemSizeOptions<I> = number | ((info: I) => number) | false;
 
-export interface ScrollListProps<T, EL extends HTMLElement> extends ListProps<T> {
-    /**
-     * element to watch for scroll and size updates, if omitted will use the window
-     */
-    scrollWindow?: React.RefObject<EL>;
-    /*
-     *   false: no remeasure,
-     *   true: measure on changes,
-     *   number: use the number as size
-     */
-    watchScrollWindowSize?: number | boolean;
+const RELATIVE_POSITION = {
+    position: 'relative', // non-static position so that overlay can be positioned absolutely in relation to it
+} as React.CSSProperties;
 
-    /**
-     * Scroll offset if the scroll lists has a scroll window that is external to itself, it can have elements before it.
-     *
-     *
-     * For vertical lists, this affects scrollTop. For horizontal lists, this affects scrollLeft.
-     *  false: no remeasure,
-     *  true: measure on changes,
-     *  number: use the number as size
-     */
-    scrollOffset?: number | boolean;
-
-    /**
-     * Total number of items in the list. Note that only a few items will be rendered and displayed at a time.
-     * -1 implies the list is infinite.
-     * undefined implies it is the same length as the data
-     */
-    itemCount?: number;
-    /**
-     * size of the item ( height if vertical ) in pixels or a method to compute according to data
-     * if omitted, item size will be measured
-     */
-    itemSize?: number | ((info: ScrollListItemInfo<T>) => number) | boolean;
-    /**
-     * size of the item ( height if vertical ) in pixels
-     * @default 50
-     * used if item size is not fixed
-     */
-    estimatedItemSize?: number;
-    /**
-     * size to render after scroll window size
-     * 0.5 means prendering the half the scroll window size
-     * @default 0.5
-     */
-    extraRenderedItems?: number;
-    /**
-     * if set to false. items will not be unmounted when out of scroll
-     * @default true
-     */
-    unmountItems?: boolean;
-
-    preloader?: ElementSlot<{}>;
-
-    overlay?: ElementSlot<OverlayProps<T>>;
-
-    /**
-     * if loading the scroll list will show the preloader
-     * if idle the scroll list will request more items using loadMore.
-     * loading state must then be changed to 'loading' to avoid additional requests
-     *
-     * 'done' signifies that there are no more items to load
-     *
-     * @default done
-     *
-     */
-    loadingState?: ScrollListLoadingState;
-    /**
-     * if provided the list will request more items when reaching the scroll length
-     * you must manage the loading state as well for loadMore to work
-     */
-    loadMore?: (count: number) => unknown;
+export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollListItemInfo<T> = ScrollListItemInfo<T>>
+    extends ListProps<T>,
+        ScrollListPositioningProps,
+        ScrollListInfiniteProps {
     /**
      * @default false
      */
     isHorizontal?: boolean;
+    /**
+     * @default false
+     */
+    itemSize?: ItemSizeOptions<I>;
+    /**
+     * size of the item ( height if vertical ) in pixels;
+     * used if item size is not fixed
+     *
+     * @default 50
+     */
+    estimatedItemSize?: number;
+    /**
+     * size to render after scroll window size
+     * 0.5 means rendering the half the scroll window size
+     *
+     * @default 0.5
+     */
+    extraRenderSize?: number;
+    /**
+     * element to watch for scroll and size updates;
+     *
+     * @default Window
+     */
+    scrollWindow?: React.RefObject<EL>;
+    /**
+     * number: use it as size;
+     * true: measure on changes;
+     * false: no remeasure;
+     *
+     * @default false
+     */
+    watchScrollWindowSize?: number | boolean;
     /**
      * allows replacing the root element of the scroll list
      */
     scrollListRoot?: typeof scrollListRoot;
     itemsInRow?: number;
     itemGap?: number;
+    /**
+     * allows replacing the element of the list
+     *
+     */
     listRoot?: typeof listRoot;
+    preloader?: ElementSlot<{}>;
+    overlay?: ElementSlot<OverlayProps<T>>;
 }
 
-export type ScrollListLoadingState = 'loading' | 'idle' | 'done';
-export type ScrollList<T, EL extends HTMLElement = HTMLDivElement> = (props: ScrollListProps<T, EL>) => JSX.Element;
 export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     items,
     isHorizontal = false,
@@ -157,16 +143,16 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     itemCount,
     getId,
     ItemRenderer,
-    estimatedItemSize = 50,
+    estimatedItemSize,
     focusControl,
     loadMore,
-    scrollOffset = 0,
+    scrollOffset,
     itemSize = false,
     scrollListRoot,
     listRoot,
     selectionControl,
-    extraRenderedItems = 0.5,
-    unmountItems = true,
+    extraRenderSize = 0.5,
+    unmountItems,
     preloader,
     loadingState,
     itemGap = 0,
@@ -174,27 +160,22 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     transmitKeyPress,
     overlay,
 }: ScrollListProps<T, EL>): JSX.Element {
-    const shouldMeasureOffset = typeof scrollOffset === 'number' ? defaultPos : scrollOffset;
-    const defaultRef = useRef<EL>();
-    const actualRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultRef;
-    const offsetFromParent = usePositionInParent(actualRef, shouldMeasureOffset);
-    const usedoffset =
-        (typeof scrollOffset === 'number' ? scrollOffset : isHorizontal ? offsetFromParent.x : offsetFromParent.y) || 0;
+    const defaultScrollListRef = useRef<EL>();
+    const scrollListRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultScrollListRef;
     const defaultListRef = useRef<HTMLElement>(null);
     const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
-    const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindowSize);
-    const scrollPosition = useScroll({ isHorizontal, ref: scrollWindow });
-    const lastRenderedItem = useRef({
-        items,
-        last: 0,
+    /**
+     * get scroll position of scrollWindow and trigger re-rendering on its change
+     */
+    const scrollPosition = useScroll({
+        isHorizontal,
+        ref: scrollWindow,
     });
-    if (lastRenderedItem.current.items !== items) {
-        // clear last rendered item
-        lastRenderedItem.current.items = items;
-        lastRenderedItem.current.last = 0;
-    }
     const [selected, setSelected] = useStateControls(selectionControl, undefined);
     const [focused, setFocused] = useStateControls(focusControl, undefined);
+    const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindowSize);
+
+    const mountedItems = useRef(new Set(''));
 
     const getItemInfo = useCallback(
         (data: T): ScrollListItemInfo<T> => ({
@@ -202,155 +183,164 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             isFocused: focused === getId(data),
             isSelected: selected === getId(data),
         }),
-        [focused, selected, getId]
+        [getId, focused, selected]
     );
-    const itemCountForCalc =
-        itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount;
 
-    const rectOptions = useMemo(() => dimToSize(itemSize, getItemInfo), [getItemInfo, itemSize]);
-
-    const sizes = useIdBasedRects(listRef, items, getId, rectOptions, true);
-    const { totalMeasured, totalSize, itemSizes } = items.reduce(
-        (acc, current) => {
-            const id = getId(current);
-            const itemSize = isHorizontal ? sizes[id]?.width : sizes[id]?.height;
-
-            if (typeof itemSize === 'number') {
-                acc.totalMeasured++;
-                acc.totalSize += itemSize;
-                acc.itemSizes[id] = itemSize;
-            }
-            return acc;
-        },
-        {
-            totalSize: 0,
-            totalMeasured: 0,
-            itemSizes: {} as Record<string, number>,
+    const getItemDimensions = useMemo(() => {
+        if (itemSize === false) {
+            return itemSize;
         }
-    );
-    const avgSize = totalMeasured > 0 ? Math.ceil(totalSize / totalMeasured) : estimatedItemSize;
-
-    const maxScrollSize =
-        avgSize * Math.ceil(itemCountForCalc / itemsInRow) + itemGap * Math.ceil((itemCountForCalc - 1) / itemsInRow);
-
-    const calcScrollPosition = () => {
-        const lastWantedPixel = Math.min(
-            scrollWindowSize * (1 + extraRenderedItems) + scrollPosition - usedoffset,
-            maxScrollSize
-        );
-        const firstWantedPixel = unmountItems ? lastWantedPixel - scrollWindowSize * (2 + extraRenderedItems) : 0;
 
         if (typeof itemSize === 'number') {
-            let endIdx = Math.ceil(lastWantedPixel / itemSize);
-            if (!unmountItems) {
-                endIdx = lastRenderedItem.current.last = Math.max(endIdx, lastRenderedItem.current.last);
-            }
             return {
-                firstWantedPixel,
-                lastWantedPixel,
-                startIdx: unmountItems ? Math.ceil(firstWantedPixel / itemSize) : 0,
-                endIdx,
+                width: itemSize,
+                height: itemSize,
             };
         }
-        let taken = -itemGap;
-        let firstTakenPixel: null | number = null;
-        let startIdx = 0;
-        for (let i = 0; i < items.length; i += itemsInRow) {
-            let itemMaxSize = 0;
 
-            for (let z = 0; z < itemsInRow && z + i < items.length; z++) {
-                const id = getId(items[i + z]!);
-                const itemSize = (isHorizontal ? sizes[id]?.width : sizes[id]?.height) ?? avgSize;
-                itemMaxSize = Math.max(itemMaxSize, itemSize);
-            }
-            taken += itemMaxSize + itemGap;
-            if (unmountItems && taken > firstWantedPixel && firstTakenPixel === null) {
-                firstTakenPixel = taken - itemMaxSize;
-                startIdx = i;
-            }
-            if (taken > lastWantedPixel) {
-                let endIdx = i;
-                if (!unmountItems) {
-                    endIdx = lastRenderedItem.current.last = Math.max(endIdx, lastRenderedItem.current.last);
-                }
-                return {
-                    firstWantedPixel: firstTakenPixel || 0,
-                    lastWantedPixel: taken - itemMaxSize,
-                    startIdx,
-                    endIdx,
-                };
-            }
-        }
-        return {
-            firstWantedPixel: firstTakenPixel || 0,
-            startIdx,
-            endIdx: Math.max(items.length, maxScrollSize / avgSize),
+        return (item: T) => {
+            const itemInfo = getItemInfo(item);
+            const dimension = itemSize(itemInfo) ?? 0;
+
+            return {
+                width: dimension,
+                height: dimension,
+            };
         };
-    };
-    const { endIdx, firstWantedPixel, startIdx } = calcScrollPosition();
-    const style: React.CSSProperties = {
-        position: 'relative',
-    };
+    }, [itemSize, getItemInfo]);
 
-    useEffect(() => {
-        if (loadingState === 'idle' && endIdx > items.length && loadMore) {
-            const fetchItemsCount = Math.ceil(
-                endIdx - items.length + (scrollWindowSize * (1 + extraRenderedItems)) / avgSize
-            );
-            if (fetchItemsCount > 0) {
-                loadMore(fetchItemsCount);
-            }
-        }
-    }, [loadingState, items, loadMore, scrollWindowSize, extraRenderedItems, avgSize, endIdx]);
+    const itemsDimensions = useElementDimensions(listRef, items, getId, getItemDimensions, true);
 
-    const rendereredItems = useMemo(() => items.slice(startIdx, endIdx), [items, endIdx, startIdx]);
+    const { itemsSizes, averageItemSize } = useMemo(
+        () =>
+            getItemSizes({
+                itemsDimensions: itemsDimensions.current,
+                isHorizontal,
+                items,
+                getId,
+                estimatedItemSize,
+            }),
+        [itemsDimensions, isHorizontal, items, getId, estimatedItemSize]
+    );
 
-    const innerStyle: React.CSSProperties = {
+    const itemsNumber = useMemo(
+        () => (itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount),
+        [itemCount, items.length]
+    );
+
+    /**
+     * THIS IS APPROXIMATION! won't work on random size items; needs to be remade into state that's updated
+     */
+    const maxScrollSize = useMemo(() => {
+        const rowsNumbers = Math.ceil(itemsNumber / itemsInRow);
+        const gapsNumber = Math.ceil((itemsNumber - 1) / itemsInRow);
+
+        return averageItemSize * rowsNumbers + itemGap * gapsNumber;
+    }, [itemGap, itemsInRow, itemsNumber, averageItemSize]);
+
+    const { firstShownItemIndex, lastShownItemIndex, firstWantedPixel } = useScrollListPosition({
+        items,
+        getId,
+        getItemInfo,
+        maxScrollSize,
+        itemSize,
+        itemGap,
+        itemsInRow,
+        averageItemSize,
+        isHorizontal,
+        unmountItems,
+        extraRenderSize,
+        scrollWindowSize,
+        itemsDimensions,
+        scrollPosition,
+        scrollOffset,
+        scrollListRef,
+    });
+
+    useLoadMoreOnScroll({
+        loadMore,
+        loadingState,
+        renderSize: scrollWindowSize * (1 + extraRenderSize),
+        lastShownItemIndex,
+        averageItemSize,
+        loadedItemsNumber: items.length,
+    });
+
+    useScrollListScrollToSelected({
+        scrollWindow,
+        scrollListRef,
+        items,
+        getId,
+        selected,
+        averageItemSize,
+        mountedItems,
+        isHorizontal,
+        extraRenderSize,
+        scrollWindowSize,
+        itemsDimensions,
+    });
+
+    const shownItems = useMemo(
+        () => items.slice(firstShownItemIndex, lastShownItemIndex),
+        [items, firstShownItemIndex, lastShownItemIndex]
+    );
+
+    const listStyle = {
         position: 'absolute',
-    };
+        top: isHorizontal ? 0 : `${firstWantedPixel}px`,
+        left: isHorizontal ? `${firstWantedPixel}px` : 0,
+    } as React.CSSProperties;
 
-    if (isHorizontal) {
-        innerStyle.top = '0px';
-        innerStyle.left = firstWantedPixel + 'px';
-    } else {
-        innerStyle.left = '0px';
-        innerStyle.top = firstWantedPixel + 'px';
-    }
-    const overlayStyle: React.CSSProperties = {
-        ...innerStyle,
-        width: '100%',
-        height: '100%',
-    };
+    // TODO: causes re-rendering which I think is not needed
     const listRootWithStyle = forwardListRoot(listRoot || defaultRoot, {
-        style: innerStyle,
+        style: listStyle,
         ref: listRef,
     });
+
+    const focusControlMemoized: ProcessedControlledState<string | undefined> = useMemo(
+        () => [focused, setFocused],
+        [focused, setFocused]
+    );
+    const selectionControlMemoized: ProcessedControlledState<string | undefined> = useMemo(
+        () => [selected, setSelected],
+        [selected, setSelected]
+    );
+
+    const onItemMount = useCallback((item: T) => mountedItems.current.add(getId(item)), [getId]);
+    const onItemUnmount = useCallback((item: T) => mountedItems.current.delete(getId(item)), [getId]);
+
     return (
         <RootSlot
             slot={scrollListRoot}
             props={{
-                style,
                 className: classes.root,
-                ref: actualRef,
+                style: RELATIVE_POSITION,
+                ref: scrollListRef,
             }}
         >
             <List<T, EL>
+                items={shownItems}
                 getId={getId}
                 ItemRenderer={ItemRenderer}
+                onItemMount={onItemMount}
+                onItemUnmount={onItemUnmount}
                 listRoot={listRootWithStyle}
-                items={rendereredItems}
-                focusControl={[focused, setFocused]}
-                selectionControl={[selected, setSelected]}
+                focusControl={focusControlMemoized}
+                selectionControl={selectionControlMemoized}
                 transmitKeyPress={transmitKeyPress}
             />
             {overlay ? (
                 <ListOverlaySlot
                     slot={overlay}
                     props={{
-                        itemSizes,
-                        shownItems: rendereredItems,
-                        avgSize,
-                        style: overlayStyle,
+                        itemSizes: itemsSizes,
+                        shownItems,
+                        avgSize: averageItemSize,
+                        style: {
+                            ...listStyle,
+                            width: '100%',
+                            height: '100%',
+                        },
                     }}
                 />
             ) : null}
@@ -363,28 +353,4 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             </div>
         </RootSlot>
     );
-}
-
-export function dimToSize<T>(
-    itemSize: number | ((t: ScrollListItemInfo<T>) => number) | boolean,
-    getItemInfo: (t: T) => ScrollListItemInfo<T>
-): boolean | WatchedSize | ((t: T) => WatchedSize) {
-    if (typeof itemSize === 'boolean') {
-        return itemSize;
-    }
-    if (typeof itemSize === 'number') {
-        return {
-            width: itemSize,
-            height: itemSize,
-        };
-    }
-
-    return (t: T) => {
-        const info = getItemInfo(t);
-        const dim = itemSize(info);
-        return {
-            width: dim,
-            height: dim,
-        };
-    };
 }

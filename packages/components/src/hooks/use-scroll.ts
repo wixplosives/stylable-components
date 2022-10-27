@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDelayedUpdate } from './use-delayed-update';
 
 /** if ref is not supplied use scroll will return the window scroll */
@@ -12,16 +12,12 @@ export const useScroll = ({
     ref?: React.RefObject<HTMLElement>;
 }): number => {
     const trigger = useDelayedUpdate();
-    
+
     useEffect(() => {
         if (!disabled) {
-            const target = ref
-                           ? ref.current
-                           : typeof window !== 'undefined'
-                             ? window
-                             : undefined;
+            const target = ref ? ref.current : window;
             target?.addEventListener('scroll', trigger);
-        
+
             return () => target?.removeEventListener('scroll', trigger);
         } else {
             return;
@@ -29,9 +25,6 @@ export const useScroll = ({
     }, [disabled, ref, trigger]);
 
     if (!ref?.current) {
-        if (typeof window === 'undefined') {
-            return 0;
-        }
         return isHorizontal ? window.scrollX : window.scrollY;
     }
     return (isHorizontal ? ref.current.scrollLeft : ref.current.scrollTop) || 0;

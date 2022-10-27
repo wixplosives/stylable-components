@@ -4,7 +4,7 @@ import { IdBasedRectsHookSimulator } from './element-rect-hook-simulator';
 
 export default createBoard({
     name: 'use element size',
-    Board: () => <IdBasedRectsHookSimulator watchSize={true} width="100%" height="100%" />,
+    Board: () => <IdBasedRectsHookSimulator width="100%" height="100%" />,
     environmentProps: {
         canvasWidth: 448,
         canvasHeight: 208,

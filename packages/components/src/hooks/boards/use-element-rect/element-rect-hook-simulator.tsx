@@ -1,31 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { unMeasured, useElementDimension, useElementSize, useIdBasedRects, WatchedSize } from '../../use-element-rect';
+import { useElementDimensions } from '../../use-element-dimensions';
+import { useElementDimension } from '../../use-element-rect';
 
-export const ElementSizeHookSimulator: React.FC<{
-    watchSize?: WatchedSize | boolean;
-    width?: string;
-    height?: string;
-}> = ({ watchSize = unMeasured, height, width }) => {
-    const ref = useRef<HTMLDivElement>(null);
-    const res = useElementSize(ref, watchSize);
-    return (
-        <div
-            style={{
-                height,
-                width,
-            }}
-        >
-            <div ref={ref} style={{ width: '100%', height: '100%', background: 'red' }}>
-                <div style={{ position: 'fixed', top: '50%', left: '50%' }}>
-                    <div>width: ${res.width}</div>
-                    <div>height: ${res.height}</div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export const ElmentDimHookSimulator: React.FC<{
+export const ElementDimHookSimulator: React.FC<{
     isVertical: boolean;
     watchSize: number | boolean;
     width?: string;
@@ -71,10 +48,9 @@ export interface IdBasedRectsItem {
 const getid = (item: IdBasedRectsItem) => item.id;
 const colors = ['red', 'blue'];
 export const IdBasedRectsHookSimulator: React.FC<{
-    watchSize: WatchedSize | boolean;
     width?: string;
     height?: string;
-}> = ({ watchSize, width, height }) => {
+}> = ({ width, height }) => {
     const [data, update] = useState<IdBasedRectsItem[]>([
         {
             id: 'a',
@@ -92,7 +68,7 @@ export const IdBasedRectsHookSimulator: React.FC<{
         },
     ]);
     const ref = useRef<HTMLDivElement>(null);
-    const res = useIdBasedRects(ref, data, getid, watchSize);
+    const res = useElementDimensions(ref, data, getid, false);
     const updateItem = (idx: number, text: string) => {
         const newData = [...data];
         const newItem = { ...data[idx], text };

@@ -13,8 +13,8 @@ import button from './button/boards/button.board';
 import cancel_button from './button/boards/cancel-button.board';
 import emphasis_button from './button/boards/emphasis-button.board';
 import data_grid from './data-grid/boards/data-grid.board';
+import use_element_dimensions from './hooks/boards/use-element-dimensions.board';
 import use_element_dimension from './hooks/boards/use-element-rect/use-element-dimension.board';
-import use_element_size from './hooks/boards/use-element-rect/use-element-size.board';
 import use_id_based_rects from './hooks/boards/use-element-rect/use-id-based-rects.board';
 import use_scroll_horizontal_window from './hooks/boards/use-scroll/use-scroll-horizontal-window.board';
 import use_scroll_vertical_window from './hooks/boards/use-scroll/use-scroll-vertical-window.board';
@@ -33,6 +33,7 @@ import no_unmount from './scroll-list/boards/no-unmount.board';
 import scroll_list from './scroll-list/boards/scroll-list.board';
 import scroll_offset from './scroll-list/boards/scroll-offset.board';
 import scroll_ref from './scroll-list/boards/scroll-ref.board';
+import scroll_to_selection from './scroll-list/boards/scroll-to-selection.board';
 import with_header from './scroll-list/boards/with-header.board';
 import searchable_text from './searchable-text/boards/searchable-text.board';
 import tree_with_lanes from './tree/boards/tree-with-lanes.board';
@@ -48,8 +49,8 @@ export default [
     cancel_button,
     emphasis_button,
     data_grid,
+    use_element_dimensions,
     use_element_dimension,
-    use_element_size,
     use_id_based_rects,
     use_scroll_horizontal_window,
     use_scroll_vertical_window,
@@ -68,6 +69,7 @@ export default [
     scroll_list,
     scroll_offset,
     scroll_ref,
+    scroll_to_selection,
     with_header,
     searchable_text,
     tree_with_lanes,

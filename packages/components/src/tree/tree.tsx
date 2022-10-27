@@ -25,14 +25,6 @@ export interface TreeItemProps<T> extends ListItemProps<T> {
     indent: number;
 }
 
-export interface TreeItemProps<T> extends ListItemProps<T> {
-    isOpen: boolean;
-    hasChildren: boolean;
-    open(): void;
-    close(): void;
-    indent: number;
-}
-
 export interface TreeOverlayProps<T> extends OverlayProps<T> {
     expandedItems: string[];
 }
@@ -53,16 +45,14 @@ export interface TreeAddedProps<T> {
     openItemsControls: StateControls<string[]>;
 
     ItemRenderer: React.ComponentType<TreeItemProps<T>>;
-    /**
-     * size of the item ( height if vertical ) in pixels or a method to compute according to data
-     * if omitted, item size will be measured
-     */
-    itemSize?: number | ((info: TreeItemInfo<T>) => number) | boolean;
 
     overlay?: typeof overlayRoot;
 }
 
-export type TreeProps<T, EL extends HTMLElement> = Omit<ScrollListProps<T, EL>, 'items' | 'ItemRenderer' | 'itemSize'> &
+export type TreeProps<T, EL extends HTMLElement> = Omit<
+    ScrollListProps<T, EL, TreeItemInfo<T>>,
+    'items' | 'ItemRenderer'
+> &
     TreeAddedProps<T>;
 
 export type Tree<T, EL extends HTMLElement = HTMLDivElement> = (props: TreeProps<T, EL>) => JSX.Element;
@@ -81,7 +71,10 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     } = props;
     const [openItems, updateOpenItems] = useStateControls(openItemsControls, []);
     const [focused, updateFocused] = useStateControls(focusControl, undefined);
-    const { items, depths } = getItems({ data, getChildren, getId, openItems });
+    const { items, depths } = useMemo(
+        () => getItems({ data, getChildren, getId, openItems }),
+        [data, getChildren, getId, openItems]
+    );
     const itemRenderer = useMemo(() => TreeItemWrapper(ItemRenderer), [ItemRenderer]);
 
     const wrapperContext = useMemo(

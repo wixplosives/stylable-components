@@ -1,6 +1,4 @@
-import React, { useRef } from 'react';
-import { useIdListener } from '../hooks/use-id-based-event';
-import { StateControls, useStateControls } from '../hooks/use-state-controls';
+import React, { useEffect, useRef } from 'react';
 import {
     callInternalFirst,
     defaultRoot,
@@ -8,7 +6,9 @@ import {
     mergeObjectInternalWins,
     preferExternal,
 } from '../hooks/use-element-slot';
+import { useIdListener } from '../hooks/use-id-based-event';
 import { useIdBasedKeyboardNav } from '../hooks/use-keyboard-nav';
+import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import type { UseTransmit } from '../hooks/use-transmitted-events';
 
 export type ListRootMinimalProps = Pick<
@@ -32,11 +32,12 @@ export const {
     parentSlot: listRootParent,
     Slot: RootSlot,
 } = defineElementSlot<ListRootMinimalProps>(defaultRoot, ListRootPropMapping);
+
 export interface ListItemProps<T> {
     data: T;
     /***
      * id computed by using ListProps.getId on data
-     * id must be placed on the element where mouse events are to be cought as "data-id"
+     * id must be placed on the element where mouse events are to be caught as "data-id"
      */
     id: string;
     isFocused: boolean;
@@ -44,14 +45,17 @@ export interface ListItemProps<T> {
     focus: (id?: string) => void;
     select: (id?: string) => void;
 }
+
 export interface ListProps<T> {
     listRoot?: typeof listRoot;
-    getId: (t: T) => string;
-    items: Array<T>;
+    getId: (item: T) => string;
+    items: T[];
     ItemRenderer: React.ComponentType<ListItemProps<T>>;
     focusControl?: StateControls<string | undefined>;
     selectionControl?: StateControls<string | undefined>;
     transmitKeyPress?: UseTransmit<React.KeyboardEventHandler>;
+    onItemMount?: (item: T) => void;
+    onItemUnmount?: (item: T) => void;
 }
 
 export type List<T> = (props: ListProps<T>) => JSX.Element;
@@ -64,6 +68,8 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     ItemRenderer,
     items,
     transmitKeyPress,
+    onItemMount,
+    onItemUnmount,
 }: ListProps<T>): JSX.Element {
     const [selectedId, setSelectedId] = useStateControls(selectionControl, undefined);
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
@@ -97,7 +103,10 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
             {items.map((item) => {
                 const id = getId(item);
                 return (
-                    <ItemRenderer
+                    <ItemRendererWrapped
+                        ItemRenderer={ItemRenderer}
+                        onMount={onItemMount}
+                        onUnmount={onItemUnmount}
                         key={id}
                         id={id}
                         data={item}
@@ -110,4 +119,25 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
             })}
         </RootSlot>
     );
+}
+
+interface ItemRendererWrappedProps<T> {
+    onMount?: (item: T) => void;
+    onUnmount?: (item: T) => void;
+    ItemRenderer: React.ComponentType<ListItemProps<T>>;
+}
+
+function ItemRendererWrapped<T>({
+    ItemRenderer,
+    onMount,
+    onUnmount,
+    ...props
+}: ListItemProps<T> & ItemRendererWrappedProps<T>) {
+    useEffect(() => {
+        onMount?.(props.data);
+
+        return () => onUnmount?.(props.data);
+    }, [onMount, onUnmount, props.data]);
+
+    return <ItemRenderer {...props} />;
 }

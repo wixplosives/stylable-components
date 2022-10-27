@@ -13,9 +13,7 @@ const createTreeData = (maxChildren: number, maxDepth: number, currentDepth = 0,
     ids.push(item.id);
     if (currentDepth < maxDepth) {
         const randomNumberOfChildren = Math.floor(Math.random() * (maxChildren + 1));
-        const numChildren = currentDepth === 0
-                            ? Math.max(10, randomNumberOfChildren)
-                            : randomNumberOfChildren;
+        const numChildren = currentDepth === 0 ? Math.max(10, randomNumberOfChildren) : randomNumberOfChildren;
         item.children = new Array(numChildren).fill(undefined).map((_, idx) => {
             return createTreeData(maxChildren, maxDepth, currentDepth + 1, [...path, idx]);
         });
@@ -29,40 +27,40 @@ const elementRef: React.RefObject<HTMLDivElement> = {
 };
 
 export default createBoard({
-                               name: 'Tree',
-                               Board: () => {
-                                   const [openItems, setOpenItems] = useState(ids);
-        
-                                   return (
-                                     <Tree
-                                       scrollWindow={elementRef}
-                                       watchScrollWindowSize={true}
-                                       ItemRenderer={TreeItemRenderer}
-                                       data={treeData}
-                                       getId={getId}
-                                       getChildren={getChildren}
-                                       itemSize={() => 24}
-                                       scrollListRoot={{
-                                           el: 'div',
-                                           props: {
-                                               id: 'list',
-                                               style: {
-                                                   width: '200px',
-                                                   height: '400px',
-                                                   overflow: 'auto',
-                                               },
-                                               ref: elementRef,
-                                           },
-                                       }}
-                                       openItemsControls={[openItems, setOpenItems]}
-                                     />
-                                   );
-                               },
-                               plugins: [projectThemesPlugin],
-                               environmentProps: {
-                                   windowWidth: 500,
-                                   canvasWidth: 400,
-                                   windowHeight: 575,
-                                   canvasHeight: 525,
-                               },
-                           });
+    name: 'Tree',
+    Board: () => {
+        const [openItems, setOpenItems] = useState(ids);
+
+        return (
+            <Tree
+                scrollWindow={elementRef}
+                watchScrollWindowSize={true}
+                ItemRenderer={TreeItemRenderer}
+                data={treeData}
+                getId={getId}
+                getChildren={getChildren}
+                itemSize={() => 24}
+                scrollListRoot={{
+                    el: 'div',
+                    props: {
+                        id: 'list',
+                        style: {
+                            width: '200px',
+                            height: '400px',
+                            overflow: 'auto',
+                        },
+                        ref: elementRef,
+                    },
+                }}
+                openItemsControls={[openItems, setOpenItems]}
+            />
+        );
+    },
+    plugins: [projectThemesPlugin],
+    environmentProps: {
+        windowWidth: 500,
+        canvasWidth: 400,
+        windowHeight: 575,
+        canvasHeight: 525,
+    },
+});

@@ -309,7 +309,7 @@ export const writeAction = (selector: string, text: string, timeout = 2_000): Ac
     };
 };
 
-export const waitForElement = async (selector: string, title: string, timeout: number) => {
+export const waitForElement = async (selector: string, title: string, timeout = 1000) => {
     await waitFor(
         () => {
             const el = window.document.querySelector(selector);
