@@ -28,7 +28,7 @@
     "@types/react-window": "^1.8.5",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
-    "@wixc3/board-core": "^2.0.3",
+    "@wixc3/board-core": "^2.0.5",
     "@wixc3/react-board": "^2.0.3",
     "chai": "^4.3.6",
     "eslint": "^8.26.0",
