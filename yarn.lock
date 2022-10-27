@@ -1708,17 +1708,17 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.7.0.tgz#e1993689ac42d2b16e9194376cfb6753f6254db1"
   integrity sha512-oxnCNGj88fL+xzV+dacXs44HcDwf1ovs3AuEzvP7mqXw7fQntqIhQ1BRmynh4qEKQSSSRSWVyXRjmTbZIX9V2Q==
 
-"@wixc3/board-core@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@wixc3/board-core/-/board-core-2.0.3.tgz#11182f9a6da8f25259ed4a3873ac32175bc9936d"
-  integrity sha512-ap0ZSWHX/nK5ASS30Z++8LbHuTfQjsj4brtqMOaYUQzIg318Mn/5E1ILOgbSKJCpOP9GMSaOIb9+ouVzKsu6hw==
+"@wixc3/board-core@^2.0.3", "@wixc3/board-core@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@wixc3/board-core/-/board-core-2.0.5.tgz#d78e2b5f99fb8734c0ddec9ef7e329b02c149ad8"
+  integrity sha512-9POSnGTDDWhLLohMoxAtBpb9EewHM2GaqSJwhSf/GoSntaa7WdjO91yz+lC7tK+jnj+hw++N0aXF6Y69QNR0Og==
 
-"@wixc3/react-board@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@wixc3/react-board/-/react-board-2.0.3.tgz#727ebcd3e4287c03d8ce08dd6ee44b0e9ede2a01"
-  integrity sha512-gETrCFVbyITolXw4A2881tBqNCGsSUH5a4mwb5HiNQXwofiiU7tq5XKr9zmo1TOffuxXtdKLuY+h9vzRiXqrig==
+"@wixc3/react-board@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@wixc3/react-board/-/react-board-2.0.5.tgz#b67d2e82aa1269c2bb6ba09a32dde35f4493ab4d"
+  integrity sha512-VwxrG2RUNQGOUn2J+aHHTqReL8+wx99EcUewk3MfMc1ogyG4Cq03tFChMG1OWWNYpCxSYTbtX87IrdtliRVl7Q==
   dependencies:
-    "@wixc3/board-core" "^2.0.3"
+    "@wixc3/board-core" "^2.0.5"
 
 "@wixc3/resolve-directory-context@^3.0.0":
   version "3.0.1"
