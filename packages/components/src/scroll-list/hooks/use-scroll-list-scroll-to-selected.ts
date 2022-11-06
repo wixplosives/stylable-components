@@ -1,4 +1,5 @@
 import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import scrollIntoViewIfNeeded from 'scroll-into-view-if-needed';
 import type { DimensionsById } from '../../common';
 import type { ListProps } from '../../list/list';
 import type { ScrollListProps } from '../../scroll-list/scroll-list';
@@ -66,21 +67,25 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
         clearTimeout(timeout.current);
     };
     const scrollTo = useCallback(
-        (selectedIndex: number) => {
+        (selectedIndex: number, repeated = false) => {
             if (!scrollListRef.current) {
                 return;
             }
 
             clearTimeout(timeout.current);
 
-            const scrollIntoView = (selected: number) => {
+            const scrollIntoView = (selected: number, position: ScrollLogicalPosition) => {
                 const node = scrollListRef.current?.querySelector(`[data-id='${getId(items[selected]!)}']`);
                 if (node === null) {
-                    timeout.current = window.setTimeout(() => isScrollingToSelection.current && scrollTo(selected));
+                    timeout.current = window.setTimeout(
+                        () => isScrollingToSelection.current && scrollTo(selected, true)
+                    );
                 } else {
-                    node?.scrollIntoView({
-                        block: 'center',
-                        inline: 'center',
+                    scrollIntoViewIfNeeded(node!, {
+                        scrollMode: 'if-needed',
+                        block: position,
+                        inline: position,
+                        boundary: scrollWindow?.current,
                     });
                     cleanUp();
                 }
@@ -91,13 +96,17 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
             const firstIndex = Math.min(...mountedIndexes);
             const lastIndex = Math.max(...mountedIndexes);
 
+            let position: ScrollLogicalPosition = 'nearest';
+
             if (selectedIndex < firstIndex) {
+                position = 'start';
                 scrollTarget.scrollBy({ top: calculateDistance({ itemIndex: firstIndex, direction: 'up' }) });
             } else if (lastIndex < selectedIndex) {
+                position = 'end';
                 scrollTarget.scrollBy({ top: calculateDistance({ itemIndex: lastIndex, direction: 'down' }) });
             }
 
-            timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
+            timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex, repeated ? 'center' : position));
         },
         [scrollListRef, scrollWindow, mountedItems, items, getId, calculateDistance]
     );
