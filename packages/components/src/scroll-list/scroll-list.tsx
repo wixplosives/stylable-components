@@ -124,6 +124,12 @@ export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollList
      * allows replacing the root element of the scroll list
      */
     scrollListRoot?: typeof scrollListRoot;
+    /**
+     * allows turning on scroll to selection behaviour
+     *
+     * @default false
+     */
+    scrollToSelection?: boolean;
     itemsInRow?: number;
     itemGap?: number;
     /**
@@ -151,6 +157,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     scrollListRoot,
     listRoot,
     selectionControl,
+    scrollToSelection = false,
     extraRenderSize = 0.5,
     unmountItems,
     preloader,
@@ -269,6 +276,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     useScrollListScrollToSelected({
         scrollWindow,
         scrollListRef,
+        scrollToSelection,
         items,
         getId,
         selected,

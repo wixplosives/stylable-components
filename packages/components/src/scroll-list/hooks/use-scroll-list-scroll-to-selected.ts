@@ -4,6 +4,7 @@ import type { ListProps } from '../../list/list';
 import type { ScrollListProps } from '../../scroll-list/scroll-list';
 
 export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
+    scrollToSelection,
     scrollWindow,
     scrollListRef,
     items,
@@ -16,6 +17,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     extraRenderSize,
     scrollWindowSize,
 }: {
+    scrollToSelection: boolean;
     scrollWindow?: ScrollListProps<T, EL>['scrollWindow'];
     scrollListRef: RefObject<EL>;
     items: ListProps<T>['items'];
@@ -101,7 +103,12 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     );
 
     useEffect(() => {
-        if (selectedIndex > -1 && !isScrollingToSelection.current && mountedItems.current.size > 0) {
+        if (
+            scrollToSelection &&
+            selectedIndex > -1 &&
+            mountedItems.current.size > 0 &&
+            !isScrollingToSelection.current
+        ) {
             isScrollingToSelection.current = true;
 
             scrollTo(selectedIndex);
@@ -110,5 +117,5 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
         return () => {
             cleanUp();
         };
-    }, [mountedItems, scrollTo, selectedIndex]);
+    }, [scrollToSelection, mountedItems, scrollTo, selectedIndex]);
 };
