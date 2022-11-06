@@ -85,9 +85,9 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
             };
 
             const scrollTarget = scrollWindow?.current ?? window;
-            const mount = [...mountedItems.current];
-            const firstIndex = items.findIndex((i) => getId(i) === mount[0]);
-            const lastIndex = items.findIndex((i) => getId(i) === mount[mount.length - 1]);
+            const mountedIndexes = [...mountedItems.current].map((id) => items.findIndex((i) => getId(i) === id));
+            const firstIndex = Math.min(...mountedIndexes);
+            const lastIndex = Math.max(...mountedIndexes);
 
             if (selectedIndex < firstIndex) {
                 scrollTarget.scrollBy({ top: calculateDistance({ itemIndex: firstIndex, direction: 'up' }) });
