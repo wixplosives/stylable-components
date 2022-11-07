@@ -1,9 +1,11 @@
 import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import scrollIntoViewIfNeeded from 'scroll-into-view-if-needed';
 import type { DimensionsById } from '../../common';
 import type { ListProps } from '../../list/list';
 import type { ScrollListProps } from '../../scroll-list/scroll-list';
 
 export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
+    scrollToSelection,
     scrollWindow,
     scrollListRef,
     items,
@@ -16,6 +18,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     extraRenderSize,
     scrollWindowSize,
 }: {
+    scrollToSelection: boolean;
     scrollWindow?: ScrollListProps<T, EL>['scrollWindow'];
     scrollListRef: RefObject<EL>;
     items: ListProps<T>['items'];
@@ -64,44 +67,57 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
         clearTimeout(timeout.current);
     };
     const scrollTo = useCallback(
-        (selectedIndex: number) => {
+        (selectedIndex: number, repeated = false) => {
             if (!scrollListRef.current) {
                 return;
             }
 
             clearTimeout(timeout.current);
 
-            const scrollIntoView = (selected: number) => {
+            const scrollIntoView = (selected: number, position: ScrollLogicalPosition) => {
                 const node = scrollListRef.current?.querySelector(`[data-id='${getId(items[selected]!)}']`);
                 if (node === null) {
-                    timeout.current = window.setTimeout(() => isScrollingToSelection.current && scrollTo(selected));
+                    timeout.current = window.setTimeout(
+                        () => isScrollingToSelection.current && scrollTo(selected, true)
+                    );
                 } else {
-                    node?.scrollIntoView({
-                        block: 'center',
-                        inline: 'center',
+                    scrollIntoViewIfNeeded(node!, {
+                        scrollMode: 'if-needed',
+                        block: position,
+                        inline: position,
+                        boundary: scrollWindow?.current,
                     });
                     cleanUp();
                 }
             };
 
             const scrollTarget = scrollWindow?.current ?? window;
-            const mount = [...mountedItems.current];
-            const firstIndex = items.findIndex((i) => getId(i) === mount[0]);
-            const lastIndex = items.findIndex((i) => getId(i) === mount[mount.length - 1]);
+            const mountedIndexes = [...mountedItems.current].map((id) => items.findIndex((i) => getId(i) === id));
+            const firstIndex = Math.min(...mountedIndexes);
+            const lastIndex = Math.max(...mountedIndexes);
+
+            let position: ScrollLogicalPosition = 'nearest';
 
             if (selectedIndex < firstIndex) {
+                position = 'start';
                 scrollTarget.scrollBy({ top: calculateDistance({ itemIndex: firstIndex, direction: 'up' }) });
             } else if (lastIndex < selectedIndex) {
+                position = 'end';
                 scrollTarget.scrollBy({ top: calculateDistance({ itemIndex: lastIndex, direction: 'down' }) });
             }
 
-            timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex));
+            timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex, repeated ? 'center' : position));
         },
         [scrollListRef, scrollWindow, mountedItems, items, getId, calculateDistance]
     );
 
     useEffect(() => {
-        if (selectedIndex > -1 && !isScrollingToSelection.current && mountedItems.current.size > 0) {
+        if (
+            scrollToSelection &&
+            selectedIndex > -1 &&
+            mountedItems.current.size > 0 &&
+            !isScrollingToSelection.current
+        ) {
             isScrollingToSelection.current = true;
 
             scrollTo(selectedIndex);
@@ -110,5 +126,5 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
         return () => {
             cleanUp();
         };
-    }, [mountedItems, scrollTo, selectedIndex]);
+    }, [scrollToSelection, mountedItems, scrollTo, selectedIndex]);
 };
