@@ -183,10 +183,14 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
             }
         }
 
+        const estimatedLastShownItemIndex = maxScrollSize / averageItemSize;
+
         return {
             firstWantedPixel: firstTakenPixel ?? 0,
             firstShownItemIndex: firstShownItemIndex,
-            lastShownItemIndex: Math.max(items.length, maxScrollSize / averageItemSize),
+            lastShownItemIndex: !isNaN(estimatedLastShownItemIndex)
+                ? Math.max(items.length, estimatedLastShownItemIndex)
+                : items.length,
         };
     }, [
         averageItemSize,
