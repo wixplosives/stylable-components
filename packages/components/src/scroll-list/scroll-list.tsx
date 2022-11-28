@@ -218,32 +218,18 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 
     const itemsDimensions = useElementDimensions(listRef, items, getId, getItemDimensions, true);
 
-    const { itemsSizes, averageItemSize } = useMemo(
-        () =>
-            getItemSizes({
-                itemsDimensions: itemsDimensions.current,
-                isHorizontal,
-                items,
-                getId,
-                estimatedItemSize,
-            }),
-        [itemsDimensions, isHorizontal, items, getId, estimatedItemSize]
-    );
+    const { itemsSizes, averageItemSize } = getItemSizes({
+        itemsDimensions: itemsDimensions.current,
+        isHorizontal,
+        items,
+        getId,
+        estimatedItemSize,
+    });
 
-    const itemsNumber = useMemo(
-        () => (itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount),
-        [itemCount, items.length]
-    );
-
-    /**
-     * THIS IS APPROXIMATION! won't work on random size items; needs to be remade into state that's updated
-     */
-    const maxScrollSize = useMemo(() => {
-        const rowsNumbers = Math.ceil(itemsNumber / itemsInRow);
-        const gapsNumber = Math.ceil((itemsNumber - 1) / itemsInRow);
-
-        return averageItemSize * rowsNumbers + itemGap * gapsNumber;
-    }, [itemGap, itemsInRow, itemsNumber, averageItemSize]);
+    const itemsNumber = itemCount === undefined ? items.length : itemCount === -1 ? items.length + 5000 : itemCount;
+    const rowsNumbers = Math.ceil(itemsNumber / itemsInRow);
+    const gapsNumber = Math.ceil((itemsNumber - 1) / itemsInRow);
+    const maxScrollSize = averageItemSize * rowsNumbers + itemGap * gapsNumber;
 
     const { firstShownItemIndex, lastShownItemIndex, firstWantedPixel } = useScrollListPosition({
         items,
