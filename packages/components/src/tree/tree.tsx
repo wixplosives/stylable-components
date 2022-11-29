@@ -10,7 +10,6 @@ import {
     scrollListOverlayParent,
     ScrollListProps,
 } from '../scroll-list/scroll-list';
-// import { st, classes } from './tree.st.css';
 
 export interface TreeItemInfo<T> extends ScrollListItemInfo<T> {
     isOpen: boolean;
@@ -32,9 +31,7 @@ export interface TreeOverlayProps<T> extends OverlayProps<T> {
 export const {
     forward: forwardListOverlay,
     slot: overlayRoot,
-    Slot: TreeOverlay,
     create: createTreeOverlay,
-    parentSlot: defineTreeParentOverlay,
 } = scrollListOverlayParent<{
     expandedItems: string[];
 }>(defaultRoot);

@@ -1,5 +1,5 @@
 import React, { MutableRefObject, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
-import { childrenById, DimensionsById, ElementDimensions, unMeasured } from '../common';
+import { childrenById, DimensionsById, ElementDimensions, unmeasuredDimensions } from '../common';
 import {
     createSetableMutationObserver,
     rectToDimensions,
@@ -28,7 +28,7 @@ const calculateDimensions = <T, EL extends HTMLElement>(
         if (size !== undefined) {
             return typeof size === 'function' ? size(item) : size;
         }
-        return unMeasured;
+        return unmeasuredDimensions;
     };
 
     if (size !== undefined || !measure || !ref.current) {
@@ -69,7 +69,7 @@ const calculateDimensions = <T, EL extends HTMLElement>(
             acc[id] = measured;
             sizeCache.set(id, measured);
         } else {
-            acc[id] = unMeasured;
+            acc[id] = unmeasuredDimensions;
         }
 
         if (acc[id]?.height !== oldRes[id]?.height || acc[id]?.width !== oldRes[id]?.width) {

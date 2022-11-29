@@ -2,27 +2,24 @@
 @st-import Btn from "../button/button.st.css";
 @st-import Icon from "../icons/icon.st.css";
 @st-import [small] from "../icons/variants.st.css";
-@st-import [cancel,
-emphasis] from "../button/variants.st.css";
+@st-import [cancel, emphasis] from "../button/variants.st.css";
 @st-import Area from "../area/area.st.css";
 @st-import [floating] from "../area/variants.st.css";
-@st-import [popover, scrollListRoot,
-] from "../auto-complete/auto-complete.st.css";
+@st-import [popover, scrollListRoot] from "../auto-complete/auto-complete.st.css";
 @st-import ScrollList from "../scroll-list/scroll-list.st.css";
 @st-import InputWithClear from "../input-with-clear/input-with-clear.st.css";
 @st-import [primary-2, primary-3, primary-4, primary-7, reference-1, notification-warning-1, primary-6, primary-0, primary-5] from "./colors.st.css";
 
 @st-scope .white {
     .CirclePreloader::inner {
-        border-top: 2px solid value( primary-2 );
-        border-right: 2px solid value( primary-2 );
-        box-shadow: -0.28px 3.99px 2px 4px #e7eaff, -3.28px -2.29px 11px -3px #96ECEA;
+        border-top: 2px solid value(primary-2);
+        border-right: 2px solid value(primary-2);
+        box-shadow: -0.28px 3.99px 2px 4px #e7eaff, -3.28px -2.29px 11px -3px #96ecea;
         margin-bottom: 14px;
     }
 
     .Btn {
         cursor: pointer;
-        border: none;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -33,24 +30,24 @@ emphasis] from "../button/variants.st.css";
         padding: 5px 11px;
         min-width: 80px;
         border-radius: 4px;
-        border: 1px solid value( primary-2 );
-        color: value( primary-7 );
+        border: 1px solid value(primary-2);
+        color: value(primary-7);
         background: white;
         font-size: 18px;
     }
 
     .Btn:hover {
-        color: value( primary-6 );
+        color: value(primary-6);
     }
 
     .cancel {
-        color: value( primary-0 );
-        background: value( primary-5 );
+        color: value(primary-0);
+        background: value(primary-5);
     }
 
     .emphasis {
-        color: value( reference-1 );
-        background: value( notification-warning-1 );
+        color: value(reference-1);
+        background: value(notification-warning-1);
     }
 
     .Btn .icon {
@@ -63,7 +60,7 @@ emphasis] from "../button/variants.st.css";
         background: white;
         padding: 10px;
         border-radius: 4px;
-        border: 1px solid value( primary-2 );
+        border: 1px solid value(primary-2);
     }
 
 

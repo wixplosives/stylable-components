@@ -8,7 +8,7 @@ export type ElementDimensions =
           height: null;
       };
 
-export const unMeasured: ElementDimensions = {
+export const unmeasuredDimensions: ElementDimensions = {
     width: null,
     height: null,
 };

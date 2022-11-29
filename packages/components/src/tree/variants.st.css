@@ -1,5 +1,0 @@
-@st-import Tree from "./tree.st.css";
-
-.fs {
-  -st-extends: Tree;
-}

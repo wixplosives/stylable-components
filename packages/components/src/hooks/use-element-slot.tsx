@@ -99,24 +99,6 @@ export function mergeObjectInternalWins<T extends {} | undefined>(internal: T, e
     return external;
 }
 
-export function mergeObjectExternalWins<T extends {} | undefined>(internal: T, external: T): T {
-    if (typeof external === 'object') {
-        if (typeof internal === 'object') {
-            return {
-                ...internal,
-                ...external,
-            };
-        }
-        return external;
-    }
-    return internal;
-}
-
-export const callExternal =
-    <T extends (...args: any[]) => unknown>(_internal: T, external: T) =>
-    (...args: any[]): unknown =>
-        external(...args);
-
 export const callInternalFirst =
     <T extends (...args: any[]) => any>(internal?: T, external?: T) =>
     (...args: unknown[]): unknown => {

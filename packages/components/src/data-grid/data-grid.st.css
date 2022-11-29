@@ -1,6 +1,5 @@
 .root {
     --columns: 1fr 1fr 1fr;
-
 }
 
 .header {
@@ -18,7 +17,9 @@
 
 }
 
-.cell {}
+.cell {
+
+}
 
 .row {
     display: grid;
@@ -30,7 +31,7 @@
     right: 1px;
     width: 2px;
     height: 100%;
-    top: 0px;
+    top: 0;
     cursor: ew-resize;
     background: black;
 }

@@ -1,6 +1,6 @@
 import { MutableRefObject, RefObject, useMemo, useRef } from 'react';
 import type { DimensionsById } from '../../common';
-import { defaultPosition } from '../../common';
+import { unknownPosition } from '../../common';
 import { usePositionInParent } from '../../hooks/use-position';
 import type { ListProps } from '../../list/list';
 import type { ScrollListItemInfo, ScrollListProps } from '../../scroll-list/scroll-list';
@@ -69,7 +69,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
     scrollListRef: RefObject<EL>;
 }) => {
     const lastRenderedItem = useRef(0);
-    const shouldMeasureOffset = typeof scrollOffset === 'number' ? defaultPosition : scrollOffset;
+    const shouldMeasureOffset = typeof scrollOffset === 'number' ? unknownPosition : scrollOffset;
     const offsetFromParent = usePositionInParent(scrollListRef, shouldMeasureOffset);
     const usedOffset =
         (typeof scrollOffset === 'number' ? scrollOffset : isHorizontal ? offsetFromParent.x : offsetFromParent.y) || 0;

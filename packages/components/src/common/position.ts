@@ -8,4 +8,4 @@ export type Position =
           y: null;
       };
 
-export const defaultPosition: Position = { x: null, y: null };
+export const unknownPosition: Position = { x: null, y: null };

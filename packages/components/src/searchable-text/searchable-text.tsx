@@ -20,7 +20,7 @@ export const splitFuzzySearchText = (
     searchString: string
 ): Array<{ isHighlighted: boolean; text: string }> => {
     let remainingSearchString = searchString;
-    let remaingingInString = text;
+    let remainingInString = text;
     const sections: Array<{ isHighlighted: boolean; text: string }> = [];
     const add = (text: string, isHighlighted: boolean) => {
         if (sections.length === 0 || sections[sections.length - 1]?.isHighlighted !== isHighlighted) {
@@ -33,19 +33,19 @@ export const splitFuzzySearchText = (
             sections[sections.length - 1]!.text += text;
         }
     };
-    while (remainingSearchString.length && remaingingInString.length) {
+    while (remainingSearchString.length && remainingInString.length) {
         const char = remainingSearchString[0];
-        if (char?.toLowerCase() == remaingingInString[0]?.toLowerCase()) {
+        if (char?.toLowerCase() == remainingInString[0]?.toLowerCase()) {
             remainingSearchString = remainingSearchString.slice(1);
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            add(remaingingInString[0]!, true);
+            add(remainingInString[0]!, true);
         } else {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            add(remaingingInString[0]!, false);
+            add(remainingInString[0]!, false);
         }
-        remaingingInString = remaingingInString.slice(1);
+        remainingInString = remainingInString.slice(1);
     }
-    add(remaingingInString, false);
+    add(remainingInString, false);
     return sections;
 };
 
