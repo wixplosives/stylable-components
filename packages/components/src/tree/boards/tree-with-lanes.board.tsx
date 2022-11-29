@@ -49,196 +49,95 @@ const marker = (title: string, children?: TreeItemWithLaneData[]): MarkerData<Tr
     children,
 });
 
-const data: TreeItemWithLaneData = el('div', [
-    lane(
-        [laneKinds.repeater, laneKinds.expression],
-        [
-            el('span', [
-                el('Comp', [marker('children'), marker('header', [el('div')])]),
-                el('div', [
-                    el('p', [
-                        lane(
-                            [laneKinds.repeater],
+const mockedLane = lane(
+    [laneKinds.repeater, laneKinds.expression],
+    [
+        el('span', [
+            el('Comp', [marker('children'), marker('header', [el('div')])]),
+            el('div', [
+                el('p', [
+                    lane(
+                        [laneKinds.repeater],
 
-                            [
-                                el('span'),
+                        [
+                            el('span'),
 
-                                lane(
-                                    [laneKinds.repeater, laneKinds.expression],
-                                    [
-                                        lane(
-                                            [laneKinds.repeater, laneKinds.expression],
-                                            [
-                                                el('span', [
-                                                    el('Comp', [marker('children'), marker('header', [el('div')])]),
-                                                    el('div', [
-                                                        el('p', [
-                                                            lane(
-                                                                [laneKinds.repeater],
+                            lane(
+                                [laneKinds.repeater, laneKinds.expression],
+                                [
+                                    lane(
+                                        [laneKinds.repeater, laneKinds.expression],
+                                        [
+                                            el('span', [
+                                                el('Comp', [marker('children'), marker('header', [el('div')])]),
+                                                el('div', [
+                                                    el('p', [
+                                                        lane(
+                                                            [laneKinds.repeater],
 
-                                                                [
-                                                                    el('span'),
+                                                            [
+                                                                el('span'),
 
-                                                                    lane(
-                                                                        [laneKinds.repeater, laneKinds.expression],
-                                                                        [
-                                                                            lane(
-                                                                                [
-                                                                                    laneKinds.repeater,
-                                                                                    laneKinds.expression,
-                                                                                ],
-                                                                                [
-                                                                                    el('span', [
-                                                                                        el('Comp', [
-                                                                                            marker('children'),
-                                                                                            marker('header', [
-                                                                                                el('div'),
-                                                                                            ]),
-                                                                                        ]),
-                                                                                        el('div', [
-                                                                                            el('p', [
-                                                                                                lane(
-                                                                                                    [
-                                                                                                        laneKinds.repeater,
-                                                                                                    ],
-                                                                                                    [el('span')]
-                                                                                                ),
-                                                                                            ]),
+                                                                lane(
+                                                                    [laneKinds.repeater, laneKinds.expression],
+                                                                    [
+                                                                        lane(
+                                                                            [laneKinds.repeater, laneKinds.expression],
+                                                                            [
+                                                                                el('span', [
+                                                                                    el('Comp', [
+                                                                                        marker('children'),
+                                                                                        marker('header', [el('div')]),
+                                                                                    ]),
+                                                                                    el('div', [
+                                                                                        el('p', [
+                                                                                            lane(
+                                                                                                [laneKinds.repeater],
+                                                                                                [el('span')]
+                                                                                            ),
                                                                                         ]),
                                                                                     ]),
-                                                                                ]
-                                                                            ),
-                                                                            el('span', [
-                                                                                el('Comp', [
-                                                                                    marker('children'),
-                                                                                    marker('header', [el('div')]),
                                                                                 ]),
-                                                                                el('div', [
-                                                                                    el('p', [
-                                                                                        lane(
-                                                                                            [laneKinds.repeater],
-                                                                                            [el('span')]
-                                                                                        ),
-                                                                                    ]),
+                                                                            ]
+                                                                        ),
+                                                                        el('span', [
+                                                                            el('Comp', [
+                                                                                marker('children'),
+                                                                                marker('header', [el('div')]),
+                                                                            ]),
+                                                                            el('div', [
+                                                                                el('p', [
+                                                                                    lane(
+                                                                                        [laneKinds.repeater],
+                                                                                        [el('span')]
+                                                                                    ),
                                                                                 ]),
                                                                             ]),
-                                                                        ]
-                                                                    ),
-                                                                ]
-                                                            ),
-                                                        ]),
+                                                                        ]),
+                                                                    ]
+                                                                ),
+                                                            ]
+                                                        ),
                                                     ]),
                                                 ]),
-                                            ]
-                                        ),
-                                        el('span', [
-                                            el('Comp', [marker('children'), marker('header', [el('div')])]),
-                                            el('div', [el('p', [lane([laneKinds.repeater], [el('span')])])]),
-                                        ]),
-                                    ]
-                                ),
-                            ]
-                        ),
-                    ]),
+                                            ]),
+                                        ]
+                                    ),
+                                    el('span', [
+                                        el('Comp', [marker('children'), marker('header', [el('div')])]),
+                                        el('div', [el('p', [lane([laneKinds.repeater], [el('span')])])]),
+                                    ]),
+                                ]
+                            ),
+                        ]
+                    ),
                 ]),
             ]),
-        ]
-    ),
-    lane(
-        [laneKinds.repeater, laneKinds.expression],
-        [
-            el('span', [
-                el('Comp', [marker('children'), marker('header', [el('div')])]),
-                el('div', [
-                    el('p', [
-                        lane(
-                            [laneKinds.repeater],
+        ]),
+    ]
+);
 
-                            [
-                                el('span'),
-
-                                lane(
-                                    [laneKinds.repeater, laneKinds.expression],
-                                    [
-                                        lane(
-                                            [laneKinds.repeater, laneKinds.expression],
-                                            [
-                                                el('span', [
-                                                    el('Comp', [marker('children'), marker('header', [el('div')])]),
-                                                    el('div', [
-                                                        el('p', [
-                                                            lane(
-                                                                [laneKinds.repeater],
-
-                                                                [
-                                                                    el('span'),
-
-                                                                    lane(
-                                                                        [laneKinds.repeater, laneKinds.expression],
-                                                                        [
-                                                                            lane(
-                                                                                [
-                                                                                    laneKinds.repeater,
-                                                                                    laneKinds.expression,
-                                                                                ],
-                                                                                [
-                                                                                    el('span', [
-                                                                                        el('Comp', [
-                                                                                            marker('children'),
-                                                                                            marker('header', [
-                                                                                                el('div'),
-                                                                                            ]),
-                                                                                        ]),
-                                                                                        el('div', [
-                                                                                            el('p', [
-                                                                                                lane(
-                                                                                                    [
-                                                                                                        laneKinds.repeater,
-                                                                                                    ],
-                                                                                                    [el('span')]
-                                                                                                ),
-                                                                                            ]),
-                                                                                        ]),
-                                                                                    ]),
-                                                                                ]
-                                                                            ),
-                                                                            el('span', [
-                                                                                el('Comp', [
-                                                                                    marker('children'),
-                                                                                    marker('header', [el('div')]),
-                                                                                ]),
-                                                                                el('div', [
-                                                                                    el('p', [
-                                                                                        lane(
-                                                                                            [laneKinds.repeater],
-                                                                                            [el('span')]
-                                                                                        ),
-                                                                                    ]),
-                                                                                ]),
-                                                                            ]),
-                                                                        ]
-                                                                    ),
-                                                                ]
-                                                            ),
-                                                        ]),
-                                                    ]),
-                                                ]),
-                                            ]
-                                        ),
-                                        el('span', [
-                                            el('Comp', [marker('children'), marker('header', [el('div')])]),
-                                            el('div', [el('p', [lane([laneKinds.repeater], [el('span')])])]),
-                                        ]),
-                                    ]
-                                ),
-                            ]
-                        ),
-                    ]),
-                ]),
-            ]),
-        ]
-    ),
-]);
+const data: TreeItemWithLaneData = el('div', [mockedLane, mockedLane]);
 const getAllIds = (item: TreeItemWithLaneData): string[] =>
     item.children ? [item.id, ...item.children.flatMap((item) => getAllIds(item))] : [item.id];
 const allIds = getAllIds(data);

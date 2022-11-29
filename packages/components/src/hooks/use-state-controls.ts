@@ -19,12 +19,12 @@ export function useStateControls<T>(
 ): ProcessedControlledState<T> {
     const status =
         options === undefined
-            ? 'statefull'
+            ? 'stateful'
             : Array.isArray(options)
             ? options[1] === true
                 ? 'locked'
                 : 'controlled'
-            : 'statefull';
+            : 'stateful';
     const valueOrFactory = options === undefined ? defaultValue : Array.isArray(options) ? options[0] : options;
     const [value, setValue] = useStateFunction(valueOrFactory);
     return useMemo<ProcessedControlledState<T>>(() => {
@@ -38,7 +38,7 @@ export function useStateControls<T>(
             }
             case 'locked':
                 return [value, noop];
-            case 'statefull':
+            case 'stateful':
                 return [value, setValue];
         }
     }, [status, options, value, setValue]);

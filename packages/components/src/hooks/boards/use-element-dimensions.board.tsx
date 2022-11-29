@@ -1,10 +1,10 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useRef } from 'react';
 import { useElementSize } from '../';
-import { ElementDimensions, unMeasured } from '../../common';
+import { ElementDimensions, unmeasuredDimensions } from '../../common';
 
 export const ElementDimensionsHookSimulator = ({
-    watchSize = unMeasured,
+    watchSize = unmeasuredDimensions,
     height,
     width,
 }: {

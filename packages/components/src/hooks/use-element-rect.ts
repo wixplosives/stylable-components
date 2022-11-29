@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { ElementDimensions, unMeasured } from '../common';
+import { ElementDimensions, unmeasuredDimensions } from '../common';
 
 export const useElementDimension = (
     element?: React.RefObject<HTMLElement>,
@@ -49,7 +49,7 @@ export const useElementDimension = (
 
 const getElementDimensions = (element?: HTMLElement | null): ElementDimensions => {
     if (element === null) {
-        return unMeasured;
+        return unmeasuredDimensions;
     }
 
     if (element === undefined) {
@@ -72,7 +72,7 @@ export const rectToDimensions = (rect?: DOMRect): ElementDimensions => {
               width: rect.width,
               height: rect.height,
           }
-        : unMeasured;
+        : unmeasuredDimensions;
 };
 
 export const useElementSize = (

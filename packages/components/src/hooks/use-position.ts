@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { defaultPosition, Position } from '../common';
+import { unknownPosition, Position } from '../common';
 import { unchanged, useDelayedUpdateState } from './use-delayed-update';
 
 type Watch = 'measure-once' | 'timer' | 'ignore';
@@ -53,5 +53,5 @@ export const usePositionInParent = (
         return res;
     }, []);
 
-    return useAfterRenderEffect(element, onTimer, watch, defaultPosition);
+    return useAfterRenderEffect(element, onTimer, watch, unknownPosition);
 };
