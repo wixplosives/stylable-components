@@ -1,10 +1,10 @@
 import { Popover } from '@zeejs/react';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Area } from '../area/area';
+import { KeyCodes, preventDefault } from '../common';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import { useTransmittedCB } from '../hooks/use-transmitted-events';
 import { InputWithClear } from '../input-with-clear/input-with-clear';
-import { KeyCodes } from '../keycodes';
 import { createListRoot } from '../list/list';
 import { ScrollList, ScrollListProps } from '../scroll-list/scroll-list';
 import { searchMethodContext, searchStringContext } from '../searchable-text/searchable-text';
@@ -62,9 +62,7 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
         style: {
             height: '100%',
         },
-        onMouseDown: useCallback((ev: React.MouseEvent) => {
-            ev.preventDefault();
-        }, []),
+        onMouseDown: preventDefault,
     });
 
     const onKeyDown = useCallback(
@@ -88,9 +86,7 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
             <InputWithClear
                 valueControl={[searchText || '', updateSearchText]}
                 onFocus={open}
-                onBlur={(ev) => {
-                    ev.preventDefault();
-                }}
+                onBlur={preventDefault}
                 className={classes.input}
                 onKeyDown={onKeyDown}
                 ref={inputRef}

@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
-import { childrenById } from '../common';
-import { KeyCodes } from '../keycodes';
+import { childrenById, KeyCodes } from '../common';
 
 export const useIdBasedKeyboardNav = (
     elementsParent: React.RefObject<HTMLElement>,
@@ -97,7 +96,6 @@ export const useIdBasedKeyboardNav = (
                     }
                 }
                 if (nextId) {
-                    ev.preventDefault();
                     setFocusedId(nextId);
                     if (nextElement) {
                         nextElement.scrollIntoView({
@@ -125,7 +123,6 @@ export const useIdBasedKeyboardNav = (
                 case KeyCodes.Space:
                 case KeyCodes.Enter:
                     setSelectedId(focusedId);
-                    ev.preventDefault();
                     break;
                 default:
             }
