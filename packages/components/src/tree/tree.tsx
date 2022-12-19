@@ -1,12 +1,12 @@
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import { KeyCodes } from '../common';
 import { defaultRoot } from '../hooks/use-element-slot';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
-import { KeyCodes } from '../keycodes';
 import { forwardListRoot, ListItemProps } from '../list/list';
 import {
-    ScrollListItemInfo,
     OverlayProps,
     ScrollList,
+    ScrollListItemInfo,
     scrollListOverlayParent,
     ScrollListProps,
 } from '../scroll-list/scroll-list';
@@ -19,8 +19,11 @@ export interface TreeItemInfo<T> extends ScrollListItemInfo<T> {
 export interface TreeItemProps<T> extends ListItemProps<T> {
     isOpen: boolean;
     hasChildren: boolean;
+
     open(): void;
+
     close(): void;
+
     indent: number;
 }
 
