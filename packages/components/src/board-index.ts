@@ -1,10 +1,10 @@
 /**
  * this file is auto generated when the project is built
- * to rebuild only the file 'yarn build:boards' 
+ * to rebuild only the file 'yarn build:boards'
  * generated at 'build-board-indexes.js'
  * do no edit manually
  */
-import scenario_renderer from './_wcs/boards/scenario-renderer/scenario-renderer.board';
+import scenario_renderer from './_codux/boards/scenario-renderer/scenario-renderer.board';
 import area from './area/boards/area.board';
 import auto_complete from './auto-complete/auto-complete.board';
 import button_with_icon from './button/boards/button-with-icon.board';
@@ -73,5 +73,5 @@ export default [
     with_header,
     searchable_text,
     tree_with_lanes,
-    tree
+    tree,
 ];

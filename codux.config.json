@@ -1,4 +1,5 @@
 {
+  "boardsPath": "packages/components/src/_codux/boards",
   "safeRender": {
     "maxInstancesPerComponent": 10000
   },
