@@ -1,0 +1,22 @@
+{
+  "safeRender": {
+    "maxInstancesPerComponent": 10000
+  },
+  "newComponent": {
+    "componentsPath": "packages/components/src",
+    "templatesPath": "packages/components/src/component-templates"
+  },
+  "fileNamingConvention": "kebab-case",
+  "scripts": {
+    "install": {
+      "title": "Yarn (Install)",
+      "description": "Installs the required dependencies",
+      "command": "yarn",
+      "trigger": [
+        "checkout",
+        "pull",
+        "setup"
+      ]
+    }
+  }
+}
