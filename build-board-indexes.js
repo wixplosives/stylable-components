@@ -31,7 +31,7 @@ glob('**/*.board.tsx', (error, boards) => {
     });
     const boardIndexSource = `/**
  * this file is auto generated when the project is built
- * to rebuild only the file 'yarn build:boards' 
+ * to rebuild only the file 'yarn build:boards'
  * generated at 'build-board-indexes.js'
  * do no edit manually
  */
