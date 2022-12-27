@@ -17,7 +17,6 @@ export default createBoard({
             ItemRenderer={ExpandableItemRenderer}
             items={items}
             getId={getId}
-            watchScrollWindowSize={true}
             listRoot={{
                 el: 'div',
                 props: {

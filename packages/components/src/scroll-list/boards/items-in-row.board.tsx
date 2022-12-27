@@ -21,7 +21,6 @@ export default createBoard({
             ItemRenderer={ItemRenderer}
             items={items}
             getId={getId}
-            watchScrollWindowSize={true}
             listRoot={{
                 props: {
                     style: {

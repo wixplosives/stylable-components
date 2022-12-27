@@ -26,7 +26,6 @@ export default createBoard({
                 ItemRenderer={ItemRenderer}
                 items={items}
                 getId={getId}
-                watchScrollWindowSize={true}
                 itemCount={-1}
                 loadMore={loadMore}
                 loadingState={loadingState}

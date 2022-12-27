@@ -16,7 +16,7 @@ const items = createItems();
 
 export default createBoard({
     name: 'ScrollList',
-    Board: () => <ScrollList ItemRenderer={ItemRenderer} items={items} getId={getId} watchScrollWindowSize={true} />,
+    Board: () => <ScrollList ItemRenderer={ItemRenderer} items={items} getId={getId} />,
     environmentProps: {
         windowWidth: 500,
         canvasWidth: 400,

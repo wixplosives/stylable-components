@@ -6,8 +6,8 @@ import {
     defineElementSlot,
     mergeObjectInternalWins,
     ProcessedControlledState,
-    useElementDimension,
     useElementDimensions,
+    useElementSize,
     useScroll,
     useStateControls,
 } from '../hooks';
@@ -113,14 +113,6 @@ export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollList
      */
     scrollWindow?: React.RefObject<EL>;
     /**
-     * number: use it as size;
-     * true: measure on changes;
-     * false: no remeasure;
-     *
-     * @default false
-     */
-    watchScrollWindowSize?: number | boolean;
-    /**
      * allows replacing the root element of the scroll list
      */
     scrollListRoot?: typeof scrollListRoot;
@@ -145,7 +137,6 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     items,
     isHorizontal = false,
     scrollWindow,
-    watchScrollWindowSize,
     itemCount,
     getId,
     ItemRenderer,
@@ -171,18 +162,16 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const scrollListRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultScrollListRef;
     const defaultListRef = useRef<HTMLElement>(null);
     const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
-    /**
-     * get scroll position of scrollWindow and trigger re-rendering on its change
-     */
+    /** get scrollWindow's or Window's scroll position and trigger re-rendering on its change */
     const scrollPosition = useScroll({
         isHorizontal,
         ref: scrollWindow,
     });
+    /** get scrollWindow's or Window's size and trigger re-rendering on its change */
+    const scrollWindowSize = useElementSize(scrollWindow, !isHorizontal);
+    const mountedItems = useRef(new Set(''));
     const [selected, setSelected] = useStateControls(selectionControl, undefined);
     const [focused, setFocused] = useStateControls(focusControl, undefined);
-    const scrollWindowSize = useElementDimension(scrollWindow, !isHorizontal, watchScrollWindowSize);
-
-    const mountedItems = useRef(new Set(''));
 
     const getItemInfo = useCallback(
         (data: T): ScrollListItemInfo<T> => ({

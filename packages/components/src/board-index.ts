@@ -4,6 +4,7 @@
  * generated at 'build-board-indexes.js'
  * do no edit manually
  */
+import use_element_size from './_codux/boards/hooks/use-element-size/use-element-size.board';
 import scenario_renderer from './_codux/boards/scenario-renderer/scenario-renderer.board';
 import area from './area/boards/area.board';
 import auto_complete from './auto-complete/auto-complete.board';
@@ -13,9 +14,6 @@ import button from './button/boards/button.board';
 import cancel_button from './button/boards/cancel-button.board';
 import emphasis_button from './button/boards/emphasis-button.board';
 import data_grid from './data-grid/boards/data-grid.board';
-import use_element_dimensions from './hooks/boards/use-element-dimensions.board';
-import use_element_dimension from './hooks/boards/use-element-rect/use-element-dimension.board';
-import use_id_based_rects from './hooks/boards/use-element-rect/use-id-based-rects.board';
 import use_scroll_horizontal_window from './hooks/boards/use-scroll/use-scroll-horizontal-window.board';
 import use_scroll_vertical_window from './hooks/boards/use-scroll/use-scroll-vertical-window.board';
 import use_scroll_with_ref from './hooks/boards/use-scroll/use-scroll-with-ref.board';
@@ -40,6 +38,7 @@ import tree_with_lanes from './tree/boards/tree-with-lanes.board';
 import tree from './tree/boards/tree.board';
 
 export default [
+    use_element_size,
     scenario_renderer,
     area,
     auto_complete,
@@ -49,9 +48,6 @@ export default [
     cancel_button,
     emphasis_button,
     data_grid,
-    use_element_dimensions,
-    use_element_dimension,
-    use_id_based_rects,
     use_scroll_horizontal_window,
     use_scroll_vertical_window,
     use_scroll_with_ref,
