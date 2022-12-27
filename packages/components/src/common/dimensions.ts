@@ -42,11 +42,11 @@ export const observeWindowDimensions = (callback: (dimensions: ElementDimensions
     return () => window.removeEventListener('resize', onResize);
 };
 
-export const dimensionsToSize = (dimensions: ElementDimensions, sizeAsHeight: boolean): number => {
+export const getSizeFromDimensions = (dimensions: ElementDimensions, sizeAsHeight: boolean): number => {
     return (sizeAsHeight ? dimensions.height : dimensions.width) ?? 0;
 };
 
-export const rectToDimensions = (rect?: DOMRect): ElementDimensions => {
+export const getDimensionsFromRect = (rect?: DOMRect): ElementDimensions => {
     return rect
         ? {
               width: rect.width,
@@ -57,7 +57,7 @@ export const rectToDimensions = (rect?: DOMRect): ElementDimensions => {
 
 export const getElementDimensions = (element: HTMLElement | null | undefined): ElementDimensions => {
     return element
-        ? rectToDimensions(element.getBoundingClientRect())
+        ? getDimensionsFromRect(element.getBoundingClientRect())
         : {
               width: window.innerWidth,
               height: window.innerHeight,
@@ -72,7 +72,7 @@ export const getElementDimensions = (element: HTMLElement | null | undefined): E
  * @return {number} size in pixels
  */
 export const getElementSize = (element: HTMLElement | null | undefined, sizeAsHeight: boolean): number => {
-    return dimensionsToSize(
+    return getSizeFromDimensions(
         element
             ? getElementDimensions(element)
             : {

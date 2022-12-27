@@ -1,11 +1,17 @@
 import React, { MutableRefObject, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
-import { childrenById, DimensionsById, ElementDimensions, rectToDimensions, unmeasuredDimensions } from '../common';
+import {
+    childrenById,
+    DimensionsById,
+    ElementDimensions,
+    getDimensionsFromRect,
+    unmeasuredDimensions,
+} from '../common';
 import { unchanged, useDelayedUpdateState } from '../hooks';
 
 const elementDimensions = (element?: Element): ElementDimensions => {
     const rect = element?.getBoundingClientRect();
 
-    return rectToDimensions(rect);
+    return getDimensionsFromRect(rect);
 };
 
 const calculateDimensions = <T, EL extends HTMLElement>(
