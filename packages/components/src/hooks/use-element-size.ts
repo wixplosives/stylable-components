@@ -14,7 +14,7 @@ export const useElementSize = (element: React.RefObject<HTMLElement> | undefined
 
         updateSize(getElementSize(element?.current, sizeAsHeight));
 
-        return () => cleanup();
+        return cleanup;
     }, [element, sizeAsHeight]);
 
     return size;
