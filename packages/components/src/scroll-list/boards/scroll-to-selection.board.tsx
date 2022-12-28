@@ -67,7 +67,6 @@ export default createBoard({
 
                 <ScrollList
                     scrollWindow={elementRef}
-                    watchScrollWindowSize={true}
                     ItemRenderer={ItemRenderer}
                     items={items}
                     itemSize={() => 50}

@@ -48,7 +48,6 @@ export default createBoard({
                         ItemRenderer={ItemRenderer}
                         items={items}
                         getId={getId}
-                        watchScrollWindowSize={true}
                         scrollWindow={ref}
                         itemSize={fixedItemSize}
                         itemGap={0}

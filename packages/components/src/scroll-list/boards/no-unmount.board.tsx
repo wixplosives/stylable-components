@@ -16,15 +16,7 @@ const items = createItems();
 
 export default createBoard({
     name: 'ScrollList — no unmount',
-    Board: () => (
-        <ScrollList
-            ItemRenderer={StatefulItemRenderer}
-            items={items}
-            getId={getId}
-            watchScrollWindowSize={true}
-            unmountItems={false}
-        />
-    ),
+    Board: () => <ScrollList ItemRenderer={StatefulItemRenderer} items={items} getId={getId} unmountItems={false} />,
     environmentProps: {
         canvasWidth: 560,
         windowHeight: 388,

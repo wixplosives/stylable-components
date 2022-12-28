@@ -34,7 +34,6 @@ export default createBoard({
         return (
             <Tree
                 scrollWindow={elementRef}
-                watchScrollWindowSize={true}
                 ItemRenderer={TreeItemRenderer}
                 data={treeData}
                 getId={getId}

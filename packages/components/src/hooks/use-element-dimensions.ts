@@ -1,17 +1,17 @@
 import React, { MutableRefObject, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
-import { childrenById, DimensionsById, ElementDimensions, unmeasuredDimensions } from '../common';
 import {
-    createSetableMutationObserver,
-    rectToDimensions,
-    unchanged,
-    useDelayedUpdateState,
-    useSetableObserver,
-} from '../hooks';
+    childrenById,
+    DimensionsById,
+    ElementDimensions,
+    getDimensionsFromRect,
+    unmeasuredDimensions,
+} from '../common';
+import { unchanged, useDelayedUpdateState } from '../hooks';
 
-const elementDimensions = (element?: Element): ElementDimensions => {
+const getElementDimensions = (element?: Element): ElementDimensions => {
     const rect = element?.getBoundingClientRect();
 
-    return rectToDimensions(rect);
+    return getDimensionsFromRect(rect);
 };
 
 const calculateDimensions = <T, EL extends HTMLElement>(
@@ -64,7 +64,7 @@ const calculateDimensions = <T, EL extends HTMLElement>(
         if (cachedSize) {
             acc[id] = cachedSize;
         } else if (element) {
-            const measured = elementDimensions(element);
+            const measured = getElementDimensions(element);
 
             acc[id] = measured;
             sizeCache.set(id, measured);
@@ -82,6 +82,55 @@ const calculateDimensions = <T, EL extends HTMLElement>(
     return {
         changed,
         res: changed ? res : oldRes,
+    };
+};
+
+export const useSetableObserver = (shouldMeasure: boolean) => {
+    const listener = useRef<ResizeObserverCallback>(() => undefined);
+    const observerRef = useRef<ResizeObserver>();
+    const observed = useRef(new Set<Element>());
+
+    useLayoutEffect(() => {
+        if (shouldMeasure) {
+            observerRef.current = new ResizeObserver((ev, obs) => listener.current(ev, obs));
+        }
+        return () => {
+            observerRef.current?.disconnect();
+        };
+    }, [shouldMeasure]);
+    const listen = (lis: ResizeObserverCallback) => (listener.current = lis);
+    const setTargets = useCallback((targets: Element[]) => {
+        const newObserved = new Set<Element>();
+        const observer = observerRef.current;
+        if (!observer) {
+            return;
+        }
+        for (const target of targets) {
+            newObserved.add(target);
+            if (!observed.current.has(target)) {
+                observer.observe(target);
+            }
+        }
+        for (const oldTarget of [...observed.current]) {
+            if (!newObserved.has(oldTarget)) {
+                observer.unobserve(oldTarget);
+            }
+        }
+        observed.current = newObserved;
+    }, []);
+    return {
+        listen,
+        setTargets,
+    };
+};
+
+export const createSetableMutationObserver = () => {
+    let listener: MutationCallback = () => undefined;
+    const listen = (lis: MutationCallback) => (listener = lis);
+    const observer = new MutationObserver((ev, obs) => listener(ev, obs));
+    return {
+        listen,
+        observer,
     };
 };
 

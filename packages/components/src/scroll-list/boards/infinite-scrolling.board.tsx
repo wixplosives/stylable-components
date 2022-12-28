@@ -26,7 +26,6 @@ export default createBoard({
                 ItemRenderer={ItemRenderer}
                 items={items}
                 getId={getId}
-                watchScrollWindowSize={true}
                 itemCount={-1}
                 loadMore={loadMore}
                 loadingState={loadingState}
@@ -34,9 +33,9 @@ export default createBoard({
         );
     },
     environmentProps: {
-        windowWidth: 500,
+        windowWidth: 884,
         canvasWidth: 400,
-        windowHeight: 500,
+        windowHeight: 597,
     },
     plugins: [
         scenarioPlugin.use({

@@ -1,6 +1,6 @@
 export * from './use-delayed-update';
-export * from './use-element-rect';
 export * from './use-element-dimensions';
+export * from './use-element-size';
 export * from './use-id-based-event';
 export * from './use-keyboard-nav';
 export * from './use-position';
