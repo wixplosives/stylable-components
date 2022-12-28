@@ -33,9 +33,9 @@ export default createBoard({
         );
     },
     environmentProps: {
-        windowWidth: 500,
+        windowWidth: 884,
         canvasWidth: 400,
-        windowHeight: 500,
+        windowHeight: 597,
     },
     plugins: [
         scenarioPlugin.use({

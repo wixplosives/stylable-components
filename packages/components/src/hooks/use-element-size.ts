@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { getSizeFromDimensions, getElementSize, observeElementDimensions, observeWindowDimensions } from '../common';
+import { getElementSize, getSizeFromDimensions, observeElementDimensions, observeWindowDimensions } from '../common';
 
 export const useElementSize = (element: React.RefObject<HTMLElement> | undefined, sizeAsHeight: boolean): number => {
     const [size, updateSize] = useState(getElementSize(element?.current, sizeAsHeight));
@@ -14,7 +14,7 @@ export const useElementSize = (element: React.RefObject<HTMLElement> | undefined
 
         updateSize(getElementSize(element?.current, sizeAsHeight));
 
-        return () => cleanup?.();
+        return () => cleanup();
     }, [element, sizeAsHeight]);
 
     return size;

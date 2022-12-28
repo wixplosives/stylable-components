@@ -8,7 +8,7 @@ import {
 } from '../common';
 import { unchanged, useDelayedUpdateState } from '../hooks';
 
-const elementDimensions = (element?: Element): ElementDimensions => {
+const getElementDimensions = (element?: Element): ElementDimensions => {
     const rect = element?.getBoundingClientRect();
 
     return getDimensionsFromRect(rect);
@@ -64,7 +64,7 @@ const calculateDimensions = <T, EL extends HTMLElement>(
         if (cachedSize) {
             acc[id] = cachedSize;
         } else if (element) {
-            const measured = elementDimensions(element);
+            const measured = getElementDimensions(element);
 
             acc[id] = measured;
             sizeCache.set(id, measured);

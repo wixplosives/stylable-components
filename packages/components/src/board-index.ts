@@ -69,5 +69,5 @@ export default [
     with_header,
     searchable_text,
     tree_with_lanes,
-    tree,
+    tree
 ];

@@ -20,7 +20,9 @@ export interface DimensionsById {
 export const observeElementDimensions = (element: HTMLElement, callback: (dimensions: ElementDimensions) => void) => {
     const observer = new ResizeObserver(() => callback(element.getBoundingClientRect()));
 
-    if (element !== null) return;
+    callback(element.getBoundingClientRect());
+
+    observer.observe(element);
 
     return () => observer.disconnect();
 };
