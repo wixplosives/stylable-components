@@ -162,12 +162,10 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const scrollListRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultScrollListRef;
     const defaultListRef = useRef<HTMLElement>(null);
     const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
-    /** get scrollWindow's or Window's scroll position and trigger re-rendering on its change */
     const scrollPosition = useScroll({
         isHorizontal,
         ref: scrollWindow,
     });
-    /** get scrollWindow's or Window's size and trigger re-rendering on its change */
     const scrollWindowSize = useElementSize(scrollWindow, !isHorizontal);
     const mountedItems = useRef(new Set(''));
     const [selected, setSelected] = useStateControls(selectionControl, undefined);
