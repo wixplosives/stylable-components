@@ -13,11 +13,7 @@
       "title": "Yarn (Install)",
       "description": "Installs the required dependencies",
       "command": "yarn",
-      "trigger": [
-        "checkout",
-        "pull",
-        "setup"
-      ]
+      "trigger": ["checkout", "pull", "setup"]
     }
   }
 }

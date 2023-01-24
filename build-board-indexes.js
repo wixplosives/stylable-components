@@ -22,7 +22,7 @@ glob('**/*.board.tsx', (error, boards) => {
         } else {
             nameCounters[name]++;
         }
-        const importStatement = `import ${finalName} from '${relativePath}';\n`;
+        const importStatement = `import ${finalName} from '${relativePath}';`;
 
         return {
             statement: importStatement,
@@ -35,9 +35,10 @@ glob('**/*.board.tsx', (error, boards) => {
  * generated at 'build-board-indexes.js'
  * do no edit manually
  */
-${imports.map((i) => i.statement).join('')}
+${imports.map((i) => i.statement).join('\n')}
+
 export default [
-    ${imports.map((i) => i.export).join(',\n    ')}
+${imports.map((i) => `    ${i.export},`).join('\n')}
 ];
 `;
 
