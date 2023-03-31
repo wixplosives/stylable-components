@@ -48,7 +48,7 @@
     "rimraf": "^4.4.1",
     "scroll-into-view-if-needed": "^3.0.6",
     "source-map-loader": "^4.0.1",
-    "typescript": "~5.0.2",
+    "typescript": "~5.0.3",
     "webpack": "^5.77.0",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.13.1"
