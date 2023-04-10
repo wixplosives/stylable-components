@@ -2207,10 +2207,10 @@ compression@^1.7.4:
     safe-buffer "5.1.2"
     vary "~1.1.2"
 
-compute-scroll-into-view@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/compute-scroll-into-view/-/compute-scroll-into-view-3.0.0.tgz#95d2f2f4653e7edda74dd1e38edaaa897918e0f0"
-  integrity sha512-Yk1An4qzo5++Cu6peT9PsmRKIU8tALpmdoE09n//AfGQFcPfx21/tMGMsmKYmLJWaBJrGOJ5Jz5hoU+7cZZUWQ==
+compute-scroll-into-view@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/compute-scroll-into-view/-/compute-scroll-into-view-3.0.2.tgz#a951468652058f1b5be262ec19dce8af7866ba04"
+  integrity sha512-UCXenIpZspASrI2Jsk/eUoa7zpFaD20xIqnC85c1rRIBVS3mOzPKF72QPZYmtcw24ZGqtyiFceBN/JKKVV4ALg==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -6570,12 +6570,12 @@ schema-utils@^4.0.0:
     ajv-formats "^2.1.1"
     ajv-keywords "^5.0.0"
 
-scroll-into-view-if-needed@^3.0.7:
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/scroll-into-view-if-needed/-/scroll-into-view-if-needed-3.0.7.tgz#c41d9709aac3776a25c5c0ead442afe7420a9e3c"
-  integrity sha512-Hr094AIeUq/Du9QWTo+EQA2ygzasu13KltO4TuVqAMf1ioIAIOdf/cDzK4+URe7A81IzdXf5rxMXBpz4k2IdxQ==
+scroll-into-view-if-needed@^3.0.9:
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/scroll-into-view-if-needed/-/scroll-into-view-if-needed-3.0.9.tgz#f168a45b3f4b300a09f4e018ae8327696ea59eff"
+  integrity sha512-El9s4RTy0DVX4sBHSt2BnyXVw40zQ7V7jG3NDWoLdTWlrEnc7RCjajwQy+ufd/ptGmY2zxh2l7Y1o8nq0CAovQ==
   dependencies:
-    compute-scroll-into-view "^3.0.0"
+    compute-scroll-into-view "^3.0.2"
 
 select-hose@^2.0.0:
   version "2.0.0"
