@@ -13,7 +13,7 @@
   "dependencies": {
     "@stylable/runtime": "^5.9.0",
     "@zeejs/react": "^0.3.1",
-    "scroll-into-view-if-needed": "^3.0.9"
+    "scroll-into-view-if-needed": "^3.0.10"
   },
   "files": [
     "dist",
