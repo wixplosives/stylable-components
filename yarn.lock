@@ -6612,10 +6612,10 @@ schema-utils@^4.0.0:
     ajv-formats "^2.1.1"
     ajv-keywords "^5.0.0"
 
-scroll-into-view-if-needed@^3.0.9:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/scroll-into-view-if-needed/-/scroll-into-view-if-needed-3.0.9.tgz#f168a45b3f4b300a09f4e018ae8327696ea59eff"
-  integrity sha512-El9s4RTy0DVX4sBHSt2BnyXVw40zQ7V7jG3NDWoLdTWlrEnc7RCjajwQy+ufd/ptGmY2zxh2l7Y1o8nq0CAovQ==
+scroll-into-view-if-needed@^3.0.10:
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/scroll-into-view-if-needed/-/scroll-into-view-if-needed-3.0.10.tgz#38fbfe770d490baff0fb2ba34ae3539f6ec44e13"
+  integrity sha512-t44QCeDKAPf1mtQH3fYpWz8IM/DyvHLjs8wUvvwMYxk5moOqCzrMSxK6HQVD0QVmVjXFavoFIPRVrMuJPKAvtg==
   dependencies:
     compute-scroll-into-view "^3.0.2"
 
