@@ -3592,7 +3592,7 @@ glob@^8.0.1, glob@^8.0.3:
     minimatch "^5.0.1"
     once "^1.3.0"
 
-glob@^9.1.2, glob@^9.2.0, glob@^9.3.0, glob@^9.3.1, glob@^9.3.4:
+glob@^9.2.0, glob@^9.3.0, glob@^9.3.1, glob@^9.3.4:
   version "9.3.4"
   resolved "https://registry.yarnpkg.com/glob/-/glob-9.3.4.tgz#e75dee24891a80c25cc7ee1dd327e126b98679af"
   integrity sha512-qaSc49hojMOv1EPM4EuyITjDSgSKI0rthoHnvE81tcOi1SCVndHko7auqxdQ14eiQG2NDBJBE86+2xIrbIvrbA==
@@ -5076,19 +5076,19 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-mocha-play@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/mocha-play/-/mocha-play-5.0.0.tgz#9462dff8cfe696bcba8de72eceb3d21869933e27"
-  integrity sha512-VdjbS8NSqGN9uw+y7KA5+AM6EAcW2rd3/9/2RrG7TSGM1c5xBvRUhKzmxvNqu2H4eX+VrHccMUVncoou4dMNHQ==
+mocha-play@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/mocha-play/-/mocha-play-5.0.1.tgz#fe6f2d6569e06a1830396da6ad17b5708e47d9a9"
+  integrity sha512-6+rARfaajpTYm/qHt1dNAOd4K2VU+tCC8PC2nRfbB4XSNpPrp1WbPCey7HCuDwT4Mb6BdLpu6qYsvX3doEr87g==
   dependencies:
     commander "^10.0.0"
     create-listening-server "^2.1.0"
     express "^4.18.2"
     find-up "^6.3.0"
-    glob "^9.1.2"
+    glob "^10.0.0"
     html-webpack-plugin "^5.5.0"
-    playwright-core "^1.31.1"
-    webpack-dev-middleware "^6.0.1"
+    playwright-core "^1.32.3"
+    webpack-dev-middleware "^6.0.2"
 
 mocha@^10.2.0:
   version "10.2.0"
@@ -6037,7 +6037,7 @@ playwright-chromium@^1.32.3:
   dependencies:
     playwright-core "1.32.3"
 
-playwright-core@1.32.3, playwright-core@^1.31.1:
+playwright-core@1.32.3, playwright-core@^1.32.3:
   version "1.32.3"
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.32.3.tgz#e6dc7db0b49e9b6c0b8073c4a2d789a96f519c48"
   integrity sha512-SB+cdrnu74ZIn5Ogh/8278ngEh9NEEV0vR4sJFmK04h2iZpybfbqBY0bX6+BLYWVdV12JLLI+JEFtSnYgR+mWg==
@@ -7577,7 +7577,7 @@ webpack-dev-middleware@^5.3.1:
     range-parser "^1.2.1"
     schema-utils "^4.0.0"
 
-webpack-dev-middleware@^6.0.1:
+webpack-dev-middleware@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/webpack-dev-middleware/-/webpack-dev-middleware-6.0.2.tgz#4aab69257378e01d6fe964a8b2d07e8a87623ebc"
   integrity sha512-iOddiJzPcQC6lwOIu60vscbGWth8PCRcWRCwoQcTQf9RMoOWBHg5EyzpGdtSmGMrSPd5vHEfFXmVErQEmkRngQ==
