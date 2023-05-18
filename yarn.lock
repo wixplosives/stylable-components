@@ -6546,12 +6546,12 @@ rimraf@^4.4.1:
   dependencies:
     glob "^9.2.0"
 
-rimraf@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-5.0.0.tgz#5bda14e410d7e4dd522154891395802ce032c2cb"
-  integrity sha512-Jf9llaP+RvaEVS5nPShYFhtXIrb3LRKP281ib3So0KkeZKo2wIKyq0Re7TOSwanasA423PSr6CCIL4bP6T040g==
+rimraf@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-5.0.1.tgz#0881323ab94ad45fec7c0221f27ea1a142f3f0d0"
+  integrity sha512-OfFZdwtd3lZ+XZzYP/6gTACubwFcHdLRqS9UX3UwpU2dnGQYkPFISRwvM3w9IiB2w7bW5qGo/uAwE4SmXXSKvg==
   dependencies:
-    glob "^10.0.0"
+    glob "^10.2.5"
 
 run-async@^2.4.0:
   version "2.4.1"
