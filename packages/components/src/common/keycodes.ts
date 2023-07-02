@@ -56,4 +56,6 @@ export enum KeyCodes {
     ArrowUp = 'ArrowUp',
     ArrowLeft = 'ArrowLeft',
     ArrowRight = 'ArrowRight',
+    Home = 'Home',
+    End = 'End',
 }
