@@ -100,10 +100,10 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     const updatedListRoot = forwardListRoot(listRoot, {
         onKeyDown: useCallback(
             (ev: React.KeyboardEvent) => {
-                if (ev.code === KeyCodes.ArrowLeft && focused && openItems.includes(focused)) {
+                if ((ev.code as KeyCodes) === KeyCodes.ArrowLeft && focused && openItems.includes(focused)) {
                     wrapperContext.close(focused);
                 }
-                if (ev.code === KeyCodes.ArrowRight && focused && !openItems.includes(focused)) {
+                if ((ev.code as KeyCodes) === KeyCodes.ArrowRight && focused && !openItems.includes(focused)) {
                     wrapperContext.open(focused);
                 }
             },

@@ -67,9 +67,9 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
 
     const onKeyDown = useCallback(
         (ev: React.KeyboardEvent<HTMLInputElement>) => {
-            if (ev.code === KeyCodes.Escape) {
+            if ((ev.code as KeyCodes) === KeyCodes.Escape) {
                 close();
-            } else if (ev.code !== KeyCodes.Tab) {
+            } else if ((ev.code as KeyCodes) !== KeyCodes.Tab) {
                 open();
                 onKeyPress(ev);
             }
