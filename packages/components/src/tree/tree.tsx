@@ -145,6 +145,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         },
         [items, getId]
     );
+
     const getNext = useCallback(
         (itemId: string) => {
             const focusedIndex = items.findIndex((item) => getId(item) === itemId);
@@ -155,6 +156,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         },
         [items, getId]
     );
+
     const getFirst = useCallback(() => {
         const firstItem = items[0];
 
