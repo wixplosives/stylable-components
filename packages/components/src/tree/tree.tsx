@@ -77,7 +77,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         (itemId: string) => {
             const item = treeItems.find((item) => getId(item) === itemId);
             const children = item && getChildren(item);
-            const firstChild = children && children[0];
+            const firstChild = children?.[0];
 
             return firstChild && getId(firstChild);
         },
@@ -87,9 +87,9 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     const isEndNode = useCallback(
         (itemId: string) => {
             const item = treeItems.find((item) => getId(item) === itemId);
-            const children = item ? getChildren(item) : [];
+            const children = item && getChildren(item);
 
-            return children.length === 0;
+            return children?.length === 0;
         },
         [getChildren, getId, treeItems]
     );
@@ -112,10 +112,10 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     const getNext = useCallback(
         (itemId: string) => {
             const focusedIndex = items.findIndex((item) => getId(item) === itemId);
-            const prevIndex = focusedIndex + 1;
-            const prevItem = items[prevIndex];
+            const nextIndex = focusedIndex + 1;
+            const nextItem = items[nextIndex];
 
-            return prevItem ? getId(prevItem) : undefined;
+            return nextItem ? getId(nextItem) : undefined;
         },
         [items, getId]
     );
