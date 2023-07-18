@@ -12,7 +12,7 @@ import {
     TreeItemWithLaneData,
     TreeItemWithLaneRenderer,
 } from '../../board-assets/tree-items/tree-item-with-lane-renderer';
-import { createTreeOverlay, Tree } from '../tree';
+import { createTreeOverlay, Tree } from '../';
 
 let idCounter = 0;
 const nextId = () => 'id' + idCounter++;
@@ -186,10 +186,10 @@ export default createBoard({
                     []
                 )}
             >
-                <Tree
+                <Tree<TreeItemWithLaneData>
                     ItemRenderer={TreeItemWithLaneRenderer}
                     data={data}
-                    getId={(item: TreeItemWithLaneData) => item.id}
+                    getId={(item) => item.id}
                     getChildren={getChildren}
                     scrollOffset={50}
                     openItemsControls={[openItems, updateOpen]}

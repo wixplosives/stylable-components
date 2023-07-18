@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { ChevronRightWixUiIcon } from '../../../icons';
 import { SearchableText } from '../../../searchable-text/searchable-text';
-import type { TreeItemInfo, TreeItemProps } from '../../../tree/tree';
+import { TreeItemInfo, TreeItemProps } from '../../../tree';
 import { lanesContext } from '../../tree-items/lanes/lane-context';
 import { st, classes, vars } from '../../tree-items/lanes/lane-item-renderer.st.css';
 export interface LaneItem {

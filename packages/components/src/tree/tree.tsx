@@ -1,62 +1,44 @@
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
-import { defaultRoot } from '../hooks/use-element-slot';
-import { StateControls, useStateControls } from '../hooks/use-state-controls';
+import { useStateControls } from '../hooks/use-state-controls';
 import { useTreeViewKeyboardInteraction } from '../hooks/use-tree-view-keyboard-interaction';
-import { ListItemProps } from '../list/list';
-import {
-    OverlayProps,
-    ScrollList,
-    ScrollListItemInfo,
-    scrollListOverlayParent,
-    ScrollListProps,
-} from '../scroll-list/scroll-list';
+import type { ListItemProps } from '../list/list';
+import { ScrollList, type ScrollListItemInfo } from '../scroll-list/scroll-list';
+import type { TreeItemProps, TreeProps, TreeWrapperContext } from './types';
+import { forwardListOverlay, getAllTreeItems, getItems } from './utils';
 
-export interface TreeItemInfo<T> extends ScrollListItemInfo<T> {
-    isOpen: boolean;
-    hasChildren: boolean;
-}
+const treeWrapperContext = createContext<TreeWrapperContext>({
+    openItemIds: [],
+    getChildren: () => [],
+    getDepth: () => 0,
+    open: () => void 0,
+    close: () => void 0,
+});
 
-export interface TreeItemProps<T> extends ListItemProps<T> {
-    isOpen: boolean;
-    hasChildren: boolean;
-    indent: number;
+export const TreeItemWrapper = <T,>(
+    UserRenderer: React.ComponentType<TreeItemProps<T>>
+): ((props: ListItemProps<T>) => JSX.Element) => {
+    const Wrapper = (props: ListItemProps<T>) => {
+        const { openItemIds, close, open, getChildren, getDepth } = useContext(treeWrapperContext);
+        const boundClose = useCallback(() => close(props.id), [close, props.id]);
+        const boundOpen = useCallback(() => open(props.id), [open, props.id]);
+        const hasChildren = getChildren(props.data).length > 0;
+        const depth = getDepth(props.id);
 
-    open(): void;
+        return (
+            <UserRenderer
+                {...props}
+                isOpen={openItemIds.includes(props.id)}
+                open={boundOpen}
+                close={boundClose}
+                hasChildren={hasChildren}
+                indent={depth}
+            />
+        );
+    };
 
-    close(): void;
-}
-
-export interface TreeOverlayProps<T> extends OverlayProps<T> {
-    expandedItems: string[];
-}
-
-export const {
-    forward: forwardListOverlay,
-    slot: overlayRoot,
-    create: createTreeOverlay,
-} = scrollListOverlayParent<{
-    expandedItems: string[];
-}>(defaultRoot);
-
-export type GetChildren<T> = (t: T) => T[];
-export type GetId<T> = (t: T) => string;
-
-export interface TreeAddedProps<T, EL extends HTMLElement> {
-    data: T;
-    getChildren: GetChildren<T>;
-    openItemsControls: StateControls<string[]>;
-    eventsRoot?: React.RefObject<EL>;
-    ItemRenderer: React.ComponentType<TreeItemProps<T>>;
-    overlay?: typeof overlayRoot;
-}
-
-export type TreeProps<T, EL extends HTMLElement> = Omit<
-    ScrollListProps<T, EL, TreeItemInfo<T>>,
-    'items' | 'ItemRenderer'
-> &
-    TreeAddedProps<T, EL>;
-
-export type Tree<T, EL extends HTMLElement = HTMLDivElement> = (props: TreeProps<T, EL>) => JSX.Element;
+    Wrapper.displayName = 'TreeItemWrapper';
+    return Wrapper;
+};
 
 export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T, EL>): JSX.Element {
     const {
@@ -75,7 +57,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     const [focusedItemId, focus] = useStateControls(focusControl, undefined);
     const [, select] = useStateControls(scrollListProps.selectionControl, undefined);
     const { items, treeItemDepths } = useMemo(
-        () => getItems({ data, getChildren, getId, openItemIds }),
+        () => getItems({ item: data, getChildren, getId, openItemIds }),
         [data, getChildren, getId, openItemIds]
     );
     const treeItems = useMemo(() => getAllTreeItems({ item: data, getChildren, getId }), [data, getChildren, getId]);
@@ -226,104 +208,3 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         </treeWrapperContext.Provider>
     );
 }
-
-interface TreeWrapperContext<T> {
-    openItemIds: string[];
-    getChildren: GetChildren<T>;
-    getDepth: (itemId: string) => number;
-    open: (itemId: string) => void;
-    close: (itemId: string) => void;
-}
-
-const treeWrapperContext = createContext({
-    openItemIds: [],
-    getChildren: () => [],
-    getDepth: () => 0,
-    open: () => void 0,
-    close: () => void 0,
-} as TreeWrapperContext<any>);
-
-export function TreeItemWrapper<T>(
-    UserRenderer: React.ComponentType<TreeItemProps<T>>
-): (props: ListItemProps<T>) => JSX.Element {
-    const Wrapper = (props: ListItemProps<T>) => {
-        const { openItemIds, close, open, getChildren, getDepth } = useContext(treeWrapperContext);
-        const boundClose = useCallback(() => close(props.id), [close, props.id]);
-        const boundOpen = useCallback(() => open(props.id), [open, props.id]);
-        const hasChildren = getChildren(props.data).length > 0;
-        const depth = getDepth(props.id);
-        return (
-            <UserRenderer
-                {...props}
-                isOpen={openItemIds.includes(props.id)}
-                open={boundOpen}
-                close={boundClose}
-                hasChildren={hasChildren}
-                indent={depth}
-            />
-        );
-    };
-    Wrapper.displayName = 'TreeItemWrapper';
-    return Wrapper;
-}
-
-export function getItems<T>({
-    data,
-    getId,
-    getChildren,
-    openItemIds,
-    depth = 0,
-    treeItemDepths = {},
-}: {
-    data: T;
-    getChildren: GetChildren<T>;
-    getId: GetId<T>;
-    openItemIds: string[];
-    depth?: number;
-    treeItemDepths?: Record<string, number>;
-}): { items: T[]; treeItemDepths: Record<string, number> } {
-    const id = getId(data);
-    treeItemDepths[id] = depth;
-    if (!openItemIds.includes(id)) {
-        return {
-            items: [data],
-            treeItemDepths,
-        };
-    }
-    return {
-        items: [
-            data,
-            ...getChildren(data).flatMap(
-                (item) =>
-                    getItems({
-                        data: item,
-                        getId,
-                        getChildren,
-                        openItemIds,
-                        depth: depth + 1,
-                        treeItemDepths,
-                    }).items
-            ),
-        ],
-        treeItemDepths,
-    };
-}
-
-const getAllTreeItems = <T,>({
-    item,
-    getChildren,
-    getId,
-}: {
-    item: T;
-    getChildren: GetChildren<T>;
-    getId: GetId<T>;
-}): T[] => [
-    item,
-    ...getChildren(item).flatMap((item) =>
-        getAllTreeItems({
-            item,
-            getId,
-            getChildren,
-        })
-    ),
-];
