@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { SearchableText } from '../../../searchable-text/searchable-text';
-import type { TreeItemInfo, TreeItemProps } from '../../../tree/tree';
+import type { TreeItemInfo, TreeItemProps } from '../../../tree/';
 import { lanesContext } from '../../tree-items/lanes/lane-context';
 import { classes, st, vars } from '../../tree-items/lanes/marker-item-renderer.st.css';
 
