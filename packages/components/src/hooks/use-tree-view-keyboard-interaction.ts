@@ -56,9 +56,9 @@ export const useTreeViewKeyboardInteraction = ({
     const handleArrowRight = useCallback(() => {
         if (!focusedItemId) return;
 
-        if (isEndNode(focusedItemId) && !endNodeExpandSelectsNext) {
-            return;
-        } else if (isEndNode(focusedItemId) && endNodeExpandSelectsNext) {
+        if (isEndNode(focusedItemId)) {
+            if (!endNodeExpandSelectsNext) return;
+
             const next = getNext(focusedItemId);
 
             if (next) {
