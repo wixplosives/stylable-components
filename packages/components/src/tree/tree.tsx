@@ -56,25 +56,6 @@ export type TreeProps<T, EL extends HTMLElement> = Omit<
 > &
     TreeAddedProps<T, EL>;
 
-export const getAllTreeItems = <T,>({
-    item,
-    getChildren,
-    getId,
-}: {
-    item: T;
-    getChildren: GetChildren<T>;
-    getId: GetId<T>;
-}): T[] => [
-    item,
-    ...getChildren(item).flatMap((item) =>
-        getAllTreeItems({
-            item,
-            getId,
-            getChildren,
-        })
-    ),
-];
-
 export type Tree<T, EL extends HTMLElement = HTMLDivElement> = (props: TreeProps<T, EL>) => JSX.Element;
 
 export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T, EL>): JSX.Element {
@@ -327,3 +308,22 @@ export function getItems<T>({
         treeItemDepths,
     };
 }
+
+const getAllTreeItems = <T,>({
+    item,
+    getChildren,
+    getId,
+}: {
+    item: T;
+    getChildren: GetChildren<T>;
+    getId: GetId<T>;
+}): T[] => [
+    item,
+    ...getChildren(item).flatMap((item) =>
+        getAllTreeItems({
+            item,
+            getId,
+            getChildren,
+        })
+    ),
+];
