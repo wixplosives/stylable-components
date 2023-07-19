@@ -53,94 +53,55 @@ export const useTreeViewKeyboardInteraction = ({
     endNodeExpandSelectsNext = true, // TODO: move to Codux, default should be false
     selectionFollowsFocus = true, // TODO: move to Codux, default should be false
 }: TreeViewKeyboardInteractionsParams & KeyboardInteractionConfiguration) => {
+    const handleFocus = useCallback(
+        (itemId: string | undefined) => {
+            if (!itemId) return;
+
+            focus(itemId);
+            selectionFollowsFocus && select(itemId);
+        },
+        [focus, select, selectionFollowsFocus]
+    );
+
     const handleArrowRight = useCallback(() => {
         if (!focusedItemId) return;
 
         if (isEndNode(focusedItemId)) {
             if (!endNodeExpandSelectsNext) return;
 
-            const next = getNext(focusedItemId);
-
-            if (next) {
-                focus(next);
-                selectionFollowsFocus && select(next);
-            }
+            handleFocus(getNext(focusedItemId));
         } else if (isOpen(focusedItemId)) {
-            const firstChild = getFirstChild(focusedItemId);
-
-            if (firstChild) {
-                focus(firstChild);
-                selectionFollowsFocus && select(firstChild);
-            }
+            handleFocus(getFirstChild(focusedItemId));
         } else {
             open(focusedItemId);
         }
-    }, [
-        endNodeExpandSelectsNext,
-        focus,
-        focusedItemId,
-        getFirstChild,
-        getNext,
-        isEndNode,
-        isOpen,
-        open,
-        select,
-        selectionFollowsFocus,
-    ]);
+    }, [focusedItemId, isEndNode, isOpen, endNodeExpandSelectsNext, getFirstChild, getNext, open, handleFocus]);
 
     const handleArrowLeft = useCallback(() => {
         if (!focusedItemId) return;
 
         if (!isOpen(focusedItemId)) {
-            const parent = getParent(focusedItemId);
-
-            if (parent) {
-                focus(parent);
-                selectionFollowsFocus && select(parent);
-            }
+            handleFocus(getParent(focusedItemId));
         } else {
             close(focusedItemId);
         }
-    }, [close, focus, focusedItemId, getParent, isOpen, select, selectionFollowsFocus]);
+    }, [focusedItemId, getParent, isOpen, close, handleFocus]);
 
     const handleArrowUp = useCallback(() => {
         if (!focusedItemId) return;
 
-        const previous = getPrevious(focusedItemId);
-        if (previous) {
-            focus(previous);
-            selectionFollowsFocus && select(previous);
-        }
-    }, [focus, focusedItemId, getPrevious, select, selectionFollowsFocus]);
+        handleFocus(getPrevious(focusedItemId));
+    }, [focusedItemId, getPrevious, handleFocus]);
 
     const handleArrowDown = useCallback(() => {
         if (!focusedItemId) return;
 
-        const next = getNext(focusedItemId);
+        handleFocus(getNext(focusedItemId));
+    }, [focusedItemId, getNext, handleFocus]);
 
-        if (next) {
-            focus(next);
-            selectionFollowsFocus && select(next);
-        }
-    }, [focus, focusedItemId, getNext, select, selectionFollowsFocus]);
+    const handleHome = useCallback(() => handleFocus(getFirst()), [getFirst, handleFocus]);
 
-    const handleHome = useCallback(() => {
-        const first = getFirst();
-
-        if (first) {
-            focus(first);
-            selectionFollowsFocus && select(first);
-        }
-    }, [focus, getFirst, select, selectionFollowsFocus]);
-
-    const handleEnd = useCallback(() => {
-        const last = getLast();
-
-        if (last) {
-            focus(last);
-            selectionFollowsFocus && select(last);
-        }
-    }, [focus, getLast, select, selectionFollowsFocus]);
+    const handleEnd = useCallback(() => handleFocus(getLast()), [getLast, handleFocus]);
 
     const onKeyDown = useCallback(
         (event: KeyboardEvent) => {
@@ -152,7 +113,6 @@ export const useTreeViewKeyboardInteraction = ({
                 [KeyCodes.Home]: handleHome,
                 [KeyCodes.End]: handleEnd,
             }[event.code];
-
             if (!handler) return;
 
             event.preventDefault();
