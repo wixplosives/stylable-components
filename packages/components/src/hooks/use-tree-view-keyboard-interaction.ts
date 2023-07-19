@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 import { KeyCodes } from '../common';
 
-interface TreeViewKeyboardInteractionsParams {
-    eventsRoot?: React.RefObject<HTMLElement>;
+export interface TreeViewKeyboardInteractionsParams {
+    eventRoots?: React.RefObject<HTMLElement>[];
     focusedItemId: string | undefined;
     open: (itemId: string) => void;
     close: (itemId: string) => void;
@@ -36,7 +36,7 @@ interface KeyboardInteractionConfiguration {
  * for non-standard behavior, see the `KeyboardInteractionConfiguration` configuration options.
  */
 export const useTreeViewKeyboardInteraction = ({
-    eventsRoot,
+    eventRoots,
     focusedItemId,
     isEndNode,
     getPrevious,
@@ -163,11 +163,20 @@ export const useTreeViewKeyboardInteraction = ({
     );
 
     useEffect(() => {
-        const currentEventsRoot = eventsRoot?.current;
-        if (!currentEventsRoot) return;
+        if (!eventRoots) return;
 
-        currentEventsRoot.addEventListener('keydown', onKeyDown);
+        for (const currentEventsRoot of eventRoots) {
+            if (!currentEventsRoot.current) continue;
 
-        return () => currentEventsRoot.removeEventListener('keydown', onKeyDown);
-    }, [eventsRoot, onKeyDown]);
+            currentEventsRoot.current.addEventListener('keydown', onKeyDown);
+        }
+
+        return () => {
+            for (const currentEventsRoot of eventRoots) {
+                if (!currentEventsRoot.current) continue;
+
+                currentEventsRoot.current.removeEventListener('keydown', onKeyDown);
+            }
+        };
+    }, [eventRoots, onKeyDown]);
 };

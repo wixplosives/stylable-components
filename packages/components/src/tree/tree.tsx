@@ -42,7 +42,7 @@ export const TreeItemWrapper = <T,>(
 
 export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T, EL>): JSX.Element {
     const {
-        eventsRoot,
+        eventRoots,
         listRoot,
         data,
         getChildren,
@@ -151,7 +151,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     );
 
     useTreeViewKeyboardInteraction({
-        eventsRoot,
+        eventRoots,
         focusedItemId,
         isOpen,
         isEndNode,
