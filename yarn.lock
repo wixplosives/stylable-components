@@ -590,10 +590,10 @@
     csso "^5.0.5"
     postcss "^8.4.25"
 
-"@stylable/runtime@^5.15.0":
-  version "5.15.0"
-  resolved "https://registry.yarnpkg.com/@stylable/runtime/-/runtime-5.15.0.tgz#6d3c743f74e9374188843a6c35e3ed885a3c12ea"
-  integrity sha512-b/4aBvxjjmA3qAtUtoZOi5938KHa+nFWGwTO7NCthEiDz/eTJ/gfAoH9Y+2ZeBvDKbX0C2LobgFDEGxEzRv7fw==
+"@stylable/runtime@^5.15.0", "@stylable/runtime@^5.15.1":
+  version "5.15.1"
+  resolved "https://registry.yarnpkg.com/@stylable/runtime/-/runtime-5.15.1.tgz#1842a2d6f90ca81ad1348251c5a9c126a92a0047"
+  integrity sha512-xHgB6FfFFblScSHqZQoUYtIlMnNWC/6nkjq+8+WPFW+mcT51kCOvuqJ/CD2w0dDeDse2u1+pVKD+P7qB1gF5yw==
 
 "@stylable/webpack-plugin@^5.15.0":
   version "5.15.0"
