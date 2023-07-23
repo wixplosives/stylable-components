@@ -1,13 +1,15 @@
 import React, { useContext } from 'react';
 import { ChevronRightWixUiIcon } from '../../../icons';
 import { SearchableText } from '../../../searchable-text/searchable-text';
-import type { TreeItemInfo, TreeItemProps } from '../../../tree/tree';
+import type { TreeItemInfo, TreeItemProps } from '../../../tree';
 import { lanesContext } from '../../tree-items/lanes/lane-context';
-import { st, classes, vars } from '../../tree-items/lanes/lane-item-renderer.st.css';
+import { classes, st, vars } from '../../tree-items/lanes/lane-item-renderer.st.css';
+
 export interface LaneItem {
     title: string;
     color: string;
 }
+
 export interface LaneData<TREEITEMS> {
     kind: 'lane';
     id: string;
@@ -19,6 +21,7 @@ export interface LaneOverlayProps<TREEITEMS> extends TreeItemProps<LaneData<TREE
     startsAt: number;
     endsAt: number;
 }
+
 export function LaneOverlayRenderer<TREEITEMS>(props: LaneOverlayProps<LaneData<TREEITEMS>>) {
     const laneCtx = useContext(lanesContext);
     const indent = laneCtx.getIndent(props.data as LaneData<any>) - 1;
@@ -68,6 +71,7 @@ export function LaneOverlayRenderer<TREEITEMS>(props: LaneOverlayProps<LaneData<
         </div>
     );
 }
+
 export const calcLaneSize = function <TREEITEMS>(_item: TreeItemInfo<LaneData<TREEITEMS>>) {
     return 0;
 };

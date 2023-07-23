@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { getChildren, getId, TreeItemData } from '../../board-assets';
 import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer';
 import { projectThemesPlugin } from '../../board-plugins';
-import { Tree } from '../tree';
+import { Tree } from '../';
 
 const createTreeData = (maxChildren: number, maxDepth: number, currentDepth = 0, path: number[] = []) => {
     const item: TreeItemData = {
