@@ -1,6 +1,9 @@
 import type React from 'react';
 import type { StateControls } from '../hooks';
-import type { TreeViewKeyboardInteractionsParams } from '../hooks/use-tree-view-keyboard-interaction';
+import type {
+    KeyboardInteractionConfiguration,
+    TreeViewKeyboardInteractionsParams,
+} from '../hooks/use-tree-view-keyboard-interaction';
 import type { ListItemProps } from '../list/list';
 import type { OverlayProps, ScrollListItemInfo, ScrollListProps } from '../scroll-list/scroll-list';
 import type { overlayRoot } from './utils';
@@ -40,7 +43,8 @@ export type TreeProps<T, EL extends HTMLElement> = Omit<
     ScrollListProps<T, EL, TreeItemInfo<T>>,
     'items' | 'ItemRenderer'
 > &
-    TreeAddedProps<T>;
+    TreeAddedProps<T> &
+    KeyboardInteractionConfiguration;
 
 export interface TreeWrapperContext<T = any> {
     openItemIds: string[];

@@ -51,6 +51,8 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         ItemRenderer,
         focusControl,
         itemSize,
+        selectionFollowsFocus = false,
+        endNodeExpandSelectsNext = false,
         ...scrollListProps
     } = props;
     const [openItemIds, setOpenItemIds] = useStateControls(openItemsControls, []);
@@ -165,6 +167,8 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         close,
         focus,
         select,
+        selectionFollowsFocus,
+        endNodeExpandSelectsNext,
     });
 
     const overlay = forwardListOverlay(props.overlay, {

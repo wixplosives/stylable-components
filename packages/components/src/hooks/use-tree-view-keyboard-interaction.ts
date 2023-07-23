@@ -18,7 +18,7 @@ export interface TreeViewKeyboardInteractionsParams {
     getLast: () => string | undefined;
 }
 
-interface KeyboardInteractionConfiguration {
+export interface KeyboardInteractionConfiguration {
     /**
      * In a single-select tree, moving focus may optionally unselect the previously selected node
      * and select the newly focused node.
@@ -50,8 +50,8 @@ export const useTreeViewKeyboardInteraction = ({
     close,
     focus,
     select,
-    endNodeExpandSelectsNext = true, // TODO: move to Codux, default should be false
-    selectionFollowsFocus = true, // TODO: move to Codux, default should be false
+    endNodeExpandSelectsNext,
+    selectionFollowsFocus,
 }: TreeViewKeyboardInteractionsParams & KeyboardInteractionConfiguration) => {
     const handleFocus = useCallback(
         (itemId: string | undefined) => {
