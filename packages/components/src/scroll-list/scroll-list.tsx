@@ -58,7 +58,7 @@ export interface OverlayProps<T> {
 export const {
     forward: forwardScrollListRoot,
     slot: scrollListRoot,
-    Slot: RootSlot,
+    Slot: ScrollListRootSlot,
 } = defineElementSlot<ScrollListRootMinimalProps, typeof ScrollListRootPropMapping>(
     defaultRoot,
     ScrollListRootPropMapping
@@ -291,7 +291,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     const onItemUnmount = useCallback((item: T) => mountedItems.current.delete(getId(item)), [getId]);
 
     return (
-        <RootSlot
+        <ScrollListRootSlot
             slot={scrollListRoot}
             props={{
                 className: classes.root,
@@ -332,6 +332,6 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             >
                 {loadingState === 'loading' ? <PreloaderSlot slot={preloader} /> : null}
             </div>
-        </RootSlot>
+        </ScrollListRootSlot>
     );
 }

@@ -28,9 +28,8 @@ export const ListRootPropMapping = {
 export const {
     slot: listRoot,
     create: createListRoot,
-    forward: forwardListRoot,
     parentSlot: listRootParent,
-    Slot: RootSlot,
+    Slot: ListRootSlot,
 } = defineElementSlot<ListRootMinimalProps>(defaultRoot, ListRootPropMapping);
 
 export interface ListItemProps<T> {
@@ -89,7 +88,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
         transmitKeyPress(callInternalFirst(onKeyPress, listRoot?.props?.onKeyPress));
     }
     return (
-        <RootSlot
+        <ListRootSlot
             slot={listRoot}
             props={{
                 ref: actualRef as React.RefObject<HTMLDivElement>,
@@ -117,7 +116,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                     />
                 );
             })}
-        </RootSlot>
+        </ListRootSlot>
     );
 }
 
