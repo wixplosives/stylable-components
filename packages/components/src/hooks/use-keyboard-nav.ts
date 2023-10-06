@@ -10,14 +10,17 @@ export const useIdBasedKeyboardNav = (
 ) => {
     const onKeyPress = useCallback(
         (ev: React.KeyboardEvent) => {
-            if (!elementsParent.current) {
+            if (
+                ev.target instanceof HTMLInputElement ||
+                ev.target instanceof HTMLTextAreaElement ||
+                !focusedId ||
+                !elementsParent.current
+            ) {
                 return;
             }
+
             const element = elementsParent.current;
             const children = childrenById(element);
-            if (!focusedId) {
-                return;
-            }
             const currentFocused = children[focusedId];
             if (!currentFocused) {
                 return;
