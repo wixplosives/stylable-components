@@ -2018,10 +2018,10 @@ commander@^10.0.0, commander@^10.0.1:
   resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.1.tgz#881ee46b4f77d1c1dccc5823433aa39b022cbe06"
   integrity sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==
 
-commander@^11.0.0:
-  version "11.0.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-11.0.0.tgz#43e19c25dbedc8256203538e8d7e9346877a6f67"
-  integrity sha512-9HMlXtt/BNoYr8ooyjjNRdIilOTkVJXB+GhxMTtOKwk0R4j4lS4NpjuqmRxroBfnfTSHQIHQB7wryHhXarNjmQ==
+commander@^11.1.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-11.1.0.tgz#62fdce76006a68e5c1ab3314dc92e800eb83d906"
+  integrity sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==
 
 commander@^2.20.0:
   version "2.20.3"
@@ -3395,7 +3395,7 @@ glob@7.2.0:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-glob@^10.2.2, glob@^10.3.10, glob@^10.3.3, glob@^10.3.7:
+glob@^10.2.2, glob@^10.3.10, glob@^10.3.7:
   version "10.3.10"
   resolved "https://registry.yarnpkg.com/glob/-/glob-10.3.10.tgz#0351ebb809fd187fe421ab96af83d3a70715df4b"
   integrity sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==
@@ -4892,18 +4892,18 @@ mkdirp@^1.0.3:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-mocha-play@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/mocha-play/-/mocha-play-6.0.0.tgz#eeeba8a79c36f27473f040d3ffc04c37141027d2"
-  integrity sha512-iu9/vV42K9CfCBj05OcwUfTzMde+TIkGrNUiYsAqTyYtAOvjeXMeh571FnTbGmtePEXExQkQULy13KdLEHxL3A==
+mocha-play@^6.0.2:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/mocha-play/-/mocha-play-6.0.2.tgz#0a9f01e787518372fe016f1b4b5a2aa1760d6f6a"
+  integrity sha512-ld1zJJtYy0oVc+iW+S9ze3ehLk+Ci72SGT71dMAdgjYj7gps8tB7UMdbTy17bkw9iRfh6FuZN89YjL4qsb43ag==
   dependencies:
-    commander "^11.0.0"
+    commander "^11.1.0"
     create-listening-server "^2.1.0"
     express "^4.18.2"
     find-up "^6.3.0"
-    glob "^10.3.3"
+    glob "^10.3.10"
     html-webpack-plugin "^5.5.3"
-    playwright-core "^1.36.1"
+    playwright-core "^1.38.0"
     webpack-dev-middleware "^6.1.1"
 
 mocha@^10.2.0:
@@ -5721,7 +5721,7 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-playwright-core@1.39.0, playwright-core@^1.36.1:
+playwright-core@1.39.0, playwright-core@^1.38.0:
   version "1.39.0"
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.39.0.tgz#efeaea754af4fb170d11845b8da30b2323287c63"
   integrity sha512-+k4pdZgs1qiM+OUkSjx96YiKsXsmb59evFoqv8SKO067qBA+Z2s/dCzJij/ZhdQcs2zlTAgRKfeiiLm8PQ2qvw==
