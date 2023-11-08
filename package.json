@@ -19,7 +19,7 @@
     "@playwright/browser-chromium": "^1.39.0",
     "@stylable/cli": "^5.16.0",
     "@stylable/webpack-plugin": "^5.16.0",
-    "@types/chai": "^4.3.9",
+    "@types/chai": "^4.3.10",
     "@types/compression": "^1.7.4",
     "@types/express": "^4.17.20",
     "@types/mocha": "^10.0.3",
