@@ -26,7 +26,7 @@
     "@types/node": "18",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.14",
-    "@types/react-window": "^1.8.7",
+    "@types/react-window": "^1.8.8",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "@wixc3/board-core": "^2.3.0",
