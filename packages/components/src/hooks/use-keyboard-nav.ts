@@ -109,7 +109,7 @@ export const useIdBasedKeyboardNav = (
                     }
                 }
             };
-            switch (ev.code) {
+            switch (ev.code as KeyCodes) {
                 case KeyCodes.ArrowLeft: {
                     gotoDir('left');
                     break;
