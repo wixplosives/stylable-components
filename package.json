@@ -39,7 +39,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "glob": "^10.3.10",
     "html-webpack-plugin": "^5.5.3",
-    "lerna": "^7.4.2",
+    "lerna": "^8.0.0",
     "mocha": "^10.2.0",
     "mocha-play": "^7.0.1",
     "promise-assist": "^2.0.1",
