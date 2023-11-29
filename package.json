@@ -16,7 +16,7 @@
     "prettify": "npx prettier . --write"
   },
   "devDependencies": {
-    "@playwright/browser-chromium": "^1.40.0",
+    "@playwright/browser-chromium": "^1.40.1",
     "@stylable/cli": "^5.16.0",
     "@stylable/webpack-plugin": "^5.16.0",
     "@types/chai": "^4.3.11",
