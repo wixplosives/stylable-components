@@ -16,7 +16,7 @@
     "prettify": "npx prettier . --write"
   },
   "devDependencies": {
-    "@playwright/browser-chromium": "^1.40.0",
+    "@playwright/browser-chromium": "^1.40.1",
     "@stylable/cli": "^5.16.0",
     "@stylable/webpack-plugin": "^5.16.0",
     "@types/chai": "^4.3.11",
@@ -27,8 +27,8 @@
     "@types/react": "^18.2.39",
     "@types/react-dom": "^18.2.17",
     "@types/react-window": "^1.8.8",
-    "@typescript-eslint/eslint-plugin": "^6.12.0",
-    "@typescript-eslint/parser": "^6.12.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
     "@wixc3/board-core": "^2.3.0",
     "@wixc3/react-board": "^2.3.0",
     "chai": "^4.3.10",
