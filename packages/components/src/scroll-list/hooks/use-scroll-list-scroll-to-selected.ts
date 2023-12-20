@@ -76,12 +76,12 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
             const scrollIntoView = (selected: number, position: ScrollLogicalPosition) => {
                 const node = scrollListRef.current?.querySelector(`[data-id='${getId(items[selected]!)}']`);
-                if (node === null) {
+                if (!node) {
                     timeout.current = window.setTimeout(
                         () => isScrollingToSelection.current && scrollTo(selected, true)
                     );
                 } else {
-                    scrollIntoViewIfNeeded(node!, {
+                    scrollIntoViewIfNeeded(node, {
                         scrollMode: 'if-needed',
                         block: position,
                         inline: position,
