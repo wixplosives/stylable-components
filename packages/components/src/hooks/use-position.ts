@@ -45,6 +45,9 @@ export const usePositionInParent = (
     const watch: Watch = typeof watchPosition === 'object' ? 'ignore' : watchPosition ? 'timer' : 'measure-once';
     const lastValRef = useRef<Position>();
     const onTimer = useCallback((el: HTMLElement) => {
+        if (!el || !el.parentElement) {
+            return unchanged;
+        }
         const res = getItemPositionInParent(el);
         if (lastValRef.current && isSamePosition(res, lastValRef.current)) {
             return unchanged;
