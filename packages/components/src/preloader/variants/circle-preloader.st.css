@@ -8,23 +8,21 @@
     text-align: center;
 }
 
-::inner {
+.root::inner {
     height: 100%;
     width: 100%;
     aspect-ratio: 1 / 1;
-
     border-radius: 50%;
     animation: autoProgress 1s infinite;
     animation-timing-function: linear;
 }
 
-
 @keyframes autoProgress {
     from {
-        transform: rotate(0deg)
+        transform: rotate(0deg);
     }
 
     to {
-        transform: rotate(360deg)
+        transform: rotate(360deg);
     }
 }
