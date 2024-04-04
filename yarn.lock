@@ -1119,10 +1119,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@wixc3/board-core@^2.4.1":
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/@wixc3/board-core/-/board-core-2.4.1.tgz#0a1f6f097e13148972d6b0a2f026cdb348f8e6c5"
-  integrity sha512-ARqNpMTLToWk3ToZANFEjsuq1tPXyPchAuwWjw10mubQHXpXXWjNoqXBF++1H0dW8Fef2+0Km2R/UQiU8FWVQw==
+"@wixc3/board-core@^2.4.1", "@wixc3/board-core@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@wixc3/board-core/-/board-core-2.5.0.tgz#53ff0f1c33ccc7e32aeda2048ace827aa9ad0490"
+  integrity sha512-kCAHGdZJuXg7+k2bY7LSylx3FM8BpLNV6CWsI6Oz05i+hazQ5F7L38M8M658jxXVtC/g+82THQ9l3N04WwsG7Q==
 
 "@wixc3/react-board@^2.4.1":
   version "2.4.1"
