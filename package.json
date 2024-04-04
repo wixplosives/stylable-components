@@ -30,7 +30,7 @@
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
     "@wixc3/board-core": "^2.4.1",
-    "@wixc3/react-board": "^2.4.1",
+    "@wixc3/react-board": "^2.5.0",
     "chai": "^4.4.1",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
