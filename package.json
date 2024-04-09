@@ -28,7 +28,7 @@
     "@types/react-dom": "^18.2.24",
     "@types/react-window": "^1.8.8",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
-    "@typescript-eslint/parser": "^7.5.0",
+    "@typescript-eslint/parser": "^7.6.0",
     "@wixc3/board-core": "^2.5.0",
     "@wixc3/react-board": "^2.5.0",
     "chai": "^4.4.1",
