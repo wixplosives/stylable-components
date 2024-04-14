@@ -1,6 +1,6 @@
 /**
  * This file is auto generated when the project is built
- * to rebuild only the file 'yarn build:boards'
+ * to rebuild only the file 'npm run build:boards'
  * generated at 'build-board-index.js'
  * do no edit manually
  */
