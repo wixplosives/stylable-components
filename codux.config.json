@@ -10,9 +10,9 @@
   "fileNamingConvention": "kebab-case",
   "scripts": {
     "install": {
-      "title": "Yarn (Install)",
+      "title": "npm install",
       "description": "Installs the required dependencies",
-      "command": "yarn",
+      "command": "npm i",
       "trigger": ["checkout", "pull", "setup"]
     }
   }
