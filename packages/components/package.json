@@ -4,7 +4,6 @@
   "description": "React components that use Stylable.",
   "main": "dist/index.js",
   "scripts": {
-    "build:stylable": "stc --srcDir src --outDir dist --stcss --no-cjs --useNamespaceReference",
     "test": "mocha \"dist/test/**/*.spec.js\""
   },
   "peerDependencies": {
