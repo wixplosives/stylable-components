@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@playwright/browser-chromium": "^1.43.1",
-    "@stylable/cli": "^6.0.1",
-    "@stylable/esbuild": "^6.0.1",
+    "@stylable/cli": "^6.0.2",
+    "@stylable/esbuild": "^6.0.2",
     "@types/chai": "^4.3.14",
     "@types/compression": "^1.7.5",
     "@types/express": "^4.17.21",
