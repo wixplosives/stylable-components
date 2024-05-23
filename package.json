@@ -16,7 +16,7 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@playwright/browser-chromium": "^1.44.0",
+    "@playwright/browser-chromium": "^1.44.1",
     "@stylable/cli": "^6.1.0",
     "@stylable/esbuild": "^6.1.0",
     "@types/chai": "^4.3.16",
