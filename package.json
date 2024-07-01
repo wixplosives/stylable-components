@@ -24,7 +24,7 @@
     "@types/node": "20",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@wixc3/board-core": "^2.5.0",
     "@wixc3/react-board": "^2.5.0",
     "chai": "^4.4.1",
@@ -42,7 +42,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rimraf": "^5.0.7",
-    "typescript": "~5.5.2"
+    "typescript": "~5.5.3"
   },
   "license": "MIT",
   "private": true
