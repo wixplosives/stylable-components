@@ -6,10 +6,12 @@ import { ScrollHookSimulator } from './scroll-hook-simulator';
 
 export default createBoard({
     name: 'use scroll window horizontal',
-    Board: () => <ScrollHookSimulator isHorizontal={true} />,
+    Board: () => (
+        <div style={{ height: '500px', width: '2000px' }}>
+            <ScrollHookSimulator isHorizontal={true} />
+        </div>
+    ),
     environmentProps: {
-        canvasWidth: 2000,
-        canvasHeight: 500,
         windowWidth: 500,
         windowHeight: 640,
     },
