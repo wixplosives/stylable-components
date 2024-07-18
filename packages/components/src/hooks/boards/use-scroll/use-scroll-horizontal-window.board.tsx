@@ -7,7 +7,7 @@ import { ScrollHookSimulator } from './scroll-hook-simulator';
 export default createBoard({
     name: 'use scroll window horizontal',
     Board: () => (
-        <div style={{ height: '200px', width: '2000px' }}>
+        <div style={{ height: '500px', width: '2000px' }}>
             <ScrollHookSimulator isHorizontal={true} />
         </div>
     ),
