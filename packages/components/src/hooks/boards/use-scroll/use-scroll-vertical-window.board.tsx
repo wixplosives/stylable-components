@@ -5,13 +5,11 @@ import { expectElement, expectElementText, maxScroll, scenarioPlugin, scrollActi
 import { ScrollHookSimulator } from './scroll-hook-simulator';
 
 export default createBoard({
-    Board: () => (
-        <div style={{ width: '200px', height: '2000px' }}>
-            <ScrollHookSimulator />
-        </div>
-    ),
+    Board: () => <ScrollHookSimulator />,
     name: 'use scroll window vertical',
     environmentProps: {
+        canvasWidth: 200,
+        canvasHeight: 2000,
         windowWidth: 500,
         windowHeight: 640,
     },
