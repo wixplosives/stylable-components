@@ -27,7 +27,7 @@
     {
       "files": ["*.ts", "*.tsx"],
       "parserOptions": {
-        "EXPERIMENTAL_useProjectService": true
+        "projectService": true
       },
       "extends": [
         "plugin:@typescript-eslint/recommended",
@@ -40,6 +40,7 @@
         "@typescript-eslint/restrict-plus-operands": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/no-empty-object-type": "off",
         "@typescript-eslint/unbound-method": "off"
       }
     }

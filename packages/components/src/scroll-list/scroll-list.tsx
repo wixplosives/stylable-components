@@ -39,7 +39,7 @@ const ScrollListRootPropMapping: PropMapping<ScrollListRootMinimalProps> = {
     style: mergeObjectInternalWins,
     className: concatClasses,
 };
-const { forward: forwardListRoot, slot: listRoot } = listRootParent(defaultRoot, ScrollListRootPropMapping);
+const { forward: forwardListRoot, slot: _listRoot } = listRootParent(defaultRoot, ScrollListRootPropMapping);
 const { Slot: PreloaderSlot } = defineElementSlot(defaultPreloader, {});
 
 export interface ScrollListItemInfo<T> {
@@ -61,12 +61,12 @@ export const {
     Slot: ScrollListRootSlot,
 } = defineElementSlot<ScrollListRootMinimalProps, typeof ScrollListRootPropMapping>(
     defaultRoot,
-    ScrollListRootPropMapping
+    ScrollListRootPropMapping,
 );
 
 export const { parentSlot: scrollListOverlayParent, Slot: ListOverlaySlot } = defineElementSlot<OverlayProps<any>, {}>(
     defaultPreloader,
-    {}
+    {},
 );
 /**
  * size of the item in pixels or a method to compute according to data;
@@ -128,7 +128,7 @@ export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollList
      * allows replacing the element of the list
      *
      */
-    listRoot?: typeof listRoot;
+    listRoot?: typeof _listRoot;
     preloader?: ElementSlot<{}>;
     overlay?: ElementSlot<OverlayProps<T>>;
 }
@@ -177,7 +177,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
             isFocused: focused === getId(data),
             isSelected: selected === getId(data),
         }),
-        [getId, focused, selected]
+        [getId, focused, selected],
     );
 
     const getItemDimensions = useMemo(() => {
@@ -263,7 +263,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 
     const shownItems = useMemo(
         () => items.slice(firstShownItemIndex, lastShownItemIndex),
-        [items, firstShownItemIndex, lastShownItemIndex]
+        [items, firstShownItemIndex, lastShownItemIndex],
     );
 
     const listStyle = {
@@ -280,11 +280,11 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
 
     const focusControlMemoized: ProcessedControlledState<string | undefined> = useMemo(
         () => [focused, setFocused],
-        [focused, setFocused]
+        [focused, setFocused],
     );
     const selectionControlMemoized: ProcessedControlledState<string | undefined> = useMemo(
         () => [selected, setSelected],
-        [selected, setSelected]
+        [selected, setSelected],
     );
 
     const onItemMount = useCallback((item: T) => mountedItems.current.add(getId(item)), [getId]);

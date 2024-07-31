@@ -15,10 +15,10 @@ export const defaultRoot: ElementSlot<React.ComponentPropsWithRef<'div'>, 'div'>
 export const defineElementSlot = <
     MinimalProps extends {},
     Mapping extends PropMapping<MinimalProps> = {},
-    ChildSlotProps extends {} = {}
+    ChildSlotProps extends {} = {},
 >(
     defaultSlot: ElementSlot<MinimalProps, any, any>,
-    propsMapping: Mapping = {} as Mapping
+    propsMapping: Mapping = {} as Mapping,
 ) => {
     return {
         Slot: ({
@@ -35,18 +35,18 @@ export const defineElementSlot = <
                 return React.createElement(
                     usedSlot.el,
                     mergeWithMap(props!, usedSlot.props as unknown as MinimalProps, propsMapping),
-                    ...(children as React.ReactNode[])
+                    ...(children as React.ReactNode[]),
                 );
             }
             return React.createElement(
                 usedSlot.el,
                 mergeWithMap(props!, usedSlot.props as unknown as MinimalProps, propsMapping),
-                children as any
+                children as any,
             );
         },
         forward: (
             slot: Partial<ElementSlot<MinimalProps, any, any> | undefined>,
-            props: MinimalProps & Partial<ChildSlotProps>
+            props: MinimalProps & Partial<ChildSlotProps>,
         ): ElementSlot<MinimalProps, any, any> => {
             const usedSlot = { ...defaultSlot, ...(slot || {}) };
             // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,17 +60,17 @@ export const defineElementSlot = <
         slot: defaultSlot as Partial<typeof defaultSlot>,
         parentSlot: function <MinProps extends {}, MAP extends PropMapping<MinProps> = PropMapping<MinProps>>(
             defSlot?: ElementSlot<MinProps, any, any>,
-            propsMapping: PropMapping<MinProps> = {}
+            propsMapping: PropMapping<MinProps> = {},
         ) {
             const usedSlot = defSlot || defaultSlot;
             return defineElementSlot<MinProps, MAP, MinimalProps>(
                 usedSlot as ElementSlot<MinProps, any, any>,
-                propsMapping as MAP
+                propsMapping as MAP,
             );
         },
         create: function <Props extends MinimalProps>(
             el: React.ComponentType<Props> | keyof React.ReactHTML,
-            props: Partial<Props>
+            props: Partial<Props>,
         ): ElementSlot<MinimalProps, React.ComponentType<Props> | keyof React.ReactHTML, Props> {
             return {
                 el,
@@ -102,7 +102,9 @@ export function mergeObjectInternalWins<T extends {} | undefined>(internal: T, e
 export const callInternalFirst =
     <T extends (...args: any[]) => any>(internal?: T, external?: T) =>
     (...args: unknown[]): unknown => {
-        internal && internal(...args);
+        if (internal) {
+            internal(...args);
+        }
         return external && external(...args);
     };
 
@@ -111,7 +113,7 @@ export const concatClasses = <T extends string>(internal?: T, external?: T) => `
 export function mergeWithMap<Props extends {}, MinimalProps extends Partial<Props>>(
     props: Props,
     minProps: MinimalProps,
-    mergeMap: PropMapping<MinimalProps>
+    mergeMap: PropMapping<MinimalProps>,
 ): Props {
     return Object.entries(props).reduce(
         (acc, current) => {
@@ -121,13 +123,13 @@ export function mergeWithMap<Props extends {}, MinimalProps extends Partial<Prop
                 acc[key as keyof Props] = policy(
                     value,
                     acc[key as keyof Props] as unknown as MinimalProps[keyof MinimalProps],
-                    key as keyof Props
+                    key as keyof Props,
                 ) as unknown as Props[keyof Props];
             } else {
                 acc[key as keyof Props] = value as unknown as Props[keyof Props];
             }
             return acc;
         },
-        { ...minProps } as unknown as Props
+        { ...minProps } as unknown as Props,
     );
 }

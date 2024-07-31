@@ -58,9 +58,11 @@ export const useTreeViewKeyboardInteraction = ({
             if (!itemId) return;
 
             focus(itemId);
-            selectionFollowsFocus && select(itemId);
+            if (selectionFollowsFocus) {
+                select(itemId);
+            }
         },
-        [focus, select, selectionFollowsFocus]
+        [focus, select, selectionFollowsFocus],
     );
 
     const handleArrowRight = useCallback(() => {
@@ -119,7 +121,7 @@ export const useTreeViewKeyboardInteraction = ({
 
             handler();
         },
-        [handleArrowRight, handleArrowLeft, handleArrowUp, handleArrowDown, handleHome, handleEnd]
+        [handleArrowRight, handleArrowLeft, handleArrowUp, handleArrowDown, handleHome, handleEnd],
     );
 
     useEffect(() => {
