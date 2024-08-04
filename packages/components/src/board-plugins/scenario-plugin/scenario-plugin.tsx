@@ -52,12 +52,12 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
                 const rect = target.getBoundingClientRect();
                 highlight.setAttribute(
                     'style',
-                    `position: absolute; top: ${rect.top}px; left: ${rect.left}px; height:${rect.height}px; width:${rect.width}px;`
+                    `position: absolute; top: ${rect.top}px; left: ${rect.left}px; height:${rect.height}px; width:${rect.width}px;`,
                 );
                 highlight.setAttribute('class', classes.item!);
             }
         },
-        [clearHighlight, highlight]
+        [clearHighlight, highlight],
     );
     const hoverAction = () => {
         const current = events[0];
@@ -177,7 +177,7 @@ export const RenderWrapper = (props: ScenarioParams & { board: JSX.Element }) =>
             events={props.events}
             resetBoard={resetBoard}
         />,
-        'scenario ' + props.title
+        'scenario ' + props.title,
     );
 };
 
@@ -196,7 +196,7 @@ export const maxScroll = (target: Element | Window, isVertical: boolean) => {
     return Math.floor(
         isVertical
             ? (target as HTMLElement).scrollHeight - bounding.height
-            : (target as HTMLElement).scrollWidth - bounding.width
+            : (target as HTMLElement).scrollWidth - bounding.width,
     );
 };
 
@@ -225,15 +225,15 @@ export const scrollAction = (pos: number, isVertical = true, selector?: string, 
                     const currentPos = !target
                         ? 0
                         : target instanceof Window
-                        ? isVertical
-                            ? target.scrollY
-                            : target.scrollX
-                        : isVertical
-                        ? target.scrollTop
-                        : target.scrollLeft;
+                          ? isVertical
+                              ? target.scrollY
+                              : target.scrollX
+                          : isVertical
+                            ? target.scrollTop
+                            : target.scrollLeft;
                     expect(Math.round(currentPos)).to.approximately(Math.round(usedPos), 2);
                 },
-                { timeout }
+                { timeout },
             );
         },
         timeout,
@@ -251,7 +251,7 @@ export const hoverAction = (selector?: string, timeout = 2_000): Action => {
                     new MouseEvent('mousemove', {
                         bubbles: true,
                         relatedTarget: target,
-                    })
+                    }),
                 );
             }
         },
@@ -270,19 +270,19 @@ export const clickAction = (selector?: string, timeout = 2_000): Action => {
                     new MouseEvent('mousedown', {
                         bubbles: true,
                         relatedTarget: target,
-                    })
+                    }),
                 );
                 target.dispatchEvent(
                     new MouseEvent('click', {
                         bubbles: true,
                         relatedTarget: target,
-                    })
+                    }),
                 );
                 target.dispatchEvent(
                     new MouseEvent('mouseup', {
                         bubbles: true,
                         relatedTarget: target,
-                    })
+                    }),
                 );
             }
         },
@@ -317,7 +317,7 @@ export const waitForElement = async (selector: string, title: string, timeout = 
                 throw new Error(title + ': element not found for selector ' + selector);
             }
         },
-        { timeout }
+        { timeout },
     );
     return window.document.querySelector(selector);
 };
@@ -326,7 +326,7 @@ export const expectElement = <EL extends HTMLElement | SVGElement>(
     selector: string,
     expectation?: (el: EL) => void,
     title: string = 'expecting selector ' + selector,
-    timeout = 2_000
+    timeout = 2_000,
 ): Action => {
     return {
         title,
@@ -358,8 +358,8 @@ export const expectElement = <EL extends HTMLElement | SVGElement>(
 export const expectElements = <SELECTORS extends string>(
     selectors: SELECTORS[],
     expectation?: (elements: Record<SELECTORS, Element>) => void,
-    title: string = 'expecting elements ' + selectors,
-    timeout = 2_000
+    title: string = 'expecting elements ' + selectors.join(','),
+    timeout = 2_000,
 ): Action => {
     return {
         title,
@@ -367,21 +367,24 @@ export const expectElements = <SELECTORS extends string>(
         async execute() {
             await waitFor(
                 () => {
-                    const res = selectors.reduce((acc, selector) => {
-                        const el = window.document.querySelector(selector);
-                        if (!el) {
-                            throw new Error(title + ': element not found for selector ' + selector);
-                        }
-                        acc[selector] = el;
-                        return acc;
-                    }, {} as Record<SELECTORS, Element>);
+                    const res = selectors.reduce(
+                        (acc, selector) => {
+                            const el = window.document.querySelector(selector);
+                            if (!el) {
+                                throw new Error(title + ': element not found for selector ' + selector);
+                            }
+                            acc[selector] = el;
+                            return acc;
+                        },
+                        {} as Record<SELECTORS, Element>,
+                    );
                     if (expectation) {
                         expectation(res);
                     }
                 },
                 {
                     timeout,
-                }
+                },
             );
         },
     };
@@ -391,7 +394,7 @@ export const expectElementText = (
     selector: string,
     text: string,
     title: string = 'expecting text ' + text + ' for selector ' + selector,
-    timeout = 2_000
+    timeout = 2_000,
 ): Action => {
     return {
         title,
@@ -406,7 +409,7 @@ export const expectElementText = (
                     expect(el.innerText).to.equal(text);
                 },
                 title,
-                timeout
+                timeout,
             ).execute();
         },
         highlightSelector: selector,
@@ -417,7 +420,7 @@ export const expectElementStyle = (
     selector: string,
     expectedStyle: Partial<Record<keyof CSSStyleDeclaration, string>>,
     title: string = 'expectElementStyle ' + selector,
-    timeout = 2_000
+    timeout = 2_000,
 ): Action => {
     const exp = expectElement(
         selector,
@@ -427,7 +430,7 @@ export const expectElementStyle = (
                 expect(style[key as keyof CSSStyleDeclaration]).to.eql(val);
             }
         },
-        title
+        title,
     );
     return {
         title,
@@ -444,10 +447,10 @@ export const expectElementsStyle = (
         [selector: string]: Partial<Record<keyof CSSStyleDeclaration, string>>;
     },
     title?: string,
-    timeout = 2_000
+    timeout = 2_000,
 ): Action => {
     return {
-        title: title || 'expectElementsStyle ' + Object.keys(elements),
+        title: title || 'expectElementsStyle ' + Object.keys(elements).join(', '),
         execute() {
             for (const [selector, styles] of Object.entries(elements)) {
                 expectElementStyle(selector, styles, title, timeout);
@@ -462,7 +465,7 @@ export const expectElementScroll = (
     expectedScroll: number,
     isHorizontal = false,
     title: string = 'expecting scroll ' + selector,
-    timeout = 2_000
+    timeout = 2_000,
 ): Action => {
     return expectElement(
         selector,
@@ -474,14 +477,14 @@ export const expectElementScroll = (
             }
         },
         title,
-        timeout
+        timeout,
     );
 };
 
 export const expectWindowScroll = (
     expectedScroll: number,
     isHorizontal = false,
-    title = 'expecting window scroll '
+    title = 'expecting window scroll ',
 ): Action => {
     return {
         title,
@@ -508,5 +511,5 @@ export const scenarioPlugin = createPlugin<IReactBoard>()(
         wrapRender(props, _r, board) {
             return <RenderWrapper board={board} {...props} />;
         },
-    }
+    },
 );

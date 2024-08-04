@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 import React, { useMemo } from 'react';
 import type { ElementSlot, PropMapping } from '../common';
 
@@ -49,7 +48,7 @@ export const defineElementSlot = <
             props: MinimalProps & Partial<ChildSlotProps>,
         ): ElementSlot<MinimalProps, any, any> => {
             const usedSlot = { ...defaultSlot, ...(slot || {}) };
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             return useMemo(() => {
                 return {
                     el: usedSlot.el,

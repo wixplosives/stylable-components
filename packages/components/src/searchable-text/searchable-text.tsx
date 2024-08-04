@@ -17,7 +17,7 @@ export const matchTextFuzzy = (searchString: string, inString: string): boolean 
 
 export const splitFuzzySearchText = (
     text: string,
-    searchString: string
+    searchString: string,
 ): Array<{ isHighlighted: boolean; text: string }> => {
     let remainingSearchString = searchString;
     let remainingInString = text;
@@ -29,7 +29,6 @@ export const splitFuzzySearchText = (
                 text,
             });
         } else {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             sections[sections.length - 1]!.text += text;
         }
     };
@@ -37,10 +36,8 @@ export const splitFuzzySearchText = (
         const char = remainingSearchString[0];
         if (char?.toLowerCase() == remainingInString[0]?.toLowerCase()) {
             remainingSearchString = remainingSearchString.slice(1);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             add(remainingInString[0]!, true);
         } else {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             add(remainingInString[0]!, false);
         }
         remainingInString = remainingInString.slice(1);

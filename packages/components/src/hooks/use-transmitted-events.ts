@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { useCallback, useEffect, useRef } from 'react';
 
@@ -13,7 +12,7 @@ export function useTransmittedCB<CB extends (...args: any[]) => any>() {
             }
             return val;
         },
-        [cbs]
+        [cbs],
     );
     function useTransmit(cb: CB) {
         cbs.add(cb);
