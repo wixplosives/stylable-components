@@ -18,7 +18,7 @@
   "devDependencies": {
     "@eslint/compat": "^1.1.1",
     "@eslint/js": "^9.8.0",
-    "@playwright/browser-chromium": "^1.45.3",
+    "@playwright/browser-chromium": "^1.46.0",
     "@stylable/cli": "^6.1.1",
     "@stylable/esbuild": "^6.1.1",
     "@types/chai": "^4.3.17",
