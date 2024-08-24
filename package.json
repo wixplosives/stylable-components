@@ -16,7 +16,7 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
+    "@eslint/js": "^9.9.1",
     "@playwright/browser-chromium": "^1.46.1",
     "@stylable/cli": "^6.1.1",
     "@stylable/esbuild": "^6.1.1",
@@ -29,7 +29,7 @@
     "@wixc3/react-board": "^3.0.1",
     "chai": "^4.5.0",
     "esbuild": "^0.23.1",
-    "eslint": "^9.9.0",
+    "eslint": "^9.9.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-react": "^7.35.0",
