@@ -20,7 +20,7 @@
     "@playwright/browser-chromium": "^1.46.1",
     "@stylable/cli": "^6.1.1",
     "@stylable/esbuild": "^6.1.1",
-    "@types/chai": "^4.3.18",
+    "@types/chai": "^4.3.19",
     "@types/mocha": "^10.0.7",
     "@types/node": "20",
     "@types/react": "^18.3.4",
