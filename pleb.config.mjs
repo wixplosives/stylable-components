@@ -1,5 +1,6 @@
 export default {
   pinnedPackages: [
-    { name: 'chai', reason: 'v5 is pure esm' },
+    { name: 'chai', reason: 'esm-only' },
+    { name: '@types/chai', reason: 'esm-only' },
   ],
 };
