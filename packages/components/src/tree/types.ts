@@ -2,6 +2,7 @@ import type React from 'react';
 import type { StateControls } from '../hooks';
 import type {
     KeyboardInteractionConfiguration,
+    KeyboardSelectMeta,
     TreeViewKeyboardInteractionsParams,
 } from '../hooks/use-tree-view-keyboard-interaction';
 import type { ListItemProps } from '../list/list';
@@ -37,11 +38,12 @@ export interface TreeAddedProps<T> {
     eventRoots?: TreeViewKeyboardInteractionsParams['eventRoots'];
     ItemRenderer: React.ComponentType<TreeItemProps<T>>;
     overlay?: typeof overlayRoot;
+    selectionControl?: StateControls<string | undefined, KeyboardSelectMeta | undefined>;
 }
 
 export type TreeProps<T, EL extends HTMLElement> = Omit<
     ScrollListProps<T, EL, TreeItemInfo<T>>,
-    'items' | 'ItemRenderer'
+    'items' | 'ItemRenderer' | 'selectionControl'
 > &
     TreeAddedProps<T> &
     KeyboardInteractionConfiguration;
