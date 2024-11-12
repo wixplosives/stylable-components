@@ -16,7 +16,6 @@ export interface TreeViewKeyboardInteractionsParams {
     getFirstChild: (itemId: string) => string | undefined;
     getFirst: () => string | undefined;
     getLast: () => string | undefined;
-    onShortcutActivated?: (key: string) => void;
 }
 
 export interface KeyboardInteractionConfiguration {
@@ -30,12 +29,6 @@ export interface KeyboardInteractionConfiguration {
      * the next sibling, or, in case of last child, the next sibling of the parent node.
      */
     endNodeExpandSelectsNext?: boolean;
-    /**
-     * fired when keyboard interaction was handled
-     * @param key the name of the key pressed
-     * @returns
-     */
-    onShortcutActivated?: (key: string) => void;
 }
 
 /**
@@ -59,7 +52,6 @@ export const useTreeViewKeyboardInteraction = ({
     select,
     endNodeExpandSelectsNext,
     selectionFollowsFocus,
-    onShortcutActivated,
 }: TreeViewKeyboardInteractionsParams & KeyboardInteractionConfiguration) => {
     const handleFocus = useCallback(
         (itemId: string | undefined) => {
@@ -128,7 +120,6 @@ export const useTreeViewKeyboardInteraction = ({
             event.preventDefault();
 
             handler();
-            onShortcutActivated?.(event.code);
         },
         [handleArrowRight, handleArrowLeft, handleArrowUp, handleArrowDown, handleHome, handleEnd],
     );
