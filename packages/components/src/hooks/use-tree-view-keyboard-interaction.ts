@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect } from 'react';
 import { KeyCodes } from '../common';
+import { ProcessedControlledState } from './use-state-controls';
 
+export type KeyboardSelectMeta = 'keyboard';
 export interface TreeViewKeyboardInteractionsParams {
     eventRoots?: React.RefObject<HTMLElement>[];
     focusedItemId: string | undefined;
     open: (itemId: string) => void;
     close: (itemId: string) => void;
     focus: (itemId: string) => void;
-    select: (itemId: string) => void;
+    select: ProcessedControlledState<string, KeyboardSelectMeta>[1];
     isOpen: (itemId: string) => boolean;
     isEndNode: (itemId: string) => boolean;
     getPrevious: (itemId: string) => string | undefined;
@@ -59,7 +61,7 @@ export const useTreeViewKeyboardInteraction = ({
 
             focus(itemId);
             if (selectionFollowsFocus) {
-                select(itemId);
+                select(itemId, 'keyboard');
             }
         },
         [focus, select, selectionFollowsFocus],
