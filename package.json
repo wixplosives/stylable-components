@@ -16,7 +16,7 @@
     "prettify": "prettier . --write"
   },
   "devDependencies": {
-    "@playwright/browser-chromium": "^1.48.2",
+    "@playwright/browser-chromium": "^1.49.0",
     "@stylable/cli": "^6.1.1",
     "@stylable/esbuild": "^6.1.1",
     "@types/chai": "^4.3.20",
@@ -28,7 +28,7 @@
     "@wixc3/react-board": "^4.5.3",
     "chai": "^4.5.0",
     "esbuild": "^0.24.0",
-    "eslint": "^9.14.0",
+    "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-react": "^7.37.2",
@@ -42,7 +42,7 @@
     "react-dom": "^18.3.1",
     "rimraf": "^6.0.1",
     "typescript": "~5.6.3",
-    "typescript-eslint": "^8.14.0"
+    "typescript-eslint": "^8.15.0"
   },
   "license": "MIT",
   "private": true
