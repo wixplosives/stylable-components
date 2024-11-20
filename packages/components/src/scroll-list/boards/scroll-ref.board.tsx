@@ -4,9 +4,7 @@ import { createItems, getId, ItemRenderer } from '../../board-assets';
 import {
     clickAction,
     expectElement,
-    expectElementsStyle,
     expectElementStyle,
-    hoverAction,
     projectThemesPlugin,
     scenarioPlugin,
     scrollAction,
@@ -63,19 +61,6 @@ export default createBoard({
             title: 'scroll list sanity',
             events: [
                 expectElement('[data-id="a3"]'),
-                hoverAction('[data-id="a3"]'),
-                expectElementStyle('[data-id="a3"]', {
-                    backgroundColor: 'rgb(173, 216, 230)',
-                }),
-                hoverAction('[data-id="a4"]'),
-                expectElementsStyle({
-                    '[data-id="a3"]': {
-                        backgroundColor: 'none',
-                    },
-                    '[data-id="a4"]': {
-                        backgroundColor: 'rgb(173, 216, 230)',
-                    },
-                }),
                 clickAction('[data-id="a4"]'),
                 expectElementStyle('[data-id="a4"]', {
                     backgroundColor: 'rgb(173, 216, 230)',

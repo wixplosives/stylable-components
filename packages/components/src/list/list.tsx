@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     callInternalFirst,
     defaultRoot,
@@ -7,7 +7,7 @@ import {
     preferExternal,
 } from '../hooks/use-element-slot';
 import { useIdListener } from '../hooks/use-id-based-event';
-import { useIdBasedKeyboardNav } from '../hooks/use-keyboard-nav';
+import { getHandleKeyboardNav } from '../hooks/use-keyboard-nav';
 import { StateControls, useStateControls } from '../hooks/use-state-controls';
 import type { UseTransmit } from '../hooks/use-transmitted-events';
 
@@ -55,6 +55,7 @@ export interface ListProps<T> {
     transmitKeyPress?: UseTransmit<React.KeyboardEventHandler>;
     onItemMount?: (item: T) => void;
     onItemUnmount?: (item: T) => void;
+    disableKeyboard?: boolean;
 }
 
 export type List<T> = (props: ListProps<T>) => JSX.Element;
@@ -69,21 +70,23 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     transmitKeyPress,
     onItemMount,
     onItemUnmount,
+    disableKeyboard,
 }: ListProps<T>): JSX.Element {
     const [selectedId, setSelectedId] = useStateControls(selectionControl, undefined);
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
+    const [prevSelectedId, setPrevSelectedId] = useState(selectedId);
+    if (selectedId !== prevSelectedId) {
+        setFocusedId(selectedId);
+        setPrevSelectedId(selectedId);
+    }
     const defaultRef = useRef<EL>();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
-    const onMouseMove = useIdListener(setFocusedId);
+
     const onClick = useIdListener(setSelectedId);
-    const onKeyPress = useIdBasedKeyboardNav(
-        actualRef as React.RefObject<HTMLElement>,
-        focusedId,
-        setFocusedId,
-        selectedId,
-        setSelectedId
-    );
+    const onKeyPress = disableKeyboard
+        ? () => {}
+        : getHandleKeyboardNav(actualRef as React.RefObject<HTMLElement>, focusedId, setFocusedId, setSelectedId);
     if (transmitKeyPress) {
         transmitKeyPress(callInternalFirst(onKeyPress, listRoot?.props?.onKeyPress));
     }
@@ -92,7 +95,6 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
             slot={listRoot}
             props={{
                 ref: actualRef as React.RefObject<HTMLDivElement>,
-                onMouseMove,
                 onClick,
                 onKeyPress,
                 onKeyDown: onKeyPress,

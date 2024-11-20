@@ -4,8 +4,12 @@
  * generated at 'build-board-index.js'
  * do no edit manually
  */
+import scenario_renderer from './_codux/boards/scenario-renderer/scenario-renderer.board';
+import use_element_size from './_codux/boards/hooks/use-element-size/use-element-size.board';
 import tree from './tree/boards/tree.board';
 import tree_with_lanes from './tree/boards/tree-with-lanes.board';
+import tree_keyboard from './tree/boards/tree-keyboard.board';
+import tree_focus from './tree/boards/tree-focus.board';
 import searchable_text from './searchable-text/boards/searchable-text.board';
 import with_header from './scroll-list/boards/with-header.board';
 import scroll_to_selection from './scroll-list/boards/scroll-to-selection.board';
@@ -34,12 +38,14 @@ import button_with_icons from './button/boards/button-with-icons.board';
 import button_with_icon from './button/boards/button-with-icon.board';
 import auto_complete from './auto-complete/auto-complete.board';
 import area from './area/boards/area.board';
-import scenario_renderer from './_codux/boards/scenario-renderer/scenario-renderer.board';
-import use_element_size from './_codux/boards/hooks/use-element-size/use-element-size.board';
 
 export default [
+    scenario_renderer,
+    use_element_size,
     tree,
     tree_with_lanes,
+    tree_keyboard,
+    tree_focus,
     searchable_text,
     with_header,
     scroll_to_selection,
@@ -68,6 +74,4 @@ export default [
     button_with_icon,
     auto_complete,
     area,
-    scenario_renderer,
-    use_element_size,
 ];

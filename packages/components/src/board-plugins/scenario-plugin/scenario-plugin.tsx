@@ -241,6 +241,24 @@ export const scrollAction = (pos: number, isVertical = true, selector?: string, 
     };
 };
 
+export const focusAction = (selector: string) => {
+    return {
+        title: `focus ${selector}`,
+        execute: () => {
+            const target = document.querySelector(selector);
+            if (!target) {
+                throw new Error(`could not find ${selector}`);
+            }
+            if (!('focus' in target) || typeof target.focus !== 'function') {
+                throw new Error('element is not focusable');
+            }
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            target.focus();
+        },
+        timeout: 1000,
+    };
+};
+
 export const hoverAction = (selector?: string, timeout = 2_000): Action => {
     return {
         title: 'Hover ' + (selector || 'window'),
@@ -288,6 +306,28 @@ export const clickAction = (selector?: string, timeout = 2_000): Action => {
         },
         highlightSelector: selector,
         timeout,
+    };
+};
+
+export const keyDownAction = (selector: string, keyCode: string, which: number) => {
+    return {
+        title: `key down ${keyCode}`,
+        execute: () => {
+            const target = window.document.querySelector(selector);
+            if (!target) {
+                throw new Error(`could not find ${selector}`);
+            }
+            target.dispatchEvent(
+                new KeyboardEvent('keydown', {
+                    code: keyCode,
+                    key: keyCode,
+                    bubbles: true,
+                    composed: true,
+                    which: which,
+                }),
+            );
+        },
+        timeout: 1000,
     };
 };
 

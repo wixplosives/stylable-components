@@ -15,7 +15,7 @@ const treeWrapperContext = createContext<TreeWrapperContext>({
 });
 
 export const TreeItemWrapper = <T,>(
-    UserRenderer: React.ComponentType<TreeItemProps<T>>
+    UserRenderer: React.ComponentType<TreeItemProps<T>>,
 ): ((props: ListItemProps<T>) => JSX.Element) => {
     const Wrapper = (props: ListItemProps<T>) => {
         const { openItemIds, close, open, getChildren, getDepth } = useContext(treeWrapperContext);
@@ -57,22 +57,23 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     } = props;
     const [openItemIds, setOpenItemIds] = useStateControls(openItemsControls, []);
     const [focusedItemId, focus] = useStateControls(focusControl, undefined);
-    const [, select] = useStateControls(scrollListProps.selectionControl, undefined);
+    const [selectedId, select] = useStateControls(scrollListProps.selectionControl, undefined);
+
     const { items, treeItemDepths } = useMemo(
         () => getItems({ item: data, getChildren, getId, openItemIds }),
-        [data, getChildren, getId, openItemIds]
+        [data, getChildren, getId, openItemIds],
     );
     const treeItems = useMemo(() => getAllTreeItems({ item: data, getChildren, getId }), [data, getChildren, getId]);
 
     const getParent = useCallback(
         (itemId: string) => {
             const parent = treeItems.find((potentialParent) =>
-                getChildren(potentialParent).some((item) => getId(item) === itemId)
+                getChildren(potentialParent).some((item) => getId(item) === itemId),
             );
 
             return parent && getId(parent);
         },
-        [getChildren, getId, treeItems]
+        [getChildren, getId, treeItems],
     );
 
     const getFirstChild = useCallback(
@@ -83,7 +84,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
 
             return firstChild && getId(firstChild);
         },
-        [getChildren, getId, treeItems]
+        [getChildren, getId, treeItems],
     );
 
     const isEndNode = useCallback(
@@ -93,7 +94,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
 
             return children?.length === 0;
         },
-        [getChildren, getId, treeItems]
+        [getChildren, getId, treeItems],
     );
 
     const isOpen = useCallback((itemId: string) => openItemIds.includes(itemId), [openItemIds]);
@@ -108,7 +109,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
 
             return prevItem ? getId(prevItem) : undefined;
         },
-        [items, getId]
+        [items, getId],
     );
 
     const getNext = useCallback(
@@ -119,7 +120,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
 
             return nextItem ? getId(nextItem) : undefined;
         },
-        [items, getId]
+        [items, getId],
     );
 
     const getFirst = useCallback(() => {
@@ -140,7 +141,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
                 setOpenItemIds([...openItemIds, id]);
             }
         },
-        [isOpen, openItemIds, setOpenItemIds]
+        [isOpen, openItemIds, setOpenItemIds],
     );
 
     const close = useCallback(
@@ -149,7 +150,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
                 setOpenItemIds(openItemIds.filter((itemId) => itemId !== id));
             }
         },
-        [isOpen, openItemIds, setOpenItemIds]
+        [isOpen, openItemIds, setOpenItemIds],
     );
 
     useTreeViewKeyboardInteraction({
@@ -207,7 +208,9 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
                 ItemRenderer={itemRenderer}
                 listRoot={listRoot}
                 focusControl={[focusedItemId, focus]}
+                selectionControl={[selectedId, select]}
                 itemSize={listItemSize}
+                disableKeyboard={true}
             />
         </treeWrapperContext.Provider>
     );

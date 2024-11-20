@@ -157,6 +157,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     itemsInRow = 1,
     transmitKeyPress,
     overlay,
+    disableKeyboard,
 }: ScrollListProps<T, EL>): JSX.Element {
     const defaultScrollListRef = useRef<EL>();
     const scrollListRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultScrollListRef;
@@ -309,6 +310,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
                 focusControl={focusControlMemoized}
                 selectionControl={selectionControlMemoized}
                 transmitKeyPress={transmitKeyPress}
+                disableKeyboard={disableKeyboard}
             />
             {overlay ? (
                 <ListOverlaySlot
