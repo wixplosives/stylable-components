@@ -25,6 +25,8 @@ for (const boardPath of boardPaths) {
     });
 }
 
+imports.sort((a, b) => a.statement.localeCompare(b.statement));
+
 const boardIndexSource = `/**
  * This file is auto generated when the project is built
  * to rebuild only the file 'npm run build:boards'
