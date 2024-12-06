@@ -24,7 +24,7 @@
     "@types/node": "20",
     "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
-    "@wixc3/board-core": "^4.6.0",
+    "@wixc3/board-core": "^4.6.1",
     "@wixc3/react-board": "^4.6.0",
     "chai": "^4.5.0",
     "esbuild": "^0.24.0",
