@@ -77,7 +77,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
     const [prevSelectedId, setPrevSelectedId] = useState(selectedIds);
     if (selectedIds !== prevSelectedId) {
-        setFocusedId(selectedIds[-1]);
+        setFocusedId(selectedIds[selectedIds.length - 1]);
         setPrevSelectedId(selectedIds);
     }
     const defaultRef = useRef<EL>();
