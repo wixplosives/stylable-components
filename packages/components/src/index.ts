@@ -1,5 +1,4 @@
 export * from './area';
-export * from './auto-complete';
 export * from './button';
 export * from './common';
 export * from './data-grid';

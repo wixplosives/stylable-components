@@ -5,7 +5,6 @@
  * do no edit manually
  */
 import area from './area/boards/area.board';
-import auto_complete from './auto-complete/auto-complete.board';
 import button from './button/boards/button.board';
 import button_with_icon from './button/boards/button-with-icon.board';
 import button_with_icons from './button/boards/button-with-icons.board';
@@ -41,7 +40,6 @@ import with_header from './scroll-list/boards/with-header.board';
 
 export default [
     area,
-    auto_complete,
     button,
     button_with_icon,
     button_with_icons,
