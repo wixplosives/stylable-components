@@ -42,7 +42,7 @@ export interface ListItemProps<T> {
     isFocused: boolean;
     isSelected: boolean;
     focus: (id?: string) => void;
-    select: (id: string[]) => void;
+    select: (ids: string[]) => void;
 }
 
 export interface ListProps<T> {

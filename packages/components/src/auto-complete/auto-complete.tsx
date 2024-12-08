@@ -49,12 +49,8 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
 
     const onListSelect = useCallback(
         (selectedIds: string[]) => {
-            const selectedItems = items.filter((item) => selectedIds.includes(getId(item)));
-            updateSearchText(
-                selectedItems.length
-                    ? selectedItems.map((selectedItem) => getTextContent(selectedItem)).join(', ')
-                    : '',
-            );
+            const item = items.find((item) => getId(item) === selectedIds[0]);
+            updateSearchText(item ? getTextContent(item) : '');
             setSelected(selectedIds);
             close();
         },
