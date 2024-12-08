@@ -20,7 +20,7 @@ export type AutoComplete<T, EL extends HTMLElement = HTMLDivElement> = (props: A
 export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: AutoCompleteProps<T, EL>): JSX.Element {
     const { searchControl, getTextContent, items, focusControl, selectionControl, getId, ...listProps } = props;
     const [focused, setFocused] = useStateControls(focusControl, undefined);
-    const [selected, setSelected] = useStateControls(selectionControl, undefined);
+    const [selected, setSelected] = useStateControls(selectionControl, []);
     const inputRef = useRef<HTMLInputElement>(null);
     const scrollListRef = useRef<HTMLDivElement>(null);
     const [searchText, updateSearchText] = useStateControls(searchControl, undefined);
@@ -48,13 +48,17 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
     }, [getTextContent, items, match, searchText]);
 
     const onListSelect = useCallback(
-        (selectedId?: string) => {
-            const item = items.find((item) => getId(item) === selectedId);
-            updateSearchText(item ? getTextContent(item) : '');
-            setSelected(selectedId);
+        (selectedIds: string[]) => {
+            const selectedItems = items.filter((item) => selectedIds.includes(getId(item)));
+            updateSearchText(
+                selectedItems.length
+                    ? selectedItems.map((selectedItem) => getTextContent(selectedItem)).join(', ')
+                    : '',
+            );
+            setSelected(selectedIds);
             close();
         },
-        [close, getId, getTextContent, items, setSelected, updateSearchText]
+        [close, getId, getTextContent, items, setSelected, updateSearchText],
     );
     const scrollListRoot = createListRoot(Area, {
         className: classes.scrollListRoot,
@@ -74,7 +78,7 @@ export function AutoComplete<T, EL extends HTMLElement = HTMLDivElement>(props: 
                 onKeyPress(ev);
             }
         },
-        [close, onKeyPress, open]
+        [close, onKeyPress, open],
     );
     useEffect(() => {
         if (filteredData[0]) {

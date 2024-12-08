@@ -5,7 +5,7 @@ export const getHandleKeyboardNav = (
     elementsParent: React.RefObject<HTMLElement>,
     focusedId: string | undefined,
     setFocusedId: (id: string) => void,
-    setSelectedId: (id: string) => void,
+    setSelectedIds: (ids: string[]) => void,
 ) => {
     const onKeyPress = (ev: React.KeyboardEvent) => {
         if (
@@ -117,7 +117,7 @@ export const getHandleKeyboardNav = (
                 break;
             case KeyCodes.Space:
             case KeyCodes.Enter:
-                setSelectedId(focusedId);
+                setSelectedIds([focusedId]);
                 break;
             default:
         }

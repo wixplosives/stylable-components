@@ -57,7 +57,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     } = props;
     const [openItemIds, setOpenItemIds] = useStateControls(openItemsControls, []);
     const [focusedItemId, focus] = useStateControls(focusControl, undefined);
-    const [selectedId, select] = useStateControls(scrollListProps.selectionControl, undefined);
+    const [selectedId, select] = useStateControls(scrollListProps.selectionControl, []);
 
     const { items, treeItemDepths } = useMemo(
         () => getItems({ item: data, getChildren, getId, openItemIds }),

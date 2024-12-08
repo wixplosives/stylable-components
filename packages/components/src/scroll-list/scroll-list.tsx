@@ -169,14 +169,14 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     });
     const scrollWindowSize = useElementSize(scrollWindow, !isHorizontal);
     const mountedItems = useRef(new Set(''));
-    const [selected, setSelected] = useStateControls(selectionControl, undefined);
+    const [selected, setSelected] = useStateControls(selectionControl, []);
     const [focused, setFocused] = useStateControls(focusControl, undefined);
 
     const getItemInfo = useCallback(
         (data: T): ScrollListItemInfo<T> => ({
             data,
             isFocused: focused === getId(data),
-            isSelected: selected === getId(data),
+            isSelected: selected.some((id) => getId(data) === id),
         }),
         [getId, focused, selected],
     );
@@ -283,7 +283,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         () => [focused, setFocused],
         [focused, setFocused],
     );
-    const selectionControlMemoized: ProcessedControlledState<string | undefined> = useMemo(
+    const selectionControlMemoized: ProcessedControlledState<string[]> = useMemo(
         () => [selected, setSelected],
         [selected, setSelected],
     );

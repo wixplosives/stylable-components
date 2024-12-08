@@ -42,7 +42,7 @@ export interface ListItemProps<T> {
     isFocused: boolean;
     isSelected: boolean;
     focus: (id?: string) => void;
-    select: (id?: string) => void;
+    select: (id: string[]) => void;
 }
 
 export interface ListProps<T> {
@@ -51,7 +51,8 @@ export interface ListProps<T> {
     items: T[];
     ItemRenderer: React.ComponentType<ListItemProps<T>>;
     focusControl?: StateControls<string | undefined>;
-    selectionControl?: StateControls<string | undefined>;
+    // selectionControl?: StateControls<string | undefined>;
+    selectionControl?: StateControls<string[]>;
     transmitKeyPress?: UseTransmit<React.KeyboardEventHandler>;
     onItemMount?: (item: T) => void;
     onItemUnmount?: (item: T) => void;
@@ -72,21 +73,27 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     onItemUnmount,
     disableKeyboard,
 }: ListProps<T>): JSX.Element {
-    const [selectedId, setSelectedId] = useStateControls(selectionControl, undefined);
+    const [selectedIds, setSelectedIds] = useStateControls(selectionControl, []);
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
-    const [prevSelectedId, setPrevSelectedId] = useState(selectedId);
-    if (selectedId !== prevSelectedId) {
-        setFocusedId(selectedId);
-        setPrevSelectedId(selectedId);
+    const [prevSelectedId, setPrevSelectedId] = useState(selectedIds);
+    if (selectedIds !== prevSelectedId) {
+        setFocusedId(selectedIds[-1]);
+        setPrevSelectedId(selectedIds);
     }
     const defaultRef = useRef<EL>();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
 
-    const onClick = useIdListener(setSelectedId);
+    const onClick = useIdListener((id) => {
+        if (selectedIds.findIndex((selectedId) => selectedId === id) !== -1) {
+            return;
+        }
+        setSelectedIds(id ? [id] : []);
+    });
+
     const onKeyPress = disableKeyboard
         ? () => {}
-        : getHandleKeyboardNav(actualRef as React.RefObject<HTMLElement>, focusedId, setFocusedId, setSelectedId);
+        : getHandleKeyboardNav(actualRef as React.RefObject<HTMLElement>, focusedId, setFocusedId, setSelectedIds);
     if (transmitKeyPress) {
         transmitKeyPress(callInternalFirst(onKeyPress, listRoot?.props?.onKeyPress));
     }
@@ -113,8 +120,8 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                         data={item}
                         focus={setFocusedId}
                         isFocused={focusedId === id}
-                        isSelected={selectedId === id}
-                        select={setSelectedId}
+                        isSelected={selectedIds.findIndex((selectedId) => selectedId === id) !== -1}
+                        select={setSelectedIds}
                     />
                 );
             })}

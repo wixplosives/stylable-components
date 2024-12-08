@@ -23,7 +23,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     scrollListRef: RefObject<EL>;
     items: ListProps<T>['items'];
     getId: ListProps<T>['getId'];
-    selected: string | undefined;
+    selected: string[];
     averageItemSize: number;
     itemsDimensions: MutableRefObject<DimensionsById>;
     mountedItems: MutableRefObject<Set<string>>;
@@ -34,7 +34,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
     const loadingTimeout = useRef(0);
     const timeout = useRef(0);
     const isScrollingToSelection = useRef(false);
-    const selectedIndex = useMemo(() => items.findIndex((i) => getId(i) === selected), [items, getId, selected]);
+    const selectedIndex = useMemo(() => items.findIndex((i) => getId(i) === selected[0]), [items, getId, selected]);
     const calculateDistance = useCallback(
         ({ itemIndex, direction }: { itemIndex: number; direction: 'up' | 'down' }) => {
             let distance = 0;
@@ -59,7 +59,16 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
             return Math.floor((direction === 'down' ? 1 : -1) * distance);
         },
-        [averageItemSize, extraRenderSize, getId, isHorizontal, items, itemsDimensions, scrollWindowSize, selectedIndex]
+        [
+            averageItemSize,
+            extraRenderSize,
+            getId,
+            isHorizontal,
+            items,
+            itemsDimensions,
+            scrollWindowSize,
+            selectedIndex,
+        ],
     );
     const cleanUp = () => {
         isScrollingToSelection.current = false;
@@ -78,7 +87,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
                 const node = scrollListRef.current?.querySelector(`[data-id='${getId(items[selected]!)}']`);
                 if (!node) {
                     timeout.current = window.setTimeout(
-                        () => isScrollingToSelection.current && scrollTo(selected, true)
+                        () => isScrollingToSelection.current && scrollTo(selected, true),
                     );
                 } else {
                     scrollIntoViewIfNeeded(node, {
@@ -108,7 +117,7 @@ export const useScrollListScrollToSelected = <T, EL extends HTMLElement>({
 
             timeout.current = window.setTimeout(() => scrollIntoView(selectedIndex, repeated ? 'center' : position));
         },
-        [scrollListRef, scrollWindow, mountedItems, items, getId, calculateDistance]
+        [scrollListRef, scrollWindow, mountedItems, items, getId, calculateDistance],
     );
 
     useEffect(() => {
