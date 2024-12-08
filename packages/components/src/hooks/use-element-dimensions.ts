@@ -1,4 +1,4 @@
-import React, { MutableRefObject, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 import {
     childrenById,
     DimensionsById,
@@ -15,14 +15,14 @@ const getElementDimensions = (element?: Element): ElementDimensions => {
 };
 
 const calculateDimensions = <T, EL extends HTMLElement>(
-    ref: React.RefObject<EL>,
+    ref: React.RefObject<EL | null>,
     items: T[],
     size: ElementDimensions | ((t: T) => ElementDimensions) | undefined,
     getId: (t: T) => string,
     measure: boolean,
     sizeCache: Map<string, ElementDimensions>,
     oldRes: Record<string, ElementDimensions>,
-    setObserveTargets?: (targets: Element[]) => void
+    setObserveTargets?: (targets: Element[]) => void,
 ): { changed: boolean; res: Record<string, ElementDimensions> } => {
     const getDimensions = (item: T) => {
         if (size !== undefined) {
@@ -87,7 +87,7 @@ const calculateDimensions = <T, EL extends HTMLElement>(
 
 export const useSetableObserver = (shouldMeasure: boolean) => {
     const listener = useRef<ResizeObserverCallback>(() => undefined);
-    const observerRef = useRef<ResizeObserver>();
+    const observerRef = useRef<ResizeObserver>(undefined);
     const observed = useRef(new Set<Element>());
 
     useLayoutEffect(() => {
@@ -135,18 +135,18 @@ export const createSetableMutationObserver = () => {
 };
 
 export const useElementDimensions = <T, EL extends HTMLElement>(
-    ref: React.RefObject<EL>,
+    ref: React.RefObject<EL | null>,
     items: T[],
     getId: (item: T) => string,
     getItemDimensions: false | ElementDimensions | ((item: T) => ElementDimensions),
-    observeSubtree = false
-): MutableRefObject<DimensionsById> => {
+    observeSubtree = false,
+): React.RefObject<DimensionsById> => {
     const shouldMeasure = getItemDimensions === false;
     const preMeasured = typeof getItemDimensions === 'boolean' ? undefined : getItemDimensions;
     const cache = useRef(new Map<string, ElementDimensions>());
     const calculatedSize = useMemo(
         () => calculateDimensions(ref, items, preMeasured, getId, false, cache.current, {}).res,
-        [getId, items, preMeasured, ref]
+        [getId, items, preMeasured, ref],
     );
     const unMeasuredDimensions = useRef(calculatedSize);
     const dimensions = useRef(calculatedSize);
@@ -170,7 +170,7 @@ export const useElementDimensions = <T, EL extends HTMLElement>(
                     true,
                     cache.current,
                     dimensions.current,
-                    setTargets
+                    setTargets,
                 );
 
                 if (!changed) {
@@ -179,7 +179,7 @@ export const useElementDimensions = <T, EL extends HTMLElement>(
 
                 return res;
             }),
-        [ref, getId, items, delayedUpdateSizes, preMeasured, setTargets, dimensions]
+        [ref, getId, items, delayedUpdateSizes, preMeasured, setTargets, dimensions],
     );
 
     mutationListener(() => {
@@ -228,7 +228,7 @@ export const useElementDimensions = <T, EL extends HTMLElement>(
             true,
             cache.current,
             dimensions.current,
-            setTargets
+            setTargets,
         );
 
         if (changed) {
