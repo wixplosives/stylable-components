@@ -18,7 +18,7 @@ export const getPluginControls = () => {
     return existing;
 };
 
-export const renderInPluginControls = (board: JSX.Element, pluginControls: JSX.Element, key: string) => {
+export const renderInPluginControls = (board: React.ReactElement, pluginControls: React.ReactElement, key: string) => {
     const el = getPluginControls();
 
     return (

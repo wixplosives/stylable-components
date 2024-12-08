@@ -13,7 +13,7 @@ import { ScrollList } from '../scroll-list';
 
 const items = createItems();
 
-const elementRef: React.RefObject<HTMLDivElement> = {
+const elementRef: React.RefObject<HTMLDivElement | null> = {
     current: null,
 };
 

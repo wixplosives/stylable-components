@@ -1,9 +1,9 @@
 import { createPlugin } from '@wixc3/board-core';
 import type { IReactBoard } from '@wixc3/react-board';
+import { fireEvent } from '@testing-library/react';
 import { expect } from 'chai';
 import { sleep, waitFor } from 'promise-assist';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
 import { renderInPluginControls } from '../plugin-controls/plugin-controls';
 import { classes, st } from './scenario-plugin.st.css';
 
@@ -161,7 +161,7 @@ export const ScenarioRenderer = (props: ScenarioProps) => {
     );
 };
 
-export const RenderWrapper = (props: ScenarioParams & { board: JSX.Element }) => {
+export const RenderWrapper = (props: ScenarioParams & { board: React.ReactElement }) => {
     const [boardKey, rerenderBoard] = useReducer((n: number) => n + 1, 0);
 
     const resetBoard = () => {
@@ -338,10 +338,7 @@ export const writeAction = (selector: string, text: string, timeout = 2_000): Ac
         execute: async () => {
             const el = await waitForElement(selector, title, timeout);
             if (el && el instanceof HTMLInputElement) {
-                el.value = text;
-                ReactTestUtils.Simulate.change(el, {
-                    target: el,
-                });
+                fireEvent.change(el, { target: { value: text } });
             }
         },
         highlightSelector: selector,
