@@ -5,7 +5,6 @@
 @st-import [cancel, emphasis] from "../button/variants.st.css";
 @st-import Area from "../area/area.st.css";
 @st-import [floating] from "../area/variants.st.css";
-@st-import [popover, scrollListRoot] from "../auto-complete/auto-complete.st.css";
 @st-import ScrollList from "../scroll-list/scroll-list.st.css";
 @st-import InputWithClear from "../input-with-clear/input-with-clear.st.css";
 @st-import [primary-2, primary-3, primary-4, primary-7, reference-1, notification-warning-1, primary-6, primary-0, primary-5] from "./colors.st.css";
@@ -84,19 +83,8 @@
         border-radius: 3px;
     }
 
-    .popover {
-        padding-left: 4px;
-        padding-right: 4px;
-        padding-bottom: 4px;
-
-    }
-
     .InputWithClear::clear {
         -st-mixin: small;
     }
 
-    .scrollListRoot {
-        max-height: 30vh;
-
-    }
 }
