@@ -72,7 +72,7 @@ export default createBoard({
                     itemSize={() => 50}
                     getId={getId}
                     selectionControl={[selectedItems, noop]}
-                    scrollToSelection={true}
+                    scrollToFocused={true}
                     scrollListRoot={{
                         el: 'div',
                         props: {

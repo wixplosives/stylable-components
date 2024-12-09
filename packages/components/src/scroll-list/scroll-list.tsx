@@ -20,7 +20,7 @@ import {
     ScrollListPositioningProps,
     useLoadMoreOnScroll,
     useScrollListPosition,
-    useScrollListScrollToSelected,
+    useScrollListScrollToFocused,
 } from './hooks';
 import { classes } from './scroll-list.st.css';
 
@@ -121,7 +121,7 @@ export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollList
      *
      * @default false
      */
-    scrollToSelection?: boolean;
+    scrollToFocused?: boolean;
     itemsInRow?: number;
     itemGap?: number;
     /**
@@ -148,7 +148,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     scrollListRoot,
     listRoot,
     selectionControl,
-    scrollToSelection = false,
+    scrollToFocused = false,
     extraRenderSize = 0.5,
     unmountItems,
     preloader,
@@ -247,13 +247,13 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         loadedItemsNumber: items.length,
     });
 
-    useScrollListScrollToSelected({
+    useScrollListScrollToFocused({
         scrollWindow,
         scrollListRef,
-        scrollToSelection,
+        scrollToFocused,
         items,
         getId,
-        selected,
+        focused,
         averageItemSize,
         mountedItems,
         isHorizontal,
