@@ -51,12 +51,12 @@ export interface ListProps<T> {
     items: T[];
     ItemRenderer: React.ComponentType<ListItemProps<T>>;
     focusControl?: StateControls<string | undefined>;
-    // selectionControl?: StateControls<string | undefined>;
     selectionControl?: StateControls<string[]>;
     transmitKeyPress?: UseTransmit<React.KeyboardEventHandler>;
     onItemMount?: (item: T) => void;
     onItemUnmount?: (item: T) => void;
     disableKeyboard?: boolean;
+    enableMultiselect?: boolean;
 }
 
 export type List<T> = (props: ListProps<T>) => JSX.Element;
@@ -72,8 +72,10 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     onItemMount,
     onItemUnmount,
     disableKeyboard,
+    enableMultiselect = true,
 }: ListProps<T>): JSX.Element {
     const [selectedIds, setSelectedIds] = useStateControls(selectionControl, []);
+    console.log('selectedIds: ', JSON.stringify(selectedIds));
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
     const [prevSelectedId, setPrevSelectedId] = useState(selectedIds);
     if (selectedIds !== prevSelectedId) {
@@ -84,11 +86,19 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
 
-    const onClick = useIdListener((id) => {
+    const onClick = useIdListener((id, ev) => {
+        const isCtrlPressed = ev.ctrlKey || ev.metaKey;
         if (selectedIds.findIndex((selectedId) => selectedId === id) !== -1) {
+            if (enableMultiselect && isCtrlPressed) {
+                setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
+            }
             return;
         }
-        setSelectedIds(id ? [id] : []);
+        if (id) {
+            setSelectedIds(enableMultiselect && isCtrlPressed ? [...selectedIds, id] : [id]);
+        } else {
+            setSelectedIds([]);
+        }
     });
 
     const onKeyPress = disableKeyboard
