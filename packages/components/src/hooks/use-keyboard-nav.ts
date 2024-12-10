@@ -2,7 +2,7 @@ import React from 'react';
 import { childrenById, KeyCodes } from '../common';
 
 export const getHandleKeyboardNav = (
-    elementsParent: React.RefObject<HTMLElement>,
+    elementsParent: React.RefObject<HTMLElement | null>,
     focusedId: string | undefined,
     setFocusedId: (id: string) => void,
     setSelectedIds: (ids: string[]) => void,

@@ -4,7 +4,7 @@ import { ProcessedControlledState } from './use-state-controls';
 
 export type KeyboardSelectMeta = 'keyboard';
 export interface TreeViewKeyboardInteractionsParams {
-    eventRoots?: React.RefObject<HTMLElement>[];
+    eventRoots?: React.RefObject<HTMLElement | null>[];
     focusedItemId: string | undefined;
     open: (itemId: string) => void;
     close: (itemId: string) => void;

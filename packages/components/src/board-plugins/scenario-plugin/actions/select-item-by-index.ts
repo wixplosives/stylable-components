@@ -1,4 +1,4 @@
-import ReactTestUtils from 'react-dom/test-utils';
+import { fireEvent } from '@testing-library/react';
 import { Action, waitForElement } from '../scenario-plugin';
 
 export const selectItemInput = 'input';
@@ -12,10 +12,7 @@ export const selectItemByIndex = (index: string): Action => {
         execute: async () => {
             const input = await waitForElement(`#${selectItemInput}`, title);
             if (input && input instanceof HTMLInputElement) {
-                input.value = index;
-                ReactTestUtils.Simulate.change(input, {
-                    target: input,
-                });
+                fireEvent.change(input, { target: { value: index } });
             }
             const button = await waitForElement(`#${selectItemButton}`, title);
 

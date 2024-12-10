@@ -66,7 +66,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
     itemsDimensions: MutableRefObject<DimensionsById>;
     maxScrollSize: number;
     scrollPosition: number;
-    scrollListRef: RefObject<EL>;
+    scrollListRef: RefObject<EL | null>;
 }) => {
     const lastRenderedItem = useRef(0);
     const shouldMeasureOffset = typeof scrollOffset === 'number' ? unknownPosition : scrollOffset;
@@ -115,7 +115,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
     // it can't be more than scrollWindow 2 times (as extra is between 0 and 1);
     const firstWantedPixel = useMemo(
         () => (unmountItems ? lastWantedPixel - 2 * scrollWindowSize : 0),
-        [unmountItems, scrollWindowSize, lastWantedPixel]
+        [unmountItems, scrollWindowSize, lastWantedPixel],
     );
 
     return useMemo(() => {
@@ -171,7 +171,7 @@ export const useScrollListPosition = <T, EL extends HTMLElement>({
                 if (!unmountItems) {
                     lastShownItemIndex = lastRenderedItem.current = Math.max(
                         lastShownItemIndex,
-                        lastRenderedItem.current
+                        lastRenderedItem.current,
                     );
                 }
 

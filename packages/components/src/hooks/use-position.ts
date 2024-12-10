@@ -17,10 +17,10 @@ const getItemPositionInParent = (el: HTMLElement) => {
 const isSamePosition = (p1: Position, p2: Position) => p1.x === p2.x && p1.y === p2.y;
 
 const useAfterRenderEffect = <T, U = null>(
-    element: React.RefObject<HTMLElement>,
+    element: React.RefObject<HTMLElement | null>,
     onElementUpdate: (el: HTMLElement) => T | typeof unchanged,
     watch?: Watch,
-    def: T | U = null as unknown as U
+    def: T | U = null as unknown as U,
 ): T | U => {
     const [state, update] = useState(def);
     const delayedUpdate = useDelayedUpdateState(update);
@@ -39,11 +39,11 @@ const useAfterRenderEffect = <T, U = null>(
 };
 
 export const usePositionInParent = (
-    element: React.RefObject<HTMLElement>,
-    watchPosition: Position | boolean = false
+    element: React.RefObject<HTMLElement | null>,
+    watchPosition: Position | boolean = false,
 ): Position => {
     const watch: Watch = typeof watchPosition === 'object' ? 'ignore' : watchPosition ? 'timer' : 'measure-once';
-    const lastValRef = useRef<Position>();
+    const lastValRef = useRef<Position>(undefined);
     const onTimer = useCallback((el: HTMLElement) => {
         if (!el || !el.parentElement) {
             return unchanged;

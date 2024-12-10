@@ -9,7 +9,7 @@ export const useScroll = ({
 }: {
     isHorizontal?: boolean;
     disabled?: boolean;
-    ref?: React.RefObject<HTMLElement>;
+    ref?: React.RefObject<HTMLElement | null>;
 }): number => {
     const trigger = useDelayedUpdate();
 

@@ -7,7 +7,7 @@ import { ScrollList, ScrollListProps, forwardScrollListRoot } from '../scroll-li
 import { classes, vars } from './data-grid.st.css';
 export interface Column<T> {
     id: string;
-    header: JSX.Element;
+    header: React.ReactElement;
     cellRenderer: React.ComponentType<ListItemProps<T>>;
 }
 
@@ -54,7 +54,7 @@ export function DataGrid<T, EL extends HTMLElement>({
             columns,
             sizes: columnSizes,
         }),
-        [columnSizes, columns]
+        [columnSizes, columns],
     );
 
     const resizers = useMemo(
@@ -76,7 +76,7 @@ export function DataGrid<T, EL extends HTMLElement>({
                 window.addEventListener('mousemove', listener);
                 window.addEventListener('mouseup', endListener);
             }),
-        [columns, columnSizes, updateColumnSizes]
+        [columns, columnSizes, updateColumnSizes],
     );
     useEffect(() => {
         return () => {

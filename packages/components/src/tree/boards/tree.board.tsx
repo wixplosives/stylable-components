@@ -22,7 +22,7 @@ const createTreeData = (maxChildren: number, maxDepth: number, currentDepth = 0,
 };
 const ids: string[] = [];
 const treeData = createTreeData(6, 3);
-const elementRef: React.RefObject<HTMLDivElement> = {
+const elementRef: React.RefObject<HTMLDivElement | null> = {
     current: null,
 };
 

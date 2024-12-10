@@ -16,7 +16,7 @@ const treeWrapperContext = createContext<TreeWrapperContext>({
 
 export const TreeItemWrapper = <T,>(
     UserRenderer: React.ComponentType<TreeItemProps<T>>,
-): ((props: ListItemProps<T>) => JSX.Element) => {
+): ((props: ListItemProps<T>) => React.ReactElement) => {
     const Wrapper = (props: ListItemProps<T>) => {
         const { openItemIds, close, open, getChildren, getDepth } = useContext(treeWrapperContext);
         const boundClose = useCallback(() => close(props.id), [close, props.id]);
@@ -40,7 +40,7 @@ export const TreeItemWrapper = <T,>(
     return Wrapper;
 };
 
-export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T, EL>): JSX.Element {
+export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T, EL>): React.ReactElement {
     const {
         eventRoots,
         listRoot,

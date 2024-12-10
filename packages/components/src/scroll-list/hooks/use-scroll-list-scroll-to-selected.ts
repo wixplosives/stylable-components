@@ -20,7 +20,7 @@ export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
 }: {
     scrollToFocused: ScrollListProps<T, EL>['scrollToFocused'];
     scrollWindow?: ScrollListProps<T, EL>['scrollWindow'];
-    scrollListRef: RefObject<EL>;
+    scrollListRef: RefObject<EL | null>;
     items: ListProps<T>['items'];
     getId: ListProps<T>['getId'];
     focused?: string;

@@ -59,7 +59,7 @@ export interface ListProps<T> {
     enableMultiselect?: boolean;
 }
 
-export type List<T> = (props: ListProps<T>) => JSX.Element;
+export type List<T> = (props: ListProps<T>) => React.ReactElement;
 
 export function List<T, EL extends HTMLElement = HTMLDivElement>({
     listRoot,
@@ -73,10 +73,10 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     onItemUnmount,
     disableKeyboard,
     enableMultiselect = true,
-}: ListProps<T>): JSX.Element {
+}: ListProps<T>): React.ReactElement {
     const [selectedIds, setSelectedIds] = useStateControls(selectionControl, []);
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
-    const defaultRef = useRef<EL>();
+    const defaultRef = useRef<EL>(null);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
 
@@ -120,7 +120,12 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
 
     const onKeyPress = disableKeyboard
         ? () => {}
-        : getHandleKeyboardNav(actualRef as React.RefObject<HTMLElement>, focusedId, setFocusedId, setSelectedIds);
+        : getHandleKeyboardNav(
+              actualRef as React.RefObject<HTMLElement | null>,
+              focusedId,
+              setFocusedId,
+              setSelectedIds,
+          );
     if (transmitKeyPress) {
         transmitKeyPress(callInternalFirst(onKeyPress, listRoot?.props?.onKeyPress));
     }
@@ -128,7 +133,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
         <ListRootSlot
             slot={listRoot}
             props={{
-                ref: actualRef as React.RefObject<HTMLDivElement>,
+                ref: actualRef as React.RefObject<HTMLDivElement | null>,
                 onClick,
                 onKeyPress,
                 onKeyDown: onKeyPress,

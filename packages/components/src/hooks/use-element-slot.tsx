@@ -5,7 +5,7 @@ import React, { useMemo } from 'react';
 import type { ElementSlot, PropMapping } from '../common';
 
 // here because in issue with ts transformers in WCS
-export const a = (): JSX.Element => <div></div>;
+export const a = (): React.ReactElement => <div></div>;
 
 export const defaultRoot: ElementSlot<React.ComponentPropsWithRef<'div'>, 'div'> = {
     el: 'div',
@@ -68,9 +68,9 @@ export const defineElementSlot = <
             );
         },
         create: function <Props extends MinimalProps>(
-            el: React.ComponentType<Props> | keyof React.ReactHTML,
+            el: React.ComponentType<Props> | keyof React.JSX.IntrinsicElements,
             props: Partial<Props>,
-        ): ElementSlot<MinimalProps, React.ComponentType<Props> | keyof React.ReactHTML, Props> {
+        ): ElementSlot<MinimalProps, React.ComponentType<Props> | keyof React.JSX.IntrinsicElements, Props> {
             return {
                 el,
                 props: props as any,

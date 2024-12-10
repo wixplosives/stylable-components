@@ -111,7 +111,7 @@ export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollList
      *
      * @default Window
      */
-    scrollWindow?: React.RefObject<EL>;
+    scrollWindow?: React.RefObject<EL | null>;
     /**
      * allows replacing the root element of the scroll list
      */
@@ -158,11 +158,11 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     transmitKeyPress,
     overlay,
     disableKeyboard,
-}: ScrollListProps<T, EL>): JSX.Element {
-    const defaultScrollListRef = useRef<EL>();
-    const scrollListRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement>) || defaultScrollListRef;
+}: ScrollListProps<T, EL>): React.ReactElement {
+    const defaultScrollListRef = useRef<EL>(null);
+    const scrollListRef = (scrollListRoot?.props?.ref as React.RefObject<HTMLElement | null>) || defaultScrollListRef;
     const defaultListRef = useRef<HTMLElement>(null);
-    const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement>) || defaultListRef;
+    const listRef = (listRoot?.props?.ref as React.RefObject<HTMLDivElement | null>) || defaultListRef;
     const scrollPosition = useScroll({
         isHorizontal,
         ref: scrollWindow,
