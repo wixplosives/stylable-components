@@ -75,7 +75,6 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     enableMultiselect = true,
 }: ListProps<T>): JSX.Element {
     const [selectedIds, setSelectedIds] = useStateControls(selectionControl, []);
-    console.log('selectedIds: ', JSON.stringify(selectedIds));
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
     const [prevSelectedId, setPrevSelectedId] = useState(selectedIds);
     if (selectedIds !== prevSelectedId) {
