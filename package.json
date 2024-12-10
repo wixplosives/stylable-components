@@ -24,7 +24,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "20",
     "@types/react": "^19.0.1",
-    "@types/react-dom": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
     "@wixc3/board-core": "^4.6.2",
     "@wixc3/react-board": "^4.6.2",
     "chai": "^4.5.0",
