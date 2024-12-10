@@ -38,7 +38,7 @@ export default createBoard({
     name: 'ScrollList — scroll to selected item',
     Board: () => {
         const initialSelectedIndex = 442;
-        const [selectedItem, setSelectedItem] = useState(`a${initialSelectedIndex}`);
+        const [selectedItems, setSelectedItems] = useState([`a${initialSelectedIndex}`]);
         const [input, setInput] = useState(initialSelectedIndex);
 
         return (
@@ -60,7 +60,7 @@ export default createBoard({
                         />
                     </label>
 
-                    <button id={selectItemButton} onClick={() => setSelectedItem(`a${input}`)}>
+                    <button id={selectItemButton} onClick={() => setSelectedItems([`a${input}`])}>
                         Select
                     </button>
                 </div>
@@ -71,8 +71,8 @@ export default createBoard({
                     items={items}
                     itemSize={() => 50}
                     getId={getId}
-                    selectionControl={[selectedItem, noop]}
-                    scrollToSelection={true}
+                    selectionControl={[selectedItems, noop]}
+                    scrollToFocused={true}
                     scrollListRoot={{
                         el: 'div',
                         props: {

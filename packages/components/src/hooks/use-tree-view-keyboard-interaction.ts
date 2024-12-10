@@ -9,7 +9,7 @@ export interface TreeViewKeyboardInteractionsParams {
     open: (itemId: string) => void;
     close: (itemId: string) => void;
     focus: (itemId: string) => void;
-    select: ProcessedControlledState<string, KeyboardSelectMeta>[1];
+    select: ProcessedControlledState<string[], KeyboardSelectMeta>[1];
     isOpen: (itemId: string) => boolean;
     isEndNode: (itemId: string) => boolean;
     getPrevious: (itemId: string) => string | undefined;
@@ -60,7 +60,7 @@ export const useTreeViewKeyboardInteraction = ({
             if (!itemId) return;
 
             if (selectionFollowsFocus) {
-                select(itemId, 'keyboard');
+                select([itemId], 'keyboard');
             } else {
                 focus(itemId);
             }
@@ -72,7 +72,7 @@ export const useTreeViewKeyboardInteraction = ({
         if (!focusedItemId) {
             return;
         }
-        select(focusedItemId);
+        select([focusedItemId]);
     }, [focusedItemId, select]);
 
     const handleArrowRight = useCallback(() => {

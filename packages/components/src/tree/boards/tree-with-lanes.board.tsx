@@ -93,12 +93,12 @@ const mockedLane = lane(
                                                                                         el('p', [
                                                                                             lane(
                                                                                                 [laneKinds.repeater],
-                                                                                                [el('span')]
+                                                                                                [el('span')],
                                                                                             ),
                                                                                         ]),
                                                                                     ]),
                                                                                 ]),
-                                                                            ]
+                                                                            ],
                                                                         ),
                                                                         el('span', [
                                                                             el('Comp', [
@@ -109,32 +109,32 @@ const mockedLane = lane(
                                                                                 el('p', [
                                                                                     lane(
                                                                                         [laneKinds.repeater],
-                                                                                        [el('span')]
+                                                                                        [el('span')],
                                                                                     ),
                                                                                 ]),
                                                                             ]),
                                                                         ]),
-                                                                    ]
+                                                                    ],
                                                                 ),
-                                                            ]
+                                                            ],
                                                         ),
                                                     ]),
                                                 ]),
                                             ]),
-                                        ]
+                                        ],
                                     ),
                                     el('span', [
                                         el('Comp', [marker('children'), marker('header', [el('div')])]),
                                         el('div', [el('p', [lane([laneKinds.repeater], [el('span')])])]),
                                     ]),
-                                ]
+                                ],
                             ),
-                        ]
+                        ],
                     ),
                 ]),
             ]),
         ]),
-    ]
+    ],
 );
 
 const data: TreeItemWithLaneData = el('div', [mockedLane, mockedLane]);
@@ -170,7 +170,7 @@ const treeOverlay = createTreeOverlay(OverlayRenderer, {});
 export default createBoard({
     name: 'Tree with lanes',
     Board: () => {
-        const [selection, updateSelection] = useState<string | undefined>(undefined);
+        const [selection, updateSelection] = useState<string[]>([]);
         const [openItems, updateOpen] = useState<string[]>(allIds);
 
         return (
@@ -180,10 +180,10 @@ export default createBoard({
                         getIndent,
                         getParents,
                         selectItem: (item) => {
-                            updateSelection(item.id);
+                            updateSelection([item.id]);
                         },
                     }),
-                    []
+                    [],
                 )}
             >
                 <Tree<TreeItemWithLaneData>

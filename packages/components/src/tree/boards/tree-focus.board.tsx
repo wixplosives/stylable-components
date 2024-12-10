@@ -31,7 +31,8 @@ export default createBoard({
     Board: () => {
         const openItemsControl = useState<string[]>([]);
         const scrollRef = useRef<HTMLDivElement>(null);
-        const selectionControl = useState<string | undefined>();
+        const selectionControl = useState<string[]>([]);
+        const [, setSelection] = selectionControl;
         return (
             <div>
                 <Tree<typeof data>
@@ -50,10 +51,10 @@ export default createBoard({
                     }}
                     eventRoots={[scrollRef]}
                 />
-                <button id="clear" onClick={() => selectionControl[1](undefined)}>
+                <button id="clear" onClick={() => setSelection([])}>
                     clear selection
                 </button>
-                <button id="select" onClick={() => selectionControl[1]('5')}>
+                <button id="select" onClick={() => setSelection(['5'])}>
                     select 5
                 </button>
             </div>

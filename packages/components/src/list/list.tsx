@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
     callInternalFirst,
     defaultRoot,
@@ -42,7 +42,7 @@ export interface ListItemProps<T> {
     isFocused: boolean;
     isSelected: boolean;
     focus: (id?: string) => void;
-    select: (id?: string) => void;
+    select: (ids: string[]) => void;
 }
 
 export interface ListProps<T> {
@@ -51,11 +51,12 @@ export interface ListProps<T> {
     items: T[];
     ItemRenderer: React.ComponentType<ListItemProps<T>>;
     focusControl?: StateControls<string | undefined>;
-    selectionControl?: StateControls<string | undefined>;
+    selectionControl?: StateControls<string[]>;
     transmitKeyPress?: UseTransmit<React.KeyboardEventHandler>;
     onItemMount?: (item: T) => void;
     onItemUnmount?: (item: T) => void;
     disableKeyboard?: boolean;
+    enableMultiselect?: boolean;
 }
 
 export type List<T> = (props: ListProps<T>) => React.ReactElement;
@@ -71,26 +72,59 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     onItemMount,
     onItemUnmount,
     disableKeyboard,
+    enableMultiselect = true,
 }: ListProps<T>): React.ReactElement {
-    const [selectedId, setSelectedId] = useStateControls(selectionControl, undefined);
+    const [selectedIds, setSelectedIds] = useStateControls(selectionControl, []);
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
-    const [prevSelectedId, setPrevSelectedId] = useState(selectedId);
-    if (selectedId !== prevSelectedId) {
-        setFocusedId(selectedId);
-        setPrevSelectedId(selectedId);
-    }
     const defaultRef = useRef<EL>(null);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
 
-    const onClick = useIdListener(setSelectedId);
+    const onClick = useIdListener(
+        useCallback(
+            (id: string | undefined, ev: React.MouseEvent<Element, MouseEvent>): void => {
+                if (!id) {
+                    setSelectedIds([]);
+                    return;
+                }
+
+                setFocusedId(id);
+
+                const isSameSelected = selectedIds.includes(id);
+
+                if (!enableMultiselect) {
+                    if (isSameSelected) {
+                        return;
+                    }
+
+                    setSelectedIds([id]);
+                    return;
+                }
+
+                const isCtrlPressed = ev.ctrlKey || ev.metaKey;
+
+                if (isSameSelected && isCtrlPressed) {
+                    setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
+                    return;
+                }
+
+                if (isCtrlPressed) {
+                    setSelectedIds([...selectedIds, id]);
+                } else {
+                    setSelectedIds([id]);
+                }
+            },
+            [enableMultiselect, selectedIds, setFocusedId, setSelectedIds],
+        ),
+    );
+
     const onKeyPress = disableKeyboard
         ? () => {}
         : getHandleKeyboardNav(
               actualRef as React.RefObject<HTMLElement | null>,
               focusedId,
               setFocusedId,
-              setSelectedId,
+              setSelectedIds,
           );
     if (transmitKeyPress) {
         transmitKeyPress(callInternalFirst(onKeyPress, listRoot?.props?.onKeyPress));
@@ -118,8 +152,8 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                         data={item}
                         focus={setFocusedId}
                         isFocused={focusedId === id}
-                        isSelected={selectedId === id}
-                        select={setSelectedId}
+                        isSelected={selectedIds.findIndex((selectedId) => selectedId === id) !== -1}
+                        select={setSelectedIds}
                     />
                 );
             })}
