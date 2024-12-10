@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
     callInternalFirst,
     defaultRoot,
@@ -76,11 +76,6 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
 }: ListProps<T>): JSX.Element {
     const [selectedIds, setSelectedIds] = useStateControls(selectionControl, []);
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
-    const [prevSelectedId, setPrevSelectedId] = useState(selectedIds);
-    if (selectedIds !== prevSelectedId) {
-        setFocusedId(selectedIds[selectedIds.length - 1]);
-        setPrevSelectedId(selectedIds);
-    }
     const defaultRef = useRef<EL>();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
@@ -92,6 +87,8 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                     setSelectedIds([]);
                     return;
                 }
+
+                setFocusedId(id);
 
                 const isSameSelected = selectedIds.includes(id);
 
@@ -117,7 +114,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                     setSelectedIds([id]);
                 }
             },
-            [enableMultiselect, selectedIds, setSelectedIds],
+            [enableMultiselect, selectedIds, setFocusedId, setSelectedIds],
         ),
     );
 
