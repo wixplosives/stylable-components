@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     callInternalFirst,
     defaultRoot,
@@ -86,20 +86,41 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
 
-    const onClick = useIdListener((id, ev) => {
-        const isCtrlPressed = ev.ctrlKey || ev.metaKey;
-        if (selectedIds.findIndex((selectedId) => selectedId === id) !== -1) {
-            if (enableMultiselect && isCtrlPressed) {
-                setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
-            }
-            return;
-        }
-        if (id) {
-            setSelectedIds(enableMultiselect && isCtrlPressed ? [...selectedIds, id] : [id]);
-        } else {
-            setSelectedIds([]);
-        }
-    });
+    const onClick = useIdListener(
+        useCallback(
+            (id: string | undefined, ev: React.MouseEvent<Element, MouseEvent>): void => {
+                if (!id) {
+                    setSelectedIds([]);
+                    return;
+                }
+
+                const isSameSelected = selectedIds.includes(id);
+
+                if (!enableMultiselect) {
+                    if (isSameSelected) {
+                        return;
+                    }
+
+                    setSelectedIds([id]);
+                    return;
+                }
+
+                const isCtrlPressed = ev.ctrlKey || ev.metaKey;
+
+                if (isSameSelected && isCtrlPressed) {
+                    setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
+                    return;
+                }
+
+                if (isCtrlPressed) {
+                    setSelectedIds([...selectedIds, id]);
+                } else {
+                    setSelectedIds([id]);
+                }
+            },
+            [enableMultiselect, selectedIds, setSelectedIds],
+        ),
+    );
 
     const onKeyPress = disableKeyboard
         ? () => {}
