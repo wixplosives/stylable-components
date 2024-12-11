@@ -85,6 +85,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
             (id: string | undefined, ev: React.MouseEvent<Element, MouseEvent>): void => {
                 if (!id) {
                     setSelectedIds([]);
+                    setFocusedId(undefined);
                     return;
                 }
 
