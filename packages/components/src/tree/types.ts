@@ -38,7 +38,6 @@ export interface TreeAddedProps<T> {
     eventRoots?: TreeViewKeyboardInteractionsParams['eventRoots'];
     ItemRenderer: React.ComponentType<TreeItemProps<T>>;
     overlay?: typeof overlayRoot;
-    // selectionControl?: StateControls<string | undefined, KeyboardSelectMeta | undefined>;
     selectionControl?: StateControls<string[], KeyboardSelectMeta | undefined>;
 }
 
