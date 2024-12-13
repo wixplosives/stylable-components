@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { unknownPosition, Position } from '../common';
-import { unchanged, useDelayedUpdateState } from './use-delayed-update';
+import { unknownPosition, Position } from '../common/index.js';
+import { unchanged, useDelayedUpdateState } from './use-delayed-update.js';
 
 type Watch = 'measure-once' | 'timer' | 'ignore';
 

@@ -1,13 +1,13 @@
 import type React from 'react';
-import type { StateControls } from '../hooks';
+import type { StateControls } from '../hooks/index.js';
 import type {
     KeyboardInteractionConfiguration,
     KeyboardSelectMeta,
     TreeViewKeyboardInteractionsParams,
-} from '../hooks/use-tree-view-keyboard-interaction';
-import type { ListItemProps } from '../list/list';
-import type { OverlayProps, ScrollListItemInfo, ScrollListProps } from '../scroll-list/scroll-list';
-import type { overlayRoot } from './utils';
+} from '../hooks/use-tree-view-keyboard-interaction.js';
+import type { ListItemProps } from '../list/list.js';
+import type { OverlayProps, ScrollListItemInfo, ScrollListProps } from '../scroll-list/scroll-list.js';
+import type { overlayRoot } from './utils.js';
 
 export interface TreeItemInfo<T> extends ScrollListItemInfo<T> {
     isOpen: boolean;

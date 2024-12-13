@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const DimensionIcon = IconFactory(
     <g fill="currentColor">
@@ -7,5 +7,5 @@ export const DimensionIcon = IconFactory(
     </g>,
     'DimensionIcon',
     18,
-    18
+    18,
 );

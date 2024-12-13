@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const DragHandleIcon = IconFactory(
     <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
@@ -14,5 +14,5 @@ export const DragHandleIcon = IconFactory(
     </g>,
     'DragHandleIcon',
     6,
-    12
+    12,
 );

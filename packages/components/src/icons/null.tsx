@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const NullIcon = IconFactory(
     <rect
@@ -15,5 +15,5 @@ export const NullIcon = IconFactory(
     />,
     'NullIcon',
     18,
-    18
+    18,
 );

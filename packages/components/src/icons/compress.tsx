@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const CompressIcon = IconFactory(
     <g fill="currentColor" fillRule="evenodd" transform="translate(6 6)">
@@ -19,5 +19,5 @@ export const CompressIcon = IconFactory(
     </g>,
     'CompressIcon',
     24,
-    24
+    24,
 );

@@ -1,7 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
-import { projectThemesPlugin } from '../../board-plugins';
-import { Preloader } from '../preloader';
+import { projectThemesPlugin } from '../../board-plugins/index.js';
+import { Preloader } from '../preloader.js';
 import { classes } from '../variants/circle-preloader.st.css';
 
 export default createBoard({

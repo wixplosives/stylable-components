@@ -1,5 +1,7 @@
 {
   "name": "stylable-components-repo",
+  "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
@@ -45,6 +47,5 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.18.0"
   },
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }

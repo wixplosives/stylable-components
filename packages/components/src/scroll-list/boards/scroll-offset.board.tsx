@@ -1,7 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
 import React, { useRef, useState } from 'react';
-import { createItems, getId, ItemRenderer } from '../../board-assets';
+import { createItems, getId, ItemRenderer } from '../../board-assets/index.js';
 import {
     expectElement,
     expectElements,
@@ -9,8 +9,8 @@ import {
     scenarioPlugin,
     scrollAction,
     writeAction,
-} from '../../board-plugins';
-import { ScrollList } from '../scroll-list';
+} from '../../board-plugins/index.js';
+import { ScrollList } from '../scroll-list.js';
 
 const items = createItems();
 const fixedItemSize = 50; // board-assets/item-renderer/item-renderer.st.css
@@ -87,7 +87,7 @@ export default createBoard({
                         expect(el.getBoundingClientRect().height).to.equal(1_000 * fixedItemSize + 401);
                     },
                     'max scroll is accurate',
-                    5_000
+                    5_000,
                 ),
                 scrollAction(-1, true, '#scroll-root', 4000),
 
@@ -104,7 +104,7 @@ export default createBoard({
                         expect(el.getBoundingClientRect().height).to.be.approximately(1_000 * 100 + 124, 2);
                     },
                     'max scroll is updated',
-                    5_000
+                    5_000,
                 ),
                 scrollAction(-1, true, '#scroll-root'),
                 expectElements(['#scroll-root', '[data-id="a999"]'], (els) => {

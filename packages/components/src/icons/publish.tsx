@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const PublishIcon = IconFactory(
     <g fill="none" fillRule="evenodd">
@@ -23,5 +23,5 @@ export const PublishIcon = IconFactory(
     </g>,
     'PublishIcon',
     22,
-    21
+    21,
 );

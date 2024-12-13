@@ -1,5 +1,5 @@
 import { fireEvent } from '@testing-library/react';
-import { Action, waitForElement } from '../scenario-plugin';
+import { Action, waitForElement } from '../scenario-plugin.js';
 
 export const selectItemInput = 'input';
 export const selectItemButton = 'button';

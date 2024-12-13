@@ -1,7 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
-import { createItems, ItemData, ItemRenderer } from '../../board-assets';
-import { List } from '../list';
+import { createItems, ItemData, ItemRenderer } from '../../board-assets/index.js';
+import { List } from '../list.js';
 
 const items = createItems(100);
 

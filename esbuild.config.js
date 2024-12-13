@@ -1,8 +1,8 @@
 // @ts-check
 
-const { stylablePlugin } = require('@stylable/esbuild');
+import { stylablePlugin } from '@stylable/esbuild';
 
 /** @type {import('esbuild').BuildOptions} */
-module.exports = {
+export default {
     plugins: [stylablePlugin({ cssInjection: 'js' })],
 };

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 
 import React, { useMemo } from 'react';
-import type { ElementSlot, PropMapping } from '../common';
+import type { ElementSlot, PropMapping } from '../common/index.js';
 
 // here because in issue with ts transformers in WCS
 export const a = (): React.ReactElement => <div></div>;

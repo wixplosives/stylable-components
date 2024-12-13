@@ -1,18 +1,19 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useMemo, useState } from 'react';
-import { getChildren } from '../../board-assets';
-import { projectThemesPlugin } from '../../board-plugins';
-import type { ElementData } from '../../board-assets/tree-items/lanes/element-item-renderer';
-import { lanesContext } from '../../board-assets/tree-items/lanes/lane-context';
-import type { LaneData, LaneItem } from '../../board-assets/tree-items/lanes/lane-item-renderer';
-import type { MarkerData } from '../../board-assets/tree-items/lanes/marker-item-renderer';
-import { OverlayRenderer } from '../../board-assets/tree-items/lanes/overlays-renderer';
+import { getChildren } from '../../board-assets/index.js';
+import { projectThemesPlugin } from '../../board-plugins/index.js';
+import type { ElementData } from '../../board-assets/tree-items/lanes/element-item-renderer.js';
+import { lanesContext } from '../../board-assets/tree-items/lanes/lane-context.js';
+import type { LaneData, LaneItem } from '../../board-assets/tree-items/lanes/lane-item-renderer.js';
+import type { MarkerData } from '../../board-assets/tree-items/lanes/marker-item-renderer.js';
+import { OverlayRenderer } from '../../board-assets/tree-items/lanes/overlays-renderer.js';
 import {
     calcItemSize,
     TreeItemWithLaneData,
     TreeItemWithLaneRenderer,
-} from '../../board-assets/tree-items/tree-item-with-lane-renderer';
-import { createTreeOverlay, Tree } from '../';
+} from '../../board-assets/tree-items/tree-item-with-lane-renderer.js';
+import { createTreeOverlay } from '../utils.js';
+import { Tree } from '../tree.js';
 
 let idCounter = 0;
 const nextId = () => 'id' + idCounter++;
@@ -93,12 +94,12 @@ const mockedLane = lane(
                                                                                         el('p', [
                                                                                             lane(
                                                                                                 [laneKinds.repeater],
-                                                                                                [el('span')]
+                                                                                                [el('span')],
                                                                                             ),
                                                                                         ]),
                                                                                     ]),
                                                                                 ]),
-                                                                            ]
+                                                                            ],
                                                                         ),
                                                                         el('span', [
                                                                             el('Comp', [
@@ -109,32 +110,32 @@ const mockedLane = lane(
                                                                                 el('p', [
                                                                                     lane(
                                                                                         [laneKinds.repeater],
-                                                                                        [el('span')]
+                                                                                        [el('span')],
                                                                                     ),
                                                                                 ]),
                                                                             ]),
                                                                         ]),
-                                                                    ]
+                                                                    ],
                                                                 ),
-                                                            ]
+                                                            ],
                                                         ),
                                                     ]),
                                                 ]),
                                             ]),
-                                        ]
+                                        ],
                                     ),
                                     el('span', [
                                         el('Comp', [marker('children'), marker('header', [el('div')])]),
                                         el('div', [el('p', [lane([laneKinds.repeater], [el('span')])])]),
                                     ]),
-                                ]
+                                ],
                             ),
-                        ]
+                        ],
                     ),
                 ]),
             ]),
         ]),
-    ]
+    ],
 );
 
 const data: TreeItemWithLaneData = el('div', [mockedLane, mockedLane]);
@@ -183,7 +184,7 @@ export default createBoard({
                             updateSelection(item.id);
                         },
                     }),
-                    []
+                    [],
                 )}
             >
                 <Tree<TreeItemWithLaneData>

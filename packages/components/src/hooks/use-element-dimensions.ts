@@ -5,8 +5,8 @@ import {
     ElementDimensions,
     getDimensionsFromRect,
     unmeasuredDimensions,
-} from '../common';
-import { unchanged, useDelayedUpdateState } from '../hooks';
+} from '../common/index.js';
+import { unchanged, useDelayedUpdateState } from '../hooks/index.js';
 
 const getElementDimensions = (element?: Element): ElementDimensions => {
     const rect = element?.getBoundingClientRect();

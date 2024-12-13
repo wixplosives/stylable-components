@@ -1,8 +1,8 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
-import { projectThemesPlugin } from '../../board-plugins';
-import { AddFileIcon } from '../../icons';
-import { Area } from '../area';
+import { projectThemesPlugin } from '../../board-plugins/index.js';
+import { AddFileIcon } from '../../icons/index.js';
+import { Area } from '../area.js';
 
 export default createBoard({
     name: 'Area',

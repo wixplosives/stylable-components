@@ -1,2 +1,2 @@
-export * from './scenario-plugin/scenario-plugin';
-export * from './project-themes-plugin';
+export * from './scenario-plugin/scenario-plugin.js';
+export * from './project-themes-plugin.js';

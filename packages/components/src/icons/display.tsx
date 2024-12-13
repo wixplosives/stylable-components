@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const DisplayIcon = IconFactory(
     <g fill="currentColor">
@@ -10,5 +10,5 @@ export const DisplayIcon = IconFactory(
     </g>,
     'DisplayIcon',
     24,
-    24
+    24,
 );

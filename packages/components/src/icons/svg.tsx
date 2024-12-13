@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const SvgIcon = IconFactory(
     <g>
@@ -8,5 +8,5 @@ export const SvgIcon = IconFactory(
     </g>,
     'SvgIcon',
     32,
-    32
+    32,
 );

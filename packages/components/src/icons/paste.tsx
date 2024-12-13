@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const PasteIcon = IconFactory(
     <path
@@ -9,5 +9,5 @@ export const PasteIcon = IconFactory(
     />,
     'PasteIcon',
     18,
-    18
+    18,
 );

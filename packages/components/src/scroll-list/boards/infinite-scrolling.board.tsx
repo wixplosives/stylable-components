@@ -1,10 +1,16 @@
 import { createBoard } from '@wixc3/react-board';
 import { sleep } from 'promise-assist';
 import React, { useCallback, useState } from 'react';
-import { createItems, getId, ItemRenderer } from '../../board-assets';
-import { clickAction, hoverAction, projectThemesPlugin, scenarioPlugin, scrollAction } from '../../board-plugins';
-import type { ScrollListLoadingState } from '../hooks';
-import { ScrollList } from '../scroll-list';
+import { createItems, getId, ItemRenderer } from '../../board-assets/index.js';
+import {
+    clickAction,
+    hoverAction,
+    projectThemesPlugin,
+    scenarioPlugin,
+    scrollAction,
+} from '../../board-plugins/index.js';
+import type { ScrollListLoadingState } from '../hooks/index.js';
+import { ScrollList } from '../scroll-list.js';
 
 export default createBoard({
     name: 'ScrollList — infinite scroll',
@@ -18,7 +24,7 @@ export default createBoard({
                 updateItems(items.concat(createItems(count, items.length)));
                 updateLoadingState('idle');
             },
-            [items]
+            [items],
         );
 
         return (
