@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const ItalicStyleIcon = IconFactory(
     <path
@@ -8,5 +8,5 @@ export const ItalicStyleIcon = IconFactory(
     />,
     'ItalicStyleIcon',
     24,
-    24
+    24,
 );

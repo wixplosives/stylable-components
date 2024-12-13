@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const AvatarPlaceholderIcon = IconFactory(
     <g>
@@ -11,5 +11,5 @@ export const AvatarPlaceholderIcon = IconFactory(
     </g>,
     'AvatarPlaceholderIcon',
     30,
-    30
+    30,
 );

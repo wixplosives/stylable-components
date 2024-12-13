@@ -1,8 +1,14 @@
 import { createBoard } from '@wixc3/react-board';
 import { expect } from 'chai';
 import React from 'react';
-import { expectElements, expectElementText, maxScroll, scenarioPlugin, scrollAction } from '../../../board-plugins';
-import { ScrollHookSimulator } from './scroll-hook-simulator';
+import {
+    expectElements,
+    expectElementText,
+    maxScroll,
+    scenarioPlugin,
+    scrollAction,
+} from '../../../board-plugins/index.js';
+import { ScrollHookSimulator } from './scroll-hook-simulator.js';
 
 export default createBoard({
     Board: () => <ScrollHookSimulator useWindowScroll={false} />,
@@ -24,7 +30,7 @@ export default createBoard({
                 scrollAction(-1, true, '#scroll-div'),
                 expectElements(['#res', '#scroll-div'], (elements) => {
                     expect(Math.round(parseFloat((elements['#res'] as HTMLElement).innerText))).to.equal(
-                        Math.round(maxScroll(elements['#scroll-div'], true))
+                        Math.round(maxScroll(elements['#scroll-div'], true)),
                     );
                 }),
                 scrollAction(0, true, '#scroll-div'),

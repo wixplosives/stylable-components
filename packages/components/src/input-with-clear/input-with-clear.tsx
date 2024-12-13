@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
-import { StateControls, useStateControls } from '../hooks/use-state-controls';
-import { XIcon } from '../icons';
+import { StateControls, useStateControls } from '../hooks/use-state-controls.js';
+import { XIcon } from '../icons/index.js';
 import { st, classes } from './input-with-clear.st.css';
 export interface InputWithClearProps extends React.HTMLAttributes<HTMLInputElement> {
     valueControl?: StateControls<string>;
@@ -18,7 +18,7 @@ export const InputWithClear = React.forwardRef<HTMLInputElement, InputWithClearP
         (ev: React.ChangeEvent<HTMLInputElement>) => {
             setValue(ev.currentTarget.value);
         },
-        [setValue]
+        [setValue],
     );
     const keyDown = useCallback(
         (ev: React.KeyboardEvent<HTMLInputElement>) => {
@@ -26,7 +26,7 @@ export const InputWithClear = React.forwardRef<HTMLInputElement, InputWithClearP
                 onKeyDown(ev);
             }
         },
-        [onKeyDown]
+        [onKeyDown],
     );
     return (
         <div

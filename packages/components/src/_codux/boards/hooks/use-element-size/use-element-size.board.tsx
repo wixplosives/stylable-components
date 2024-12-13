@@ -1,6 +1,6 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useRef } from 'react';
-import { useElementSize } from '../../../../hooks/use-element-size';
+import { useElementSize } from '../../../../hooks/use-element-size.js';
 
 export const ElementDimensionsHookSimulator = ({ height, width }: { width?: string; height?: string }) => {
     const element = useRef<HTMLDivElement>(null);

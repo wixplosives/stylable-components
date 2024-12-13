@@ -1,6 +1,6 @@
-import type { DimensionsById } from '../../common';
-import type { ListProps } from '../../list/list';
-import type { ScrollListProps } from '../scroll-list';
+import type { DimensionsById } from '../../common/index.js';
+import type { ListProps } from '../../list/list.js';
+import type { ScrollListProps } from '../scroll-list.js';
 
 export const getItemSizes = <T, EL extends HTMLElement = HTMLDivElement>({
     isHorizontal,
@@ -32,7 +32,7 @@ export const getItemSizes = <T, EL extends HTMLElement = HTMLDivElement>({
             totalSize: 0,
             itemsSizes: {} as Record<string, number>,
             measuredItemsNumber: 0,
-        }
+        },
     );
 
     const averageItemSize = measuredItemsNumber > 0 ? Math.ceil(totalSize / measuredItemsNumber) : estimatedItemSize;

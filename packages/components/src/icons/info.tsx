@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const InfoIcon = IconFactory(
     <g>
@@ -8,5 +8,5 @@ export const InfoIcon = IconFactory(
     </g>,
     'InfoIcon',
     32,
-    32
+    32,
 );

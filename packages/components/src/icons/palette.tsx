@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const PaletteIcon = IconFactory(
     <path
@@ -8,5 +8,5 @@ export const PaletteIcon = IconFactory(
     />,
     'PaletteIcon',
     512,
-    512
+    512,
 );

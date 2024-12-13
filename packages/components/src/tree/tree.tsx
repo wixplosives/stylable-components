@@ -1,10 +1,10 @@
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
-import { useStateControls } from '../hooks/use-state-controls';
-import { useTreeViewKeyboardInteraction } from '../hooks/use-tree-view-keyboard-interaction';
-import type { ListItemProps } from '../list/list';
-import { ScrollList, type ScrollListItemInfo } from '../scroll-list/scroll-list';
-import type { TreeItemProps, TreeProps, TreeWrapperContext } from './types';
-import { forwardListOverlay, getAllTreeItems, getItems } from './utils';
+import { useStateControls } from '../hooks/use-state-controls.js';
+import { useTreeViewKeyboardInteraction } from '../hooks/use-tree-view-keyboard-interaction.js';
+import type { ListItemProps } from '../list/list.js';
+import { ScrollList, type ScrollListItemInfo } from '../scroll-list/scroll-list.js';
+import type { TreeItemProps, TreeProps, TreeWrapperContext } from './types.js';
+import { forwardListOverlay, getAllTreeItems, getItems } from './utils.js';
 
 const treeWrapperContext = createContext<TreeWrapperContext>({
     openItemIds: [],

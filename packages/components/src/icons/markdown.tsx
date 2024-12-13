@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const MarkdownIcon = IconFactory(
     <path
@@ -8,5 +8,5 @@ export const MarkdownIcon = IconFactory(
     />,
     'MarkdownIcon',
     32,
-    32
+    32,
 );

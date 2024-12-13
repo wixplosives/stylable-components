@@ -1,7 +1,7 @@
 import { createPlugin } from '@wixc3/board-core';
 import type { IReactBoard } from '@wixc3/react-board';
 import React, { useCallback, useEffect, useState } from 'react';
-import { renderInPluginControls } from '../plugin-controls/plugin-controls';
+import { renderInPluginControls } from '../plugin-controls/plugin-controls.js';
 import { classes } from './theme-plugin.st.css';
 
 export interface ThemeItem {
@@ -33,7 +33,7 @@ export const ThemeControls = ({ themes }: ThemeProps) => {
             }
             updateValue(currValue);
         },
-        [themes]
+        [themes],
     );
     return (
         <div className={classes.root}>
@@ -57,8 +57,8 @@ export const themePlugin = createPlugin<IReactBoard>()(
             return renderInPluginControls(
                 board,
                 <ThemeControls key="theme-controls" themes={themes} />,
-                'theme-controls'
+                'theme-controls',
             );
         },
-    }
+    },
 );

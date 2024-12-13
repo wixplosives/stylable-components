@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
-import type { TreeOverlayProps } from '../../../tree';
-import { lanesContext } from '../../tree-items/lanes/lane-context';
-import type { TreeItemWithLaneData } from '../../tree-items/tree-item-with-lane-renderer';
+import type { TreeOverlayProps } from '../../../tree/index.js';
+import { lanesContext } from '../../tree-items/lanes/lane-context.js';
+import type { TreeItemWithLaneData } from '../../tree-items/tree-item-with-lane-renderer.js';
 import { classes, st, vars } from '../../tree-items/lanes/overlays-renderer.st.css';
 
 export const OverlayRenderer = (props: TreeOverlayProps<TreeItemWithLaneData>) => {
@@ -34,7 +34,7 @@ export const OverlayRenderer = (props: TreeOverlayProps<TreeItemWithLaneData>) =
                 start: number;
                 end: number;
             }
-        >()
+        >(),
     );
     return (
         <div className={classes.root} style={props.style}>

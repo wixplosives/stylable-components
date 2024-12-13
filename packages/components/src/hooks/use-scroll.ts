@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDelayedUpdate } from './use-delayed-update';
+import { useDelayedUpdate } from './use-delayed-update.js';
 
 /** if ref is not supplied use scroll will return the window scroll */
 export const useScroll = ({

@@ -5,11 +5,11 @@ import {
     defineElementSlot,
     mergeObjectInternalWins,
     preferExternal,
-} from '../hooks/use-element-slot';
-import { useIdListener } from '../hooks/use-id-based-event';
-import { getHandleKeyboardNav } from '../hooks/use-keyboard-nav';
-import { StateControls, useStateControls } from '../hooks/use-state-controls';
-import type { UseTransmit } from '../hooks/use-transmitted-events';
+} from '../hooks/use-element-slot.js';
+import { useIdListener } from '../hooks/use-id-based-event.js';
+import { getHandleKeyboardNav } from '../hooks/use-keyboard-nav.js';
+import { StateControls, useStateControls } from '../hooks/use-state-controls.js';
+import type { UseTransmit } from '../hooks/use-transmitted-events.js';
 
 export type ListRootMinimalProps = Pick<
     React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>,

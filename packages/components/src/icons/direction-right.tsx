@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const DirectionRightIcon = IconFactory(
     <path
@@ -8,5 +8,5 @@ export const DirectionRightIcon = IconFactory(
     />,
     'DirectionRightIcon',
     24,
-    24
+    24,
 );

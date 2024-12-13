@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const UppercaseIcon = IconFactory(
     <path
@@ -8,5 +8,5 @@ export const UppercaseIcon = IconFactory(
     />,
     'UppercaseIcon',
     24,
-    24
+    24,
 );

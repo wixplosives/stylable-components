@@ -1,9 +1,9 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
-import { getChildren, getId, TreeItemData } from '../../board-assets';
-import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer';
-import { projectThemesPlugin } from '../../board-plugins';
-import { Tree } from '../';
+import { getChildren, getId, TreeItemData } from '../../board-assets/index.js';
+import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer.js';
+import { projectThemesPlugin } from '../../board-plugins/index.js';
+import { Tree } from '../tree.js';
 
 const createTreeData = (maxChildren: number, maxDepth: number, currentDepth = 0, path: number[] = []) => {
     const item: TreeItemData = {

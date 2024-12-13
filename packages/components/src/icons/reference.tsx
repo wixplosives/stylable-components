@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const ReferenceIcon = IconFactory(
     <g fill="none" fillRule="evenodd">
@@ -18,5 +18,5 @@ export const ReferenceIcon = IconFactory(
     </g>,
     'ReferenceIcon',
     18,
-    18
+    18,
 );

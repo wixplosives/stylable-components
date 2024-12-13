@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
-import { KeyCodes } from '../common';
-import { ProcessedControlledState } from './use-state-controls';
+import { KeyCodes } from '../common/index.js';
+import { ProcessedControlledState } from './use-state-controls.js';
 
 export type KeyboardSelectMeta = 'keyboard';
 export interface TreeViewKeyboardInteractionsParams {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const ExpandIcon = IconFactory(
     <path
@@ -9,5 +9,5 @@ export const ExpandIcon = IconFactory(
     />,
     'ExpandIcon',
     24,
-    24
+    24,
 );

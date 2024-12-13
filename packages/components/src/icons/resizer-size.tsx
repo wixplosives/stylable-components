@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const ResizerSizeIcon = IconFactory(
     <g id="layer1" transform="translate(-32.298945,-11.134411)">
@@ -8,5 +8,5 @@ export const ResizerSizeIcon = IconFactory(
     </g>,
     'ResizerSizeIcon',
     15.556352,
-    15.556352
+    15.556352,
 );

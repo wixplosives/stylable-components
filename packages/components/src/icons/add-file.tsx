@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const AddFileIcon = IconFactory(
     <g>
@@ -11,5 +11,5 @@ export const AddFileIcon = IconFactory(
             <path d="M5,4V2H4V4H2V5H4V7H5V5H7V4Z" transform="translate(5 7)" fill="currentColor" />
         </g>
     </g>,
-    'AddFileIcon'
+    'AddFileIcon',
 );

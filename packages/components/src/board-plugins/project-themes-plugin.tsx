@@ -1,6 +1,6 @@
 import { classes as black } from '../themes/black.st.css';
 import { classes as white } from '../themes/white.st.css';
-import { themePlugin } from './theme-plugin/theme-plugin';
+import { themePlugin } from './theme-plugin/theme-plugin.js';
 
 export const projectThemesPlugin = themePlugin.use({
     themes: [

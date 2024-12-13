@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { classes } from './icon-simulator.st.css';
-import * as Icons from '../';
-import { Area } from '../../area/area';
+import * as Icons from '../index.js';
+import { Area } from '../../area/area.js';
 export const IconSimulator = () => {
     const [size, setSize] = useState('iconSmall');
     return (

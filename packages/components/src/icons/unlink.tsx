@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const UnlinkIcon = IconFactory(
     <path
@@ -9,5 +9,5 @@ export const UnlinkIcon = IconFactory(
     />,
     'Unlink',
     14,
-    14
+    14,
 );

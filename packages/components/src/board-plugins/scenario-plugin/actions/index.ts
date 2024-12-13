@@ -1,2 +1,2 @@
-export * from './check-item-render-state';
-export * from './select-item-by-index';
+export * from './check-item-render-state.js';
+export * from './select-item-by-index.js';
