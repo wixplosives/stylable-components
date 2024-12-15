@@ -176,7 +176,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         (data: T): ScrollListItemInfo<T> => ({
             data,
             isFocused: focused === getId(data),
-            isSelected: selected.some((id) => getId(data) === id),
+            isSelected: selected.includes(getId(data)),
         }),
         [getId, focused, selected],
     );

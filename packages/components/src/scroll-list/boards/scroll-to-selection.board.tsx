@@ -35,11 +35,11 @@ const ItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
  * Right now scrolling to selection is supported for finite lists that provide ref to scrollWindow.
  */
 export default createBoard({
-    name: 'ScrollList — scroll to selected item',
+    name: 'ScrollList — scroll to focused item',
     Board: () => {
         const initialSelectedIndex = 442;
-        const [selectedItems, setSelectedItems] = useState([`a${initialSelectedIndex}`]);
         const [input, setInput] = useState(initialSelectedIndex);
+        const [focused, setFocused] = useState<string | undefined>(`a${initialSelectedIndex}`);
 
         return (
             <>
@@ -60,7 +60,7 @@ export default createBoard({
                         />
                     </label>
 
-                    <button id={selectItemButton} onClick={() => setSelectedItems([`a${input}`])}>
+                    <button id={selectItemButton} onClick={() => setFocused(`a${input}`)}>
                         Select
                     </button>
                 </div>
@@ -71,7 +71,7 @@ export default createBoard({
                     items={items}
                     itemSize={() => 50}
                     getId={getId}
-                    selectionControl={[selectedItems, noop]}
+                    focusControl={[focused, noop]}
                     scrollToFocused={true}
                     scrollListRoot={{
                         el: 'div',
@@ -96,7 +96,7 @@ export default createBoard({
     },
     plugins: [
         scenarioPlugin.use({
-            title: 'should scroll selected element into view',
+            title: 'should scroll focused element into view',
             resetBoard: () => {
                 window.scrollTo(0, 0);
             },

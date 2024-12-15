@@ -31,8 +31,9 @@ export default createBoard({
     Board: () => {
         const openItemsControl = useState<string[]>([]);
         const scrollRef = useRef<HTMLDivElement>(null);
-        const selectionControl = useState<string[]>([]);
-        const [, setSelection] = selectionControl;
+        const focusControl = useState<string | undefined>(undefined);
+        const [, setFocus] = focusControl;
+
         return (
             <div>
                 <Tree<typeof data>
@@ -41,7 +42,6 @@ export default createBoard({
                     ItemRenderer={TreeItemRenderer}
                     getChildren={(it) => it.children || []}
                     openItemsControls={openItemsControl}
-                    selectionControl={selectionControl}
                     overlay={{ el: () => null, props: {} }}
                     listRoot={{
                         props: {
@@ -50,11 +50,12 @@ export default createBoard({
                         },
                     }}
                     eventRoots={[scrollRef]}
+                    focusControl={focusControl}
                 />
-                <button id="clear" onClick={() => setSelection([])}>
+                <button id="clear" onClick={() => setFocus(undefined)}>
                     clear selection
                 </button>
-                <button id="select" onClick={() => setSelection(['5'])}>
+                <button id="select" onClick={() => setFocus('5')}>
                     select 5
                 </button>
             </div>
