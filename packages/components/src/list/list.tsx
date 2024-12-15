@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { JSX, useCallback, useEffect, useMemo, useRef } from 'react';
 import {
     callInternalFirst,
     defaultRoot,
@@ -80,12 +80,67 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
 
+    const indexMap = useRef(new Map<string, number>());
+
+    const itemsToRender = useMemo(() => {
+        indexMap.current.clear();
+        const jsxElements: JSX.Element[] = [];
+
+        for (const [index, item] of items.entries()) {
+            const id = getId(item);
+            indexMap.current.set(id, index);
+
+            jsxElements.push(
+                <ItemRendererWrapped
+                    ItemRenderer={ItemRenderer}
+                    onMount={onItemMount}
+                    onUnmount={onItemUnmount}
+                    key={id}
+                    id={id}
+                    data={item}
+                    focus={setFocusedId}
+                    isFocused={focusedId === id}
+                    isSelected={selectedIds.findIndex((selectedId) => selectedId === id) !== -1}
+                    select={setSelectedIds}
+                />,
+            );
+        }
+
+        return jsxElements;
+    }, [ItemRenderer, focusedId, getId, items, onItemMount, onItemUnmount, selectedIds, setFocusedId, setSelectedIds]);
+
+    const rangeSelectionAnchor = useRef<string | undefined>(focusedId);
+
     const onClick = useIdListener(
         useCallback(
             (id: string | undefined, ev: React.MouseEvent<Element, MouseEvent>): void => {
+                // allowing to clear selection when providing an empty select ids array
                 if (!id) {
                     setSelectedIds([]);
+                    setFocusedId(undefined);
                     return;
+                }
+
+                if (!ev.shiftKey) {
+                    // Given a focused item, if the user clicks on an item while holding shift,
+                    // the range selection will start from the first-focused item, and consider it as the starting point
+                    // for other selection made while holding shift.
+
+                    // Consider the following steps for the following example:
+                    // - item 1
+                    // - item 2
+                    // - item 3
+                    // - item 4
+                    // - item 5
+
+                    // 1. focus on item 2 <- this selects item 2 and sets it as the rangeSelectionAnchor
+                    // 2. click on item 4 while holding shift
+                    // the expected behavior is to select items 2, 3, and 4
+                    // 3. now click on item 1 while holding shift
+                    // the expected behavior is to select items 1 and 2, instead of 1, 2, 3, and 4
+                    // since item 2 is the anchored item.
+
+                    rangeSelectionAnchor.current = id;
                 }
 
                 setFocusedId(id);
@@ -102,6 +157,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                 }
 
                 const isCtrlPressed = ev.ctrlKey || ev.metaKey;
+                const isShiftPressed = ev.shiftKey;
 
                 if (isSameSelected && isCtrlPressed) {
                     setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
@@ -110,11 +166,34 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
 
                 if (isCtrlPressed) {
                     setSelectedIds([...selectedIds, id]);
+                } else if (isShiftPressed) {
+                    const [first] = selectedIds;
+
+                    if (!first) {
+                        setSelectedIds([id]);
+                        return;
+                    }
+
+                    // if the `rangeSelectionAnchor` is not set, we will consider the first selected item as the
+                    // starting point of the range selection.
+                    const firstIndex = indexMap.current.get(rangeSelectionAnchor.current || first);
+                    const selectedIndex = indexMap.current.get(id);
+
+                    if (firstIndex === undefined || selectedIndex === undefined) {
+                        setSelectedIds([id]);
+                        return;
+                    }
+
+                    const startIndex = Math.min(firstIndex, selectedIndex);
+                    const endIndex = Math.max(firstIndex, selectedIndex);
+
+                    // we add 1 to the endIndex to include the last item in the selection
+                    setSelectedIds(items.slice(startIndex, endIndex + 1).map(getId));
                 } else {
                     setSelectedIds([id]);
                 }
             },
-            [enableMultiselect, selectedIds, setFocusedId, setSelectedIds],
+            [enableMultiselect, getId, items, selectedIds, setFocusedId, setSelectedIds],
         ),
     );
 
@@ -140,23 +219,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                 tabIndex: 0,
             }}
         >
-            {items.map((item) => {
-                const id = getId(item);
-                return (
-                    <ItemRendererWrapped
-                        ItemRenderer={ItemRenderer}
-                        onMount={onItemMount}
-                        onUnmount={onItemUnmount}
-                        key={id}
-                        id={id}
-                        data={item}
-                        focus={setFocusedId}
-                        isFocused={focusedId === id}
-                        isSelected={selectedIds.findIndex((selectedId) => selectedId === id) !== -1}
-                        select={setSelectedIds}
-                    />
-                );
-            })}
+            {itemsToRender}
         </ListRootSlot>
     );
 }

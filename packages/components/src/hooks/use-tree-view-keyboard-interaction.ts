@@ -18,6 +18,7 @@ export interface TreeViewKeyboardInteractionsParams {
     getFirstChild: (itemId: string) => string | undefined;
     getFirst: () => string | undefined;
     getLast: () => string | undefined;
+    selectedIds: string[];
 }
 
 export interface KeyboardInteractionConfiguration {
@@ -54,6 +55,7 @@ export const useTreeViewKeyboardInteraction = ({
     select,
     endNodeExpandSelectsNext,
     selectionFollowsFocus,
+    selectedIds,
 }: TreeViewKeyboardInteractionsParams & KeyboardInteractionConfiguration) => {
     const handleFocus = useCallback(
         (itemId: string | undefined) => {
@@ -99,17 +101,44 @@ export const useTreeViewKeyboardInteraction = ({
         }
     }, [focusedItemId, getParent, isOpen, close, handleFocus]);
 
-    const handleArrowUp = useCallback(() => {
-        if (!focusedItemId) return;
+    const handleArrowUp = useCallback(
+        (event: KeyboardEvent) => {
+            if (!focusedItemId) return;
 
-        handleFocus(getPrevious(focusedItemId));
-    }, [focusedItemId, getPrevious, handleFocus]);
+            const previous = getPrevious(focusedItemId);
+            if (previous) {
+                handleFocus(previous);
 
-    const handleArrowDown = useCallback(() => {
-        if (!focusedItemId) return;
+                if (event.shiftKey) {
+                    if (!selectedIds.includes(previous)) {
+                        select([...selectedIds, previous]);
+                    } else {
+                        select(selectedIds.filter((id) => id !== focusedItemId));
+                    }
+                }
+            }
+        },
+        [focusedItemId, getPrevious, handleFocus, select, selectedIds],
+    );
 
-        handleFocus(getNext(focusedItemId));
-    }, [focusedItemId, getNext, handleFocus]);
+    const handleArrowDown = useCallback(
+        (event: KeyboardEvent) => {
+            if (!focusedItemId) return;
+            const next = getNext(focusedItemId);
+            if (next) {
+                handleFocus(next);
+
+                if (event.shiftKey) {
+                    if (!selectedIds.includes(next)) {
+                        select([...selectedIds, next]);
+                    } else {
+                        select(selectedIds.filter((id) => id !== focusedItemId));
+                    }
+                }
+            }
+        },
+        [focusedItemId, getNext, handleFocus, select, selectedIds],
+    );
 
     const handleHome = useCallback(() => handleFocus(getFirst()), [getFirst, handleFocus]);
 
@@ -131,7 +160,7 @@ export const useTreeViewKeyboardInteraction = ({
 
             event.preventDefault();
 
-            handler();
+            handler(event);
         },
         [handleArrowRight, handleArrowLeft, handleArrowUp, handleArrowDown, handleHome, handleEnd, selectFocused],
     );

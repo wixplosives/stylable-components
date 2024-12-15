@@ -18,9 +18,7 @@ export interface TreeItemProps<T> extends ListItemProps<T> {
     isOpen: boolean;
     hasChildren: boolean;
     indent: number;
-
     open(): void;
-
     close(): void;
 }
 

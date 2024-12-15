@@ -5,21 +5,32 @@
     -st-states: focused, selected, open;
     --indent: 0;
     display: flex;
-    justify-content: space-between;
-    margin-left: calc(var(--indent) * 8px);
+    padding: 8px;
+    padding-left: calc(var(--indent) * 8px);
     height: 24px;
+    user-select: none;
+    cursor: pointer;
+    outline: none;
+    border-radius: 12px;
+    align-items: center;
+    margin: 4px 0px;
+    transition: background .1s;
 }
 
-.root:hover {
+.root:hover:not(:selected) {
     color: purple;
+    background: gainsboro;
 }
-
 .root:focused {
-    color: blue
+    color: royalblue;
+
+    &:not(:selected) {
+        background: gainsboro;
+    }
 }
 
 .root:selected {
-    text-decoration: underline;
+    background: powderblue;
 }
 
 .root:open .chevron {

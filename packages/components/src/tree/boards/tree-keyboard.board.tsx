@@ -10,7 +10,21 @@ const data: TreeItemData = {
     id: '1',
     title: 'item 1',
     children: [
-        { id: '2', title: 'item 2' },
+        {
+            id: '2',
+            title: 'item 2',
+            children: [
+                {
+                    id: '2.1',
+                    title: 'item 2.1',
+                    children: [
+                        { id: '2.1.1', title: 'item 2.1.1' },
+                        { id: '2.1.2', title: 'item 2.1.2' },
+                        { id: '2.1.3', title: 'item 2.1.3' },
+                    ],
+                },
+            ],
+        },
         { id: '3', title: 'item 3' },
         { id: '4', title: 'item 4' },
         { id: '5', title: 'item 5' },
@@ -35,6 +49,7 @@ export default createBoard({
                     props: {
                         ref: scrollRef,
                         id: 'LIST',
+                        style: { outline: 'none', width: '12rem' },
                     },
                 }}
                 eventRoots={[scrollRef]}
@@ -63,6 +78,6 @@ export default createBoard({
     ],
     environmentProps: {
         windowWidth: 600,
-        windowHeight: 400,
+        windowHeight: 661,
     },
 });

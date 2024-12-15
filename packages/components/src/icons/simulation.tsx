@@ -30,5 +30,5 @@ export const SimulationIcon = IconFactory(
     </g>,
     'SimulationIcon',
     18,
-    18
+    18,
 );
