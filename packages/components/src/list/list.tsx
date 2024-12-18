@@ -80,6 +80,23 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
 
+    // Adapted from MDN as it's similar to the AnchorNode functionality in the DOM Selection API
+    // https://developer.mozilla.org/en-US/docs/Web/API/Selection/anchorNode
+    // A user may make a selection from up to down (in document order) or down to up (reverse of document order).
+    // The anchor is where the user began the selection. This can be visualized by holding the Shift key and
+    // pressing the arrow keys on your keyboard. The selection's anchor does not move,
+    // but the selection's focus, the other end of the selection, does move.
+    // Basically, This helps us determine which element is the starting point of the range selection.
+    const rangeSelectionAnchorId = useRef<string | undefined>(undefined);
+
+    useEffect(() => {
+        if (selectedIds.length === 1) {
+            rangeSelectionAnchorId.current = selectedIds[0];
+        } else if (selectedIds.length === 0) {
+            rangeSelectionAnchorId.current = undefined;
+        }
+    }, [selectedIds]);
+
     const indexMap = useRef(new Map<string, number>());
 
     const itemsToRender = useMemo(() => {
@@ -100,47 +117,23 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                     data={item}
                     focus={setFocusedId}
                     isFocused={focusedId === id}
-                    isSelected={selectedIds.findIndex((selectedId) => selectedId === id) !== -1}
+                    isSelected={selectedIds.includes(id)}
                     select={setSelectedIds}
                 />,
             );
         }
 
         return jsxElements;
-    }, [ItemRenderer, focusedId, getId, items, onItemMount, onItemUnmount, selectedIds, setFocusedId, setSelectedIds]);
-
-    const rangeSelectionAnchor = useRef<string | undefined>(focusedId);
+    }, [items, getId, ItemRenderer, onItemMount, onItemUnmount, setFocusedId, focusedId, selectedIds, setSelectedIds]);
 
     const onClick = useIdListener(
         useCallback(
-            (id: string | undefined, ev: React.MouseEvent<Element, MouseEvent>): void => {
+            (id, ev: React.MouseEvent): void => {
                 // allowing to clear selection when providing an empty select ids array
                 if (!id) {
                     setSelectedIds([]);
                     setFocusedId(undefined);
                     return;
-                }
-
-                if (!ev.shiftKey) {
-                    // Given a focused item, if the user clicks on an item while holding shift,
-                    // the range selection will start from the first-focused item, and consider it as the starting point
-                    // for other selection made while holding shift.
-
-                    // Consider the following steps for the following example:
-                    // - item 1
-                    // - item 2
-                    // - item 3
-                    // - item 4
-                    // - item 5
-
-                    // 1. focus on item 2 <- this selects item 2 and sets it as the rangeSelectionAnchor
-                    // 2. click on item 4 while holding shift
-                    // the expected behavior is to select items 2, 3, and 4
-                    // 3. now click on item 1 while holding shift
-                    // the expected behavior is to select items 1 and 2, instead of 1, 2, 3, and 4
-                    // since item 2 is the anchored item.
-
-                    rangeSelectionAnchor.current = id;
                 }
 
                 setFocusedId(id);
@@ -159,12 +152,9 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                 const isCtrlPressed = ev.ctrlKey || ev.metaKey;
                 const isShiftPressed = ev.shiftKey;
 
-                if (isSameSelected && isCtrlPressed) {
+                if (isCtrlPressed && isSameSelected) {
                     setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
-                    return;
-                }
-
-                if (isCtrlPressed) {
+                } else if (isCtrlPressed) {
                     setSelectedIds([...selectedIds, id]);
                 } else if (isShiftPressed) {
                     const [first] = selectedIds;
@@ -174,9 +164,9 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                         return;
                     }
 
-                    // if the `rangeSelectionAnchor` is not set, we will consider the first selected item as the
-                    // starting point of the range selection.
-                    const firstIndex = indexMap.current.get(rangeSelectionAnchor.current || first);
+                    // if the `rangeSelectionAnchorId` is not set, we will consider the
+                    // first selected item as the starting point of the range selection.
+                    const firstIndex = indexMap.current.get(rangeSelectionAnchorId.current || first);
                     const selectedIndex = indexMap.current.get(id);
 
                     if (firstIndex === undefined || selectedIndex === undefined) {
@@ -187,13 +177,13 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                     const startIndex = Math.min(firstIndex, selectedIndex);
                     const endIndex = Math.max(firstIndex, selectedIndex);
 
-                    // we add 1 to the endIndex to include the last item in the selection
+                    // we add 1 to `endIndex` to include the last item in the selection
                     setSelectedIds(items.slice(startIndex, endIndex + 1).map(getId));
                 } else {
                     setSelectedIds([id]);
                 }
             },
-            [enableMultiselect, getId, items, selectedIds, setFocusedId, setSelectedIds],
+            [enableMultiselect, getId, setSelectedIds, items, rangeSelectionAnchorId, selectedIds, setFocusedId],
         ),
     );
 

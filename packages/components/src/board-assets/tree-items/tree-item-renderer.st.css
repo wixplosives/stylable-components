@@ -9,8 +9,8 @@
     padding-left: calc(var(--indent) * 8px);
     height: 24px;
     user-select: none;
-    cursor: pointer;
     outline: none;
+    cursor: pointer;
     border-radius: 12px;
     align-items: center;
     margin: 4px 0px;

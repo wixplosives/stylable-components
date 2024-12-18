@@ -5,7 +5,6 @@ export interface ItemData {
 
 export interface TreeItemData extends ItemData {
     children?: TreeItemData[];
-    index?: number;
 }
 
 export const getId = ({ id }: ItemData) => id;
