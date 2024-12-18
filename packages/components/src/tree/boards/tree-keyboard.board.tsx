@@ -53,17 +53,17 @@ export default createBoard({
             title: 'tree focus test',
             events: [
                 clickAction('[data-id="1"]'),
-                keyDownAction('#LIST', KeyCodes.ArrowRight, 39),
+                keyDownAction('#LIST', KeyCodes.ArrowRight, { which: 39 }),
                 expectElement('[data-id="2"]'),
-                keyDownAction('[data-id="1"]', KeyCodes.ArrowDown, 40),
+                keyDownAction('[data-id="1"]', KeyCodes.ArrowDown, { which: 40 }),
                 expectElementStyle('[data-id="2"]', FOCUSED_STYLE), //blue (focused)
-                keyDownAction('[data-id="2"]', KeyCodes.Space, 32),
+                keyDownAction('[data-id="2"]', KeyCodes.Space, { which: 32 }),
                 expectElementStyle('[data-id="2"]', SELECTED_STYLE),
-                keyDownAction('[data-id="2"]', KeyCodes.Home, 36),
+                keyDownAction('[data-id="2"]', KeyCodes.Home, { which: 36 }),
                 expectElementStyle('[data-id="1"]', FOCUSED_STYLE), //blue (focused)
-                keyDownAction('[data-id="1"]', KeyCodes.End, 35),
+                keyDownAction('[data-id="1"]', KeyCodes.End, { which: 35 }),
                 expectElementStyle('[data-id="6"]', FOCUSED_STYLE), //blue (focused)
-                keyDownAction('[data-id="6"]', KeyCodes.Enter, 13),
+                keyDownAction('[data-id="6"]', KeyCodes.Enter, { which: 13 }),
                 expectElementStyle('[data-id="6"]', SELECTED_STYLE), // selected
             ],
         }),

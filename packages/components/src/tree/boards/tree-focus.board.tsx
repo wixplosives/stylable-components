@@ -67,16 +67,16 @@ export default createBoard({
             title: 'tree focus should follow select and not hover',
             events: [
                 clickAction('[data-id="1"]'),
-                keyDownAction('[data-id="1"]', KeyCodes.ArrowRight, 39),
+                keyDownAction('[data-id="1"]', KeyCodes.ArrowRight, { which: 39 }),
                 expectElement('[data-id="2"]'),
                 hoverAction('[data-id="3"]'),
-                keyDownAction('[data-id="1"]', KeyCodes.ArrowDown, 40),
+                keyDownAction('[data-id="1"]', KeyCodes.ArrowDown, { which: 40 }),
                 expectElementStyle('[data-id="2"]', FOCUSED_STYLE), // blue (focused)
                 clickAction('#clear'),
                 expectElementStyle('[data-id="2"]', DEFAULT_STYLE), // not focused
                 clickAction('#select'),
                 focusAction('#LIST'),
-                keyDownAction('[data-id="5"]', KeyCodes.ArrowDown, 40),
+                keyDownAction('[data-id="5"]', KeyCodes.ArrowDown, { which: 40 }),
                 expectElementStyle('[data-id="6"]', FOCUSED_STYLE), // blue (focused)
             ],
         }),
