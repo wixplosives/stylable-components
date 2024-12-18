@@ -1,6 +1,6 @@
 import { sleep } from 'promise-assist';
-import boards from '../board-index';
-import type { ScenarioProps } from '../board-plugins';
+import boards from '../board-index.js';
+import type { ScenarioProps } from '../board-plugins/index.js';
 
 const asyncWaitFor = async (cb: () => Promise<void>, timeoutMessage: string, timeout: number) => {
     let done = false;
@@ -33,7 +33,7 @@ for (const sim of boards) {
                                     await execute();
                                 },
                                 `${title} timed out`,
-                                timeout
+                                timeout,
                             );
                         } catch (err) {
                             const errMessage = err instanceof Error ? err.message : String(err);

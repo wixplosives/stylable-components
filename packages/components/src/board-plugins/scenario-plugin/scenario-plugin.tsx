@@ -4,7 +4,7 @@ import { fireEvent } from '@testing-library/react';
 import { expect } from 'chai';
 import { sleep, waitFor } from 'promise-assist';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { renderInPluginControls } from '../plugin-controls/plugin-controls';
+import { renderInPluginControls } from '../plugin-controls/plugin-controls.js';
 import { classes, st } from './scenario-plugin.st.css';
 
 export interface Action {

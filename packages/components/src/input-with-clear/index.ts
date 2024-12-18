@@ -1,1 +1,1 @@
-export * from './input-with-clear';
+export * from './input-with-clear.js';

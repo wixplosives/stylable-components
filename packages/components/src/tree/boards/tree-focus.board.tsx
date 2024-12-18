@@ -1,8 +1,8 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useRef, useState } from 'react';
-import { Tree } from '../tree';
-import { TreeItemData } from '../../board-assets';
-import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer';
+import { Tree } from '../tree.js';
+import { TreeItemData } from '../../board-assets/index.js';
+import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer.js';
 import {
     clickAction,
     expectElement,
@@ -11,8 +11,8 @@ import {
     hoverAction,
     keyDownAction,
     scenarioPlugin,
-} from '../../board-plugins';
-import { KeyCodes } from '../../common';
+} from '../../board-plugins/index.js';
+import { KeyCodes } from '../../common/index.js';
 
 const data: TreeItemData = {
     id: '1',

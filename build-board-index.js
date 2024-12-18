@@ -1,8 +1,8 @@
-const { writeFileSync } = require('node:fs');
-const { join, parse, relative, basename, extname } = require('node:path');
-const { globSync } = require('glob');
+import { writeFileSync } from 'node:fs';
+import { join, parse, relative, basename, extname } from 'node:path';
+import { globSync } from 'glob';
 
-const srcPath = join(__dirname, 'packages/components/src');
+const srcPath = join(import.meta.dirname, 'packages/components/src');
 const boardIndexPath = join(srcPath, 'board-index.ts');
 const boardPaths = globSync('**/*.board.tsx');
 const nameCounters = {};
@@ -11,7 +11,7 @@ const imports = [];
 for (const boardPath of boardPaths) {
     const parsedBoardPath = parse(boardPath);
     const relativePath = relative(srcPath, boardPath);
-    const relativeSpecifier = `./${relativePath.replace(/\\/g, '/')}`.slice(0, -parsedBoardPath.ext.length);
+    const relativeSpecifier = `./${relativePath.replace(/\\/g, '/')}`.slice(0, -parsedBoardPath.ext.length) + '.js';
     const nameWithoutDotBoard = basename(parsedBoardPath.name, extname(parsedBoardPath.name));
     const escapedName = nameWithoutDotBoard.replace(/-/g, '_');
     const localName = nameCounters[escapedName] ? `${escapedName}${nameCounters[escapedName]}` : escapedName;

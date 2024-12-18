@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const CollapseIcon = IconFactory(
     <g fill="none" fillRule="evenodd">
@@ -16,5 +16,5 @@ export const CollapseIcon = IconFactory(
     </g>,
     'CollapseIcon',
     24,
-    24
+    24,
 );

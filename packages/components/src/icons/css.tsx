@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const CssIcon = IconFactory(
     <path
@@ -8,7 +8,7 @@ export const CssIcon = IconFactory(
     />,
     'CssIcon',
     32,
-    32
+    32,
 );
 
 CssIcon.displayName = 'CssIcon';

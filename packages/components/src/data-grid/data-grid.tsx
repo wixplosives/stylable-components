@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef } from 'react';
-import type { ListItemProps } from '../list/list';
-import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot';
-import { useScroll } from '../hooks/use-scroll';
-import { StateControls, useStateControls } from '../hooks/use-state-controls';
-import { ScrollList, ScrollListProps, forwardScrollListRoot } from '../scroll-list/scroll-list';
+import type { ListItemProps } from '../list/list.js';
+import { concatClasses, defaultRoot, defineElementSlot, mergeObjectInternalWins } from '../hooks/use-element-slot.js';
+import { useScroll } from '../hooks/use-scroll.js';
+import { StateControls, useStateControls } from '../hooks/use-state-controls.js';
+import { ScrollList, ScrollListProps, forwardScrollListRoot } from '../scroll-list/scroll-list.js';
 import { classes, vars } from './data-grid.st.css';
 export interface Column<T> {
     id: string;

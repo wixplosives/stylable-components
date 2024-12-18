@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import type { IconProps } from './types';
+import type { IconProps } from './types.js';
 import { classes, st } from './icon.st.css';
 
 export const IconFactory = (icon: React.ReactElement, displayName: string, width = 18, height = 18) => {

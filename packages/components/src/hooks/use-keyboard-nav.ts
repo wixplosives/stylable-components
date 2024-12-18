@@ -1,5 +1,5 @@
 import React from 'react';
-import { childrenById, KeyCodes } from '../common';
+import { childrenById, KeyCodes } from '../common/index.js';
 
 export const getHandleKeyboardNav = (
     elementsParent: React.RefObject<HTMLElement | null>,

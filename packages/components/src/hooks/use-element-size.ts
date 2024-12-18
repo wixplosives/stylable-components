@@ -1,6 +1,11 @@
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import { getElementSize, getSizeFromDimensions, observeElementDimensions, observeWindowDimensions } from '../common';
+import {
+    getElementSize,
+    getSizeFromDimensions,
+    observeElementDimensions,
+    observeWindowDimensions,
+} from '../common/index.js';
 
 export const useElementSize = (
     element: React.RefObject<HTMLElement | null> | undefined,

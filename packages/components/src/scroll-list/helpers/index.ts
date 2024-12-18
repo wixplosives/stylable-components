@@ -1,1 +1,1 @@
-export * from './get-item-sizes';
+export * from './get-item-sizes.js';

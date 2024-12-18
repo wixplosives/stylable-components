@@ -1,7 +1,7 @@
 import React from 'react';
-import type { ListItemProps } from '../list/list';
-import type { ItemData } from './';
+import type { ListItemProps } from '../list/list.js';
 import { classes, st } from './item-renderer/item-renderer.st.css';
+import type { ItemData } from './items.js';
 
 export const StatefulItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {
     return (

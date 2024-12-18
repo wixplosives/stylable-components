@@ -1,1 +1,1 @@
-export * from './scroll-list';
+export * from './scroll-list.js';

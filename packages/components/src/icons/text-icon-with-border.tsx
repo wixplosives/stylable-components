@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const TextIconWithBorder = IconFactory(
     <g>
@@ -18,5 +18,5 @@ export const TextIconWithBorder = IconFactory(
     </g>,
     'TextIconWithBorder',
     18,
-    18
+    18,
 );

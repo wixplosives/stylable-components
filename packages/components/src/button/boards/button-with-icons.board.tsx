@@ -1,7 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
-import { projectThemesPlugin } from '../../board-plugins';
-import { Button } from '../button';
+import { projectThemesPlugin } from '../../board-plugins/index.js';
+import { Button } from '../button.js';
 
 export default createBoard({
     name: 'button-with-icons',

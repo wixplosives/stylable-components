@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRef } from 'react';
-import { useScroll } from '../../use-scroll';
+import { useScroll } from '../../use-scroll.js';
 
 export const ScrollHookSimulator: React.FC<{
     isHorizontal?: boolean;

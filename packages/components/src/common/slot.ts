@@ -1,5 +1,5 @@
 import type React from 'react';
-import type { OptionalFields } from './types';
+import type { OptionalFields } from './types.js';
 
 /**
  * slots are used where we want a node type to be interchangeable in a component

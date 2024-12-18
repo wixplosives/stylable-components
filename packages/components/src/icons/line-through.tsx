@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 export const LineThroughIcon = IconFactory(
     <path
         fillRule="evenodd"
@@ -9,5 +9,5 @@ export const LineThroughIcon = IconFactory(
     />,
     'LineThroughIcon',
     24,
-    24
+    24,
 );

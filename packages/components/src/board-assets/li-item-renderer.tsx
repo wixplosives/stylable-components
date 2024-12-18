@@ -1,6 +1,6 @@
 import React from 'react';
-import type { ListItemProps } from '../list/list';
-import type { ItemData } from './index';
+import type { ListItemProps } from '../list/list.js';
+import type { ItemData } from './index.js';
 import { classes, st } from './item-renderer/item-renderer.st.css';
 
 export const LIItemRenderer: React.FC<ListItemProps<ItemData>> = (props) => {

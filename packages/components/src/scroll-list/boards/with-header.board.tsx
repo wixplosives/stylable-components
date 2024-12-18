@@ -1,7 +1,7 @@
 import { createBoard } from '@wixc3/react-board';
 import React from 'react';
-import { createItems, getId, ItemRenderer } from '../../board-assets';
-import { ScrollList } from '../scroll-list';
+import { createItems, getId, ItemRenderer } from '../../board-assets/index.js';
+import { ScrollList } from '../scroll-list.js';
 
 const items = createItems();
 

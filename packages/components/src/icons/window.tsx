@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const WindowIcon = IconFactory(
     <path
@@ -10,5 +10,5 @@ export const WindowIcon = IconFactory(
     />,
     'WindowIcon',
     18,
-    18
+    18,
 );

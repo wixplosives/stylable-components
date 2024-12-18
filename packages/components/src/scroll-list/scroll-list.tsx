@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef } from 'react';
-import type { ElementSlot, PropMapping } from '../common';
+import type { ElementSlot, PropMapping } from '../common/index.js';
 import {
     concatClasses,
     defaultRoot,
@@ -10,18 +10,18 @@ import {
     useElementSize,
     useScroll,
     useStateControls,
-} from '../hooks';
-import { List, ListProps, listRootParent } from '../list/list';
-import { Preloader } from '../preloader/preloader';
+} from '../hooks/index.js';
+import { List, ListProps, listRootParent } from '../list/list.js';
+import { Preloader } from '../preloader/preloader.js';
 import { classes as preloaderCSS } from '../preloader/variants/circle-preloader.st.css';
-import { getItemSizes } from './helpers';
+import { getItemSizes } from './helpers/index.js';
 import {
     ScrollListInfiniteProps,
     ScrollListPositioningProps,
     useLoadMoreOnScroll,
     useScrollListPosition,
     useScrollListScrollToFocused,
-} from './hooks';
+} from './hooks/index.js';
 import { classes } from './scroll-list.st.css';
 
 type ScrollListRootMinimalProps = Pick<

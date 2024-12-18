@@ -1,5 +1,7 @@
 {
   "name": "stylable-components-repo",
+  "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
@@ -16,20 +18,20 @@
     "test:spec": "mocha-web \"packages/*/dist/test/**/*.spec.js\""
   },
   "devDependencies": {
-    "@playwright/browser-chromium": "^1.49.0",
+    "@playwright/browser-chromium": "^1.49.1",
     "@stylable/cli": "^6.1.1",
     "@stylable/esbuild": "^6.1.1",
     "@testing-library/react": "^16.1.0",
-    "@types/chai": "^4.3.20",
+    "@types/chai": "^5.0.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "20",
     "@types/react": "^19.0.1",
-    "@types/react-dom": "^19.0.1",
+    "@types/react-dom": "^19.0.2",
     "@wixc3/board-core": "^4.6.2",
     "@wixc3/react-board": "^4.6.2",
-    "chai": "^4.5.0",
+    "chai": "^5.1.2",
     "esbuild": "^0.24.0",
-    "eslint": "^9.16.0",
+    "eslint": "^9.17.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-react": "^7.37.2",
@@ -45,6 +47,5 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.18.0"
   },
-  "license": "MIT",
-  "private": true
+  "license": "MIT"
 }

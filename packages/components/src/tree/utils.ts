@@ -1,6 +1,6 @@
-import { defaultRoot } from '../hooks/use-element-slot';
-import { scrollListOverlayParent } from '../scroll-list/scroll-list';
-import type { GetAllTreeItemsParams, GetTreeItemsParams } from './types';
+import { defaultRoot } from '../hooks/use-element-slot.js';
+import { scrollListOverlayParent } from '../scroll-list/scroll-list.js';
+import type { GetAllTreeItemsParams, GetTreeItemsParams } from './types.js';
 
 export const {
     forward: forwardListOverlay,
@@ -40,7 +40,7 @@ export const getItems = <T>({
                         openItemIds,
                         depth: depth + 1,
                         treeItemDepths,
-                    }).items
+                    }).items,
             ),
         ],
         treeItemDepths,
@@ -54,6 +54,6 @@ export const getAllTreeItems = <T>({ item, getChildren, getId }: GetAllTreeItems
             item,
             getId,
             getChildren,
-        })
+        }),
     ),
 ];

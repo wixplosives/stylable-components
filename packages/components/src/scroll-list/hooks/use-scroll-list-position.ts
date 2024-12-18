@@ -1,9 +1,9 @@
 import { MutableRefObject, RefObject, useMemo, useRef } from 'react';
-import type { DimensionsById } from '../../common';
-import { unknownPosition } from '../../common';
-import { usePositionInParent } from '../../hooks/use-position';
-import type { ListProps } from '../../list/list';
-import type { ScrollListItemInfo, ScrollListProps } from '../../scroll-list/scroll-list';
+import type { DimensionsById } from '../../common/index.js';
+import { unknownPosition } from '../../common/index.js';
+import { usePositionInParent } from '../../hooks/use-position.js';
+import type { ListProps } from '../../list/list.js';
+import type { ScrollListItemInfo, ScrollListProps } from '../../scroll-list/scroll-list.js';
 
 export interface ScrollListPositioningProps {
     /**

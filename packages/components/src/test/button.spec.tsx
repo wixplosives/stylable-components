@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { renderToString } from 'react-dom/server';
-import { Button } from '../button/button';
+import { Button } from '../button/button.js';
 
 describe('<Button />', () => {
     it('renders to string without throwing', () => {

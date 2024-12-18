@@ -1,1 +1,1 @@
-export * from './searchable-text';
+export * from './searchable-text.js';

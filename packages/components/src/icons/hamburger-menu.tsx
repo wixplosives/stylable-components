@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const HamburgerMenuIcon = IconFactory(
     <g fill="none" fillRule="evenodd">
@@ -10,5 +10,5 @@ export const HamburgerMenuIcon = IconFactory(
     </g>,
     'HamburgerMenuIcon',
     24,
-    24
+    24,
 );

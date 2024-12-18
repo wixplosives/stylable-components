@@ -1,15 +1,15 @@
 import { createBoard } from '@wixc3/react-board';
 import React, { useState } from 'react';
-import { createItems, getId, ItemData, noop } from '../../board-assets';
-import { projectThemesPlugin, scenarioPlugin } from '../../board-plugins';
+import { createItems, getId, ItemData, noop } from '../../board-assets/index.js';
+import { projectThemesPlugin, scenarioPlugin } from '../../board-plugins/index.js';
 import {
     checkItemRenderState,
     selectItemButton,
     selectItemByIndex,
     selectItemInput,
-} from '../../board-plugins/scenario-plugin/actions';
-import type { ListItemProps } from '../../list/list';
-import { ScrollList } from '../scroll-list';
+} from '../../board-plugins/scenario-plugin/actions/index.js';
+import type { ListItemProps } from '../../list/list.js';
+import { ScrollList } from '../scroll-list.js';
 
 const items = createItems();
 const elementRef: React.RefObject<HTMLDivElement | null> = {

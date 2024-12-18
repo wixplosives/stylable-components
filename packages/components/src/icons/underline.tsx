@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconFactory } from './icon';
+import { IconFactory } from './icon.js';
 
 export const UnderlineIcon = IconFactory(
     <path
@@ -8,5 +8,5 @@ export const UnderlineIcon = IconFactory(
     />,
     'UnderlineIcon',
     24,
-    24
+    24,
 );
