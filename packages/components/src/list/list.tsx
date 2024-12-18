@@ -97,15 +97,15 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
         }
     }, [selectedIds]);
 
-    const indexMap = useRef(new Map<string, number>());
+    const { current: indexMap } = useRef(new Map<string, number>());
 
     const itemsToRender = useMemo(() => {
-        indexMap.current.clear();
+        indexMap.clear();
         const jsxElements: JSX.Element[] = [];
 
         for (const [index, item] of items.entries()) {
             const id = getId(item);
-            indexMap.current.set(id, index);
+            indexMap.set(id, index);
 
             jsxElements.push(
                 <ItemRendererWrapped
@@ -124,7 +124,18 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
         }
 
         return jsxElements;
-    }, [items, getId, ItemRenderer, onItemMount, onItemUnmount, setFocusedId, focusedId, selectedIds, setSelectedIds]);
+    }, [
+        indexMap,
+        items,
+        getId,
+        ItemRenderer,
+        onItemMount,
+        onItemUnmount,
+        setFocusedId,
+        focusedId,
+        selectedIds,
+        setSelectedIds,
+    ]);
 
     const onClick = useIdListener(
         useCallback(
@@ -138,10 +149,10 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
 
                 setFocusedId(id);
 
-                const isSameSelected = selectedIds.includes(id);
+                const isAlreadySelected = selectedIds.includes(id);
 
                 if (!enableMultiselect) {
-                    if (isSameSelected) {
+                    if (isAlreadySelected) {
                         return;
                     }
 
@@ -152,38 +163,26 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                 const isCtrlPressed = ev.ctrlKey || ev.metaKey;
                 const isShiftPressed = ev.shiftKey;
 
-                if (isCtrlPressed && isSameSelected) {
+                if (isCtrlPressed && isAlreadySelected) {
                     setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
                 } else if (isCtrlPressed) {
                     setSelectedIds([...selectedIds, id]);
                 } else if (isShiftPressed) {
-                    const [first] = selectedIds;
-
-                    if (!first) {
-                        setSelectedIds([id]);
-                        return;
-                    }
-
-                    // if the `rangeSelectionAnchorId` is not set, we will consider the
-                    // first selected item as the starting point of the range selection.
-                    const firstIndex = indexMap.current.get(rangeSelectionAnchorId.current || first);
-                    const selectedIndex = indexMap.current.get(id);
-
-                    if (firstIndex === undefined || selectedIndex === undefined) {
-                        setSelectedIds([id]);
-                        return;
-                    }
-
-                    const startIndex = Math.min(firstIndex, selectedIndex);
-                    const endIndex = Math.max(firstIndex, selectedIndex);
-
-                    // we add 1 to `endIndex` to include the last item in the selection
-                    setSelectedIds(items.slice(startIndex, endIndex + 1).map(getId));
+                    setSelectedIds(
+                        getRangeSelection({
+                            items,
+                            id,
+                            indexMap,
+                            selectedIds,
+                            rangeSelectionAnchorId: rangeSelectionAnchorId.current,
+                            getId,
+                        }),
+                    );
                 } else {
                     setSelectedIds([id]);
                 }
             },
-            [enableMultiselect, getId, setSelectedIds, items, rangeSelectionAnchorId, selectedIds, setFocusedId],
+            [setFocusedId, selectedIds, enableMultiselect, setSelectedIds, items, indexMap, getId],
         ),
     );
 
@@ -233,4 +232,41 @@ function ItemRendererWrapped<T>({
     }, [onMount, onUnmount, props.data]);
 
     return <ItemRenderer {...props} />;
+}
+
+function getRangeSelection<T>({
+    id,
+    indexMap,
+    items,
+    selectedIds,
+    rangeSelectionAnchorId,
+    getId,
+}: {
+    selectedIds: string[];
+    id: string;
+    items: T[];
+    indexMap: Map<string, number>;
+    rangeSelectionAnchorId?: string;
+    getId: (item: T) => string;
+}) {
+    const [first] = selectedIds;
+
+    if (!first) {
+        return [id];
+    }
+
+    // if the `rangeSelectionAnchorId` is not set, we will consider the
+    // first selected item as the starting point of the range selection.
+    const firstIndex = indexMap.get(rangeSelectionAnchorId || first);
+    const selectedIndex = indexMap.get(id);
+
+    if (firstIndex === undefined || selectedIndex === undefined) {
+        return [id];
+    }
+
+    const startIndex = Math.min(firstIndex, selectedIndex);
+    const endIndex = Math.max(firstIndex, selectedIndex);
+
+    // we add 1 to `endIndex` to include the last item in the selection
+    return items.slice(startIndex, endIndex + 1).map(getId);
 }
