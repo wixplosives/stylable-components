@@ -13,6 +13,7 @@ import {
     scenarioPlugin,
 } from '../../board-plugins/index.js';
 import { KeyCodes } from '../../common/index.js';
+import { DEFAULT_STYLE, FOCUSED_STYLE } from './consts.js';
 
 const data: TreeItemData = {
     id: '1',
@@ -70,13 +71,13 @@ export default createBoard({
                 expectElement('[data-id="2"]'),
                 hoverAction('[data-id="3"]'),
                 keyDownAction('[data-id="1"]', KeyCodes.ArrowDown, 40),
-                expectElementStyle('[data-id="2"]', { color: 'rgb(0, 0, 255)' }), //blue (focused)
+                expectElementStyle('[data-id="2"]', FOCUSED_STYLE), // blue (focused)
                 clickAction('#clear'),
-                expectElementStyle('[data-id="2"]', { color: 'rgb(0, 0, 0)' }), //black (not focused)
+                expectElementStyle('[data-id="2"]', DEFAULT_STYLE), // not focused
                 clickAction('#select'),
                 focusAction('#LIST'),
                 keyDownAction('[data-id="5"]', KeyCodes.ArrowDown, 40),
-                expectElementStyle('[data-id="6"]', { color: 'rgb(0, 0, 255)' }), //blue (focused)
+                expectElementStyle('[data-id="6"]', FOCUSED_STYLE), // blue (focused)
             ],
         }),
     ],
