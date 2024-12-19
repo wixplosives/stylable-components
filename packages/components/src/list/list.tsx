@@ -157,7 +157,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                         return;
                     }
 
-                    setSelectedIds({ mainSelection: id, ids: [id] });
+                    setSelectedIds({ lastSelectedId: id, ids: [id] });
                     return;
                 }
 
@@ -166,14 +166,14 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
 
                 if (isCtrlPressed && isAlreadySelected) {
                     setSelectedIds({
-                        mainSelection: id,
+                        lastSelectedId: id,
                         ids: selectedIds.ids.filter((selectedId) => selectedId !== id),
                     });
                 } else if (isCtrlPressed) {
-                    setSelectedIds({ mainSelection: id, ids: [...selectedIds.ids, id] });
+                    setSelectedIds({ lastSelectedId: id, ids: [...selectedIds.ids, id] });
                 } else if (isShiftPressed) {
                     setSelectedIds({
-                        mainSelection: id,
+                        lastSelectedId: id,
                         ids: getRangeSelection({
                             items,
                             id,
@@ -184,7 +184,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                         }),
                     });
                 } else {
-                    setSelectedIds({ mainSelection: id, ids: [id] });
+                    setSelectedIds({ lastSelectedId: id, ids: [id] });
                 }
             },
             [setFocusedId, selectedIds, enableMultiselect, setSelectedIds, items, indexMap, getId],

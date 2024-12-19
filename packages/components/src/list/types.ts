@@ -1,4 +1,4 @@
 export interface ListSelection {
-    mainSelection?: string;
+    lastSelectedId?: string;
     ids: string[];
 }

@@ -63,7 +63,7 @@ export const useTreeViewKeyboardInteraction = ({
             if (!itemId) return;
 
             if (selectionFollowsFocus) {
-                select({ mainSelection: itemId, ids: [itemId] }, 'keyboard');
+                select({ lastSelectedId: itemId, ids: [itemId] }, 'keyboard');
             } else {
                 focus(itemId);
             }
@@ -75,7 +75,7 @@ export const useTreeViewKeyboardInteraction = ({
         if (!focusedItemId) {
             return;
         }
-        select({ mainSelection: focusedItemId, ids: [focusedItemId] });
+        select({ lastSelectedId: focusedItemId, ids: [focusedItemId] });
     }, [focusedItemId, select]);
 
     const handleArrowRight = useCallback(() => {
@@ -112,9 +112,12 @@ export const useTreeViewKeyboardInteraction = ({
 
                 if (event.shiftKey) {
                     if (!selectedIds.includes(previous)) {
-                        select({ mainSelection: previous, ids: [...selectedIds, previous] });
+                        select({ lastSelectedId: previous, ids: [...selectedIds, previous] });
                     } else {
-                        select({ mainSelection: focusedItemId, ids: selectedIds.filter((id) => id !== focusedItemId) });
+                        select({
+                            lastSelectedId: focusedItemId,
+                            ids: selectedIds.filter((id) => id !== focusedItemId),
+                        });
                     }
                 }
             }
@@ -131,9 +134,12 @@ export const useTreeViewKeyboardInteraction = ({
 
                 if (event.shiftKey) {
                     if (!selectedIds.includes(next)) {
-                        select({ mainSelection: next, ids: [...selectedIds, next] });
+                        select({ lastSelectedId: next, ids: [...selectedIds, next] });
                     } else {
-                        select({ mainSelection: focusedItemId, ids: selectedIds.filter((id) => id !== focusedItemId) });
+                        select({
+                            lastSelectedId: focusedItemId,
+                            ids: selectedIds.filter((id) => id !== focusedItemId),
+                        });
                     }
                 }
             }

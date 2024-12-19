@@ -118,7 +118,7 @@ export const getHandleKeyboardNav = (
                 break;
             case KeyCodes.Space:
             case KeyCodes.Enter:
-                setSelectedIds({ mainSelection: focusedId, ids: [focusedId] });
+                setSelectedIds({ lastSelectedId: focusedId, ids: [focusedId] });
                 break;
             default:
         }

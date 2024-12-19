@@ -183,7 +183,7 @@ export default createBoard({
                         getParents,
                         selectItem: (item) => {
                             updateSelection({
-                                mainSelection: item.id,
+                                lastSelectedId: item.id,
                                 ids: [item.id],
                             });
                         },
