@@ -1,11 +1,12 @@
 import React from 'react';
 import { childrenById, KeyCodes } from '../common/index.js';
+import { ListSelection } from '../list/types.js';
 
 export const getHandleKeyboardNav = (
     elementsParent: React.RefObject<HTMLElement | null>,
     focusedId: string | undefined,
     setFocusedId: (id: string) => void,
-    setSelectedId: (id: string) => void,
+    setSelectedIds: (selectedData: ListSelection) => void,
 ) => {
     const onKeyPress = (ev: React.KeyboardEvent) => {
         if (
@@ -117,7 +118,7 @@ export const getHandleKeyboardNav = (
                 break;
             case KeyCodes.Space:
             case KeyCodes.Enter:
-                setSelectedId(focusedId);
+                setSelectedIds({ lastSelectedId: focusedId, ids: [focusedId] });
                 break;
             default:
         }
