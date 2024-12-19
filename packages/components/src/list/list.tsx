@@ -10,6 +10,7 @@ import { useIdListener } from '../hooks/use-id-based-event.js';
 import { getHandleKeyboardNav } from '../hooks/use-keyboard-nav.js';
 import { StateControls, useStateControls } from '../hooks/use-state-controls.js';
 import type { UseTransmit } from '../hooks/use-transmitted-events.js';
+import { ListSelection } from './types.js';
 
 export type ListRootMinimalProps = Pick<
     React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>,
@@ -42,7 +43,7 @@ export interface ListItemProps<T> {
     isFocused: boolean;
     isSelected: boolean;
     focus: (id?: string) => void;
-    select: (ids: string[]) => void;
+    select: (params: ListSelection) => void;
 }
 
 export interface ListProps<T> {
@@ -51,7 +52,7 @@ export interface ListProps<T> {
     items: T[];
     ItemRenderer: React.ComponentType<ListItemProps<T>>;
     focusControl?: StateControls<string | undefined>;
-    selectionControl?: StateControls<string[]>;
+    selectionControl?: StateControls<ListSelection>;
     transmitKeyPress?: UseTransmit<React.KeyboardEventHandler>;
     onItemMount?: (item: T) => void;
     onItemUnmount?: (item: T) => void;
@@ -74,7 +75,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     disableKeyboard,
     enableMultiselect = true,
 }: ListProps<T>): React.ReactElement {
-    const [selectedIds, setSelectedIds] = useStateControls(selectionControl, []);
+    const [selectedIds, setSelectedIds] = useStateControls(selectionControl, { ids: [] });
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
     const defaultRef = useRef<EL>(null);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -90,9 +91,9 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     const rangeSelectionAnchorId = useRef<string | undefined>(undefined);
 
     useEffect(() => {
-        if (selectedIds.length === 1) {
-            rangeSelectionAnchorId.current = selectedIds[0];
-        } else if (selectedIds.length === 0) {
+        if (selectedIds.ids.length === 1) {
+            rangeSelectionAnchorId.current = selectedIds.ids[0];
+        } else if (selectedIds.ids.length === 0) {
             rangeSelectionAnchorId.current = undefined;
         }
     }, [selectedIds]);
@@ -117,7 +118,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                     data={item}
                     focus={setFocusedId}
                     isFocused={focusedId === id}
-                    isSelected={selectedIds.includes(id)}
+                    isSelected={selectedIds.ids.includes(id)}
                     select={setSelectedIds}
                 />,
             );
@@ -142,21 +143,21 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
             (id, ev: React.MouseEvent): void => {
                 // allowing to clear selection when providing an empty select ids array
                 if (!id) {
-                    setSelectedIds([]);
+                    setSelectedIds({ ids: [] });
                     setFocusedId(undefined);
                     return;
                 }
 
                 setFocusedId(id);
 
-                const isAlreadySelected = selectedIds.includes(id);
+                const isAlreadySelected = selectedIds.ids.includes(id);
 
                 if (!enableMultiselect) {
                     if (isAlreadySelected) {
                         return;
                     }
 
-                    setSelectedIds([id]);
+                    setSelectedIds({ mainSelection: id, ids: [id] });
                     return;
                 }
 
@@ -164,22 +165,26 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                 const isShiftPressed = ev.shiftKey;
 
                 if (isCtrlPressed && isAlreadySelected) {
-                    setSelectedIds(selectedIds.filter((selectedId) => selectedId !== id));
+                    setSelectedIds({
+                        mainSelection: id,
+                        ids: selectedIds.ids.filter((selectedId) => selectedId !== id),
+                    });
                 } else if (isCtrlPressed) {
-                    setSelectedIds([...selectedIds, id]);
+                    setSelectedIds({ mainSelection: id, ids: [...selectedIds.ids, id] });
                 } else if (isShiftPressed) {
-                    setSelectedIds(
-                        getRangeSelection({
+                    setSelectedIds({
+                        mainSelection: id,
+                        ids: getRangeSelection({
                             items,
                             id,
                             indexMap,
-                            selectedIds,
+                            selectedIds: selectedIds.ids,
                             rangeSelectionAnchorId: rangeSelectionAnchorId.current,
                             getId,
                         }),
-                    );
+                    });
                 } else {
-                    setSelectedIds([id]);
+                    setSelectedIds({ mainSelection: id, ids: [id] });
                 }
             },
             [setFocusedId, selectedIds, enableMultiselect, setSelectedIds, items, indexMap, getId],

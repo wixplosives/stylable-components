@@ -1,5 +1,5 @@
 import { createBoard } from '@wixc3/react-board';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Tree } from '../tree.js';
 import { TreeItemData } from '../../board-assets/index.js';
 import { TreeItemRenderer } from '../../board-assets/tree-items/tree-item-renderer.js';
@@ -45,23 +45,52 @@ export default createBoard({
     Board: () => {
         const openItemsControl = useState<string[]>([]);
         const scrollRef = useRef<HTMLDivElement>(null);
+
+        const [keys, setKeys] = useState<string[]>([]);
+
+        useEffect(() => {
+            const keyDownHandler = (event: KeyboardEvent) => {
+                if (!keys.includes(event.key)) {
+                    setKeys([...keys, event.key]);
+                }
+            };
+
+            const keyUpHandler = (event: KeyboardEvent) => {
+                setKeys(keys.filter((key) => key !== event.key));
+            };
+
+            document.addEventListener('keydown', keyDownHandler);
+            document.addEventListener('keyup', keyUpHandler);
+
+            return () => {
+                document.removeEventListener('keydown', keyDownHandler);
+                document.removeEventListener('keyup', keyUpHandler);
+            };
+        }, [keys]);
+
         return (
-            <Tree<typeof data>
-                data={data}
-                getId={(it) => it.id}
-                ItemRenderer={TreeItemRenderer}
-                getChildren={(it) => it.children || []}
-                openItemsControls={openItemsControl}
-                overlay={{ el: () => null, props: {} }}
-                listRoot={{
-                    props: {
-                        ref: scrollRef,
-                        id: 'LIST',
-                        style: { outline: 'none', width: '12rem' },
-                    },
-                }}
-                eventRoots={[scrollRef]}
-            />
+            <div>
+                <div>
+                    <span>Key pressed: {keys.join(', ')}</span>
+                </div>
+
+                <Tree<typeof data>
+                    data={data}
+                    getId={(it) => it.id}
+                    ItemRenderer={TreeItemRenderer}
+                    getChildren={(it) => it.children || []}
+                    openItemsControls={openItemsControl}
+                    overlay={{ el: () => null, props: {} }}
+                    listRoot={{
+                        props: {
+                            ref: scrollRef,
+                            id: 'LIST',
+                            style: { outline: 'none', width: '12rem' },
+                        },
+                    }}
+                    eventRoots={[scrollRef]}
+                />
+            </div>
         );
     },
     plugins: [
@@ -143,6 +172,6 @@ export default createBoard({
     ],
     environmentProps: {
         windowWidth: 600,
-        windowHeight: 400,
+        windowHeight: 559,
     },
 });

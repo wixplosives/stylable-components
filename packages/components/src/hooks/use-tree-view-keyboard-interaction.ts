@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { KeyCodes } from '../common/index.js';
 import { ProcessedControlledState } from './use-state-controls.js';
+import { ListSelection } from '../list/types.js';
 
 export type KeyboardSelectMeta = 'keyboard';
 export interface TreeViewKeyboardInteractionsParams {
@@ -9,7 +10,7 @@ export interface TreeViewKeyboardInteractionsParams {
     open: (itemId: string) => void;
     close: (itemId: string) => void;
     focus: (itemId: string) => void;
-    select: ProcessedControlledState<string[], KeyboardSelectMeta>[1];
+    select: ProcessedControlledState<ListSelection, KeyboardSelectMeta>[1];
     isOpen: (itemId: string) => boolean;
     isEndNode: (itemId: string) => boolean;
     getPrevious: (itemId: string) => string | undefined;
@@ -62,7 +63,7 @@ export const useTreeViewKeyboardInteraction = ({
             if (!itemId) return;
 
             if (selectionFollowsFocus) {
-                select([itemId], 'keyboard');
+                select({ mainSelection: itemId, ids: [itemId] }, 'keyboard');
             } else {
                 focus(itemId);
             }
@@ -74,7 +75,7 @@ export const useTreeViewKeyboardInteraction = ({
         if (!focusedItemId) {
             return;
         }
-        select([focusedItemId]);
+        select({ mainSelection: focusedItemId, ids: [focusedItemId] });
     }, [focusedItemId, select]);
 
     const handleArrowRight = useCallback(() => {
@@ -111,9 +112,9 @@ export const useTreeViewKeyboardInteraction = ({
 
                 if (event.shiftKey) {
                     if (!selectedIds.includes(previous)) {
-                        select([...selectedIds, previous]);
+                        select({ mainSelection: previous, ids: [...selectedIds, previous] });
                     } else {
-                        select(selectedIds.filter((id) => id !== focusedItemId));
+                        select({ mainSelection: focusedItemId, ids: selectedIds.filter((id) => id !== focusedItemId) });
                     }
                 }
             }
@@ -130,9 +131,9 @@ export const useTreeViewKeyboardInteraction = ({
 
                 if (event.shiftKey) {
                     if (!selectedIds.includes(next)) {
-                        select([...selectedIds, next]);
+                        select({ mainSelection: next, ids: [...selectedIds, next] });
                     } else {
-                        select(selectedIds.filter((id) => id !== focusedItemId));
+                        select({ mainSelection: focusedItemId, ids: selectedIds.filter((id) => id !== focusedItemId) });
                     }
                 }
             }

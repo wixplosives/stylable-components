@@ -8,6 +8,7 @@ import type {
 import type { ListItemProps } from '../list/list.js';
 import type { OverlayProps, ScrollListItemInfo, ScrollListProps } from '../scroll-list/scroll-list.js';
 import type { overlayRoot } from './utils.js';
+import { ListSelection } from '../list/types.js';
 
 export interface TreeItemInfo<T> extends ScrollListItemInfo<T> {
     isOpen: boolean;
@@ -35,8 +36,8 @@ export interface TreeAddedProps<T> {
     openItemsControls: StateControls<string[]>;
     eventRoots?: TreeViewKeyboardInteractionsParams['eventRoots'];
     ItemRenderer: React.ComponentType<TreeItemProps<T>>;
+    selectionControl?: StateControls<ListSelection, KeyboardSelectMeta | undefined>;
     overlay?: typeof overlayRoot;
-    selectionControl?: StateControls<string[], KeyboardSelectMeta | undefined>;
 }
 
 export type TreeProps<T, EL extends HTMLElement> = Omit<
