@@ -20,9 +20,10 @@ import {
     ScrollListPositioningProps,
     useLoadMoreOnScroll,
     useScrollListPosition,
-    useScrollListScrollToSelected,
+    useScrollListScrollToFocused,
 } from './hooks/index.js';
 import { classes } from './scroll-list.st.css';
+import { ListSelection } from '../list/types.js';
 
 type ScrollListRootMinimalProps = Pick<
     React.HTMLAttributes<HTMLElement> & React.RefAttributes<HTMLElement>,
@@ -121,7 +122,7 @@ export interface ScrollListProps<T, EL extends HTMLElement, I extends ScrollList
      *
      * @default false
      */
-    scrollToSelection?: boolean;
+    scrollToFocused?: boolean;
     itemsInRow?: number;
     itemGap?: number;
     /**
@@ -148,7 +149,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     scrollListRoot,
     listRoot,
     selectionControl,
-    scrollToSelection = false,
+    scrollToFocused = false,
     extraRenderSize = 0.5,
     unmountItems,
     preloader,
@@ -169,14 +170,14 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
     });
     const scrollWindowSize = useElementSize(scrollWindow, !isHorizontal);
     const mountedItems = useRef(new Set(''));
-    const [selected, setSelected] = useStateControls(selectionControl, undefined);
+    const [selected, setSelected] = useStateControls(selectionControl, { ids: [] });
     const [focused, setFocused] = useStateControls(focusControl, undefined);
 
     const getItemInfo = useCallback(
         (data: T): ScrollListItemInfo<T> => ({
             data,
             isFocused: focused === getId(data),
-            isSelected: selected === getId(data),
+            isSelected: selected.ids.includes(getId(data)),
         }),
         [getId, focused, selected],
     );
@@ -247,13 +248,13 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         loadedItemsNumber: items.length,
     });
 
-    useScrollListScrollToSelected({
+    useScrollListScrollToFocused({
         scrollWindow,
         scrollListRef,
-        scrollToSelection,
+        scrollToFocused,
         items,
         getId,
-        selected,
+        focused,
         averageItemSize,
         mountedItems,
         isHorizontal,
@@ -283,7 +284,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         () => [focused, setFocused],
         [focused, setFocused],
     );
-    const selectionControlMemoized: ProcessedControlledState<string | undefined> = useMemo(
+    const selectionControlMemoized: ProcessedControlledState<ListSelection> = useMemo(
         () => [selected, setSelected],
         [selected, setSelected],
     );
