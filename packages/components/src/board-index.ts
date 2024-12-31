@@ -31,6 +31,7 @@ import searchable_text from './searchable-text/boards/searchable-text.board.js';
 import tree from './tree/boards/tree.board.js';
 import tree_focus from './tree/boards/tree-focus.board.js';
 import tree_keyboard from './tree/boards/tree-keyboard.board.js';
+import tree_multi_selection from './tree/boards/tree-multi-selection.board.js';
 import tree_with_lanes from './tree/boards/tree-with-lanes.board.js';
 import use_element_size from './_codux/boards/hooks/use-element-size/use-element-size.board.js';
 import use_scroll_horizontal_window from './hooks/boards/use-scroll/use-scroll-horizontal-window.board.js';
@@ -66,6 +67,7 @@ export default [
     tree,
     tree_focus,
     tree_keyboard,
+    tree_multi_selection,
     tree_with_lanes,
     use_element_size,
     use_scroll_horizontal_window,

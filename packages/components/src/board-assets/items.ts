@@ -22,5 +22,5 @@ export const createItems = (number = 1000, startingId = 0) =>
             ({
                 id: 'a' + (id + startingId),
                 title: 'item number ' + (id + startingId),
-            } as ItemData)
+            }) as ItemData,
     );
