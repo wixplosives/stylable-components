@@ -62,10 +62,9 @@ export const useTreeViewKeyboardInteraction = ({
         (itemId: string | undefined) => {
             if (!itemId) return;
 
+            focus(itemId);
             if (selectionFollowsFocus) {
                 select({ lastSelectedId: itemId, ids: [itemId] }, 'keyboard');
-            } else {
-                focus(itemId);
             }
         },
         [focus, select, selectionFollowsFocus],
