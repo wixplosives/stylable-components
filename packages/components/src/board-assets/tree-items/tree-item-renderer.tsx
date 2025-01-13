@@ -30,7 +30,7 @@ export const TreeItemRenderer: React.FC<TreeItemProps<TreeItemData>> = (props) =
                             props.open();
                         }
                     }}
-                ></ChevronRightWixUiIcon>
+                />
             ) : null}
 
             <SearchableText className={classes.text} text={props.data.title} />

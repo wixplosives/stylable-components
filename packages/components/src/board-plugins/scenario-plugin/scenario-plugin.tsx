@@ -278,7 +278,7 @@ export const hoverAction = (selector?: string, timeout = 2_000): Action => {
     };
 };
 
-export const clickAction = (selector?: string, timeout = 2_000): Action => {
+export const clickAction = (selector?: string, timeout = 2_000, eventData: MouseEventInit = {}): Action => {
     return {
         title: 'Click ' + (selector || 'window'),
         execute: () => {
@@ -288,18 +288,21 @@ export const clickAction = (selector?: string, timeout = 2_000): Action => {
                     new MouseEvent('mousedown', {
                         bubbles: true,
                         relatedTarget: target,
+                        ...eventData,
                     }),
                 );
                 target.dispatchEvent(
                     new MouseEvent('click', {
                         bubbles: true,
                         relatedTarget: target,
+                        ...eventData,
                     }),
                 );
                 target.dispatchEvent(
                     new MouseEvent('mouseup', {
                         bubbles: true,
                         relatedTarget: target,
+                        ...eventData,
                     }),
                 );
             }
@@ -309,7 +312,7 @@ export const clickAction = (selector?: string, timeout = 2_000): Action => {
     };
 };
 
-export const keyDownAction = (selector: string, keyCode: string, which: number) => {
+export const keyDownAction = (selector: string, keyCode: string, eventData: KeyboardEventInit = {}) => {
     return {
         title: `key down ${keyCode}`,
         execute: () => {
@@ -323,7 +326,7 @@ export const keyDownAction = (selector: string, keyCode: string, which: number) 
                     key: keyCode,
                     bubbles: true,
                     composed: true,
-                    which: which,
+                    ...eventData,
                 }),
             );
         },
@@ -490,7 +493,18 @@ export const expectElementsStyle = (
         title: title || 'expectElementsStyle ' + Object.keys(elements).join(', '),
         execute() {
             for (const [selector, styles] of Object.entries(elements)) {
-                expectElementStyle(selector, styles, title, timeout);
+                const exp = expectElement(
+                    selector,
+                    (el) => {
+                        const style = window.getComputedStyle(el);
+                        for (const [key, val] of Object.entries(styles)) {
+                            expect(style[key as keyof CSSStyleDeclaration]).to.eql(val);
+                        }
+                    },
+                    title,
+                );
+
+                return exp.execute();
             }
         },
         timeout,

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { KeyCodes } from '../common/index.js';
 import { ProcessedControlledState } from './use-state-controls.js';
+import { ListSelection } from '../list/types.js';
 
 export type KeyboardSelectMeta = 'keyboard';
 export interface TreeViewKeyboardInteractionsParams {
@@ -9,7 +10,7 @@ export interface TreeViewKeyboardInteractionsParams {
     open: (itemId: string) => void;
     close: (itemId: string) => void;
     focus: (itemId: string) => void;
-    select: ProcessedControlledState<string, KeyboardSelectMeta>[1];
+    select: ProcessedControlledState<ListSelection, KeyboardSelectMeta>[1];
     isOpen: (itemId: string) => boolean;
     isEndNode: (itemId: string) => boolean;
     getPrevious: (itemId: string) => string | undefined;
@@ -18,6 +19,7 @@ export interface TreeViewKeyboardInteractionsParams {
     getFirstChild: (itemId: string) => string | undefined;
     getFirst: () => string | undefined;
     getLast: () => string | undefined;
+    selectedIds: string[];
 }
 
 export interface KeyboardInteractionConfiguration {
@@ -54,15 +56,15 @@ export const useTreeViewKeyboardInteraction = ({
     select,
     endNodeExpandSelectsNext,
     selectionFollowsFocus,
+    selectedIds,
 }: TreeViewKeyboardInteractionsParams & KeyboardInteractionConfiguration) => {
     const handleFocus = useCallback(
         (itemId: string | undefined) => {
             if (!itemId) return;
 
+            focus(itemId);
             if (selectionFollowsFocus) {
-                select(itemId, 'keyboard');
-            } else {
-                focus(itemId);
+                select({ lastSelectedId: itemId, ids: [itemId] }, 'keyboard');
             }
         },
         [focus, select, selectionFollowsFocus],
@@ -72,7 +74,7 @@ export const useTreeViewKeyboardInteraction = ({
         if (!focusedItemId) {
             return;
         }
-        select(focusedItemId);
+        select({ lastSelectedId: focusedItemId, ids: [focusedItemId] });
     }, [focusedItemId, select]);
 
     const handleArrowRight = useCallback(() => {
@@ -99,17 +101,50 @@ export const useTreeViewKeyboardInteraction = ({
         }
     }, [focusedItemId, getParent, isOpen, close, handleFocus]);
 
-    const handleArrowUp = useCallback(() => {
-        if (!focusedItemId) return;
+    const handleArrowUp = useCallback(
+        (event: KeyboardEvent) => {
+            if (!focusedItemId) return;
 
-        handleFocus(getPrevious(focusedItemId));
-    }, [focusedItemId, getPrevious, handleFocus]);
+            const previous = getPrevious(focusedItemId);
+            if (previous) {
+                handleFocus(previous);
 
-    const handleArrowDown = useCallback(() => {
-        if (!focusedItemId) return;
+                if (event.shiftKey) {
+                    if (!selectedIds.includes(previous)) {
+                        select({ lastSelectedId: previous, ids: [...selectedIds, previous] });
+                    } else {
+                        select({
+                            lastSelectedId: focusedItemId,
+                            ids: selectedIds.filter((id) => id !== focusedItemId),
+                        });
+                    }
+                }
+            }
+        },
+        [focusedItemId, getPrevious, handleFocus, select, selectedIds],
+    );
 
-        handleFocus(getNext(focusedItemId));
-    }, [focusedItemId, getNext, handleFocus]);
+    const handleArrowDown = useCallback(
+        (event: KeyboardEvent) => {
+            if (!focusedItemId) return;
+            const next = getNext(focusedItemId);
+            if (next) {
+                handleFocus(next);
+
+                if (event.shiftKey) {
+                    if (!selectedIds.includes(next)) {
+                        select({ lastSelectedId: next, ids: [...selectedIds, next] });
+                    } else {
+                        select({
+                            lastSelectedId: focusedItemId,
+                            ids: selectedIds.filter((id) => id !== focusedItemId),
+                        });
+                    }
+                }
+            }
+        },
+        [focusedItemId, getNext, handleFocus, select, selectedIds],
+    );
 
     const handleHome = useCallback(() => handleFocus(getFirst()), [getFirst, handleFocus]);
 
@@ -131,7 +166,7 @@ export const useTreeViewKeyboardInteraction = ({
 
             event.preventDefault();
 
-            handler();
+            handler(event);
         },
         [handleArrowRight, handleArrowLeft, handleArrowUp, handleArrowDown, handleHome, handleEnd, selectFocused],
     );

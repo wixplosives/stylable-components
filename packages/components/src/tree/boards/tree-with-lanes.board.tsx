@@ -14,6 +14,7 @@ import {
 } from '../../board-assets/tree-items/tree-item-with-lane-renderer.js';
 import { createTreeOverlay } from '../utils.js';
 import { Tree } from '../tree.js';
+import { ListSelection } from '../../list/types.js';
 
 let idCounter = 0;
 const nextId = () => 'id' + idCounter++;
@@ -171,7 +172,7 @@ const treeOverlay = createTreeOverlay(OverlayRenderer, {});
 export default createBoard({
     name: 'Tree with lanes',
     Board: () => {
-        const [selection, updateSelection] = useState<string | undefined>(undefined);
+        const [selection, updateSelection] = useState<ListSelection>({ ids: [] });
         const [openItems, updateOpen] = useState<string[]>(allIds);
 
         return (
@@ -181,7 +182,10 @@ export default createBoard({
                         getIndent,
                         getParents,
                         selectItem: (item) => {
-                            updateSelection(item.id);
+                            updateSelection({
+                                lastSelectedId: item.id,
+                                ids: [item.id],
+                            });
                         },
                     }),
                     [],

@@ -6,16 +6,16 @@
     "packages/*"
   ],
   "scripts": {
-    "clean": "rimraf -g ./packages/*/dist",
     "build": "npm run build:boards && npm run build:typescript && npm run build:stylable",
-    "build:typescript": "tsc --build",
-    "build:stylable": "stc",
     "build:boards": "node ./build-board-index.js",
+    "build:stylable": "stc",
+    "build:typescript": "tsc --build",
+    "clean": "rimraf -g ./packages/*/dist",
     "lint": "eslint",
     "pretest": "npm run lint && npm run build",
+    "prettify": "prettier . --write",
     "test": "npm run test:spec",
-    "test:spec": "mocha-web \"packages/*/dist/test/**/*.spec.js\"",
-    "prettify": "prettier . --write"
+    "test:spec": "mocha-web \"packages/*/dist/test/**/*.spec.js\""
   },
   "devDependencies": {
     "@playwright/browser-chromium": "^1.49.1",

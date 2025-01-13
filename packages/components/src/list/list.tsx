@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { JSX, useCallback, useEffect, useMemo, useRef } from 'react';
 import {
     callInternalFirst,
     defaultRoot,
@@ -10,6 +10,7 @@ import { useIdListener } from '../hooks/use-id-based-event.js';
 import { getHandleKeyboardNav } from '../hooks/use-keyboard-nav.js';
 import { StateControls, useStateControls } from '../hooks/use-state-controls.js';
 import type { UseTransmit } from '../hooks/use-transmitted-events.js';
+import { ListSelection } from './types.js';
 
 export type ListRootMinimalProps = Pick<
     React.HTMLAttributes<HTMLDivElement> & React.RefAttributes<HTMLDivElement>,
@@ -42,7 +43,7 @@ export interface ListItemProps<T> {
     isFocused: boolean;
     isSelected: boolean;
     focus: (id?: string) => void;
-    select: (id?: string) => void;
+    select: (params: ListSelection) => void;
 }
 
 export interface ListProps<T> {
@@ -51,11 +52,12 @@ export interface ListProps<T> {
     items: T[];
     ItemRenderer: React.ComponentType<ListItemProps<T>>;
     focusControl?: StateControls<string | undefined>;
-    selectionControl?: StateControls<string | undefined>;
+    selectionControl?: StateControls<ListSelection>;
     transmitKeyPress?: UseTransmit<React.KeyboardEventHandler>;
     onItemMount?: (item: T) => void;
     onItemUnmount?: (item: T) => void;
     disableKeyboard?: boolean;
+    enableMultiselect?: boolean;
 }
 
 export type List<T> = (props: ListProps<T>) => React.ReactElement;
@@ -71,26 +73,131 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     onItemMount,
     onItemUnmount,
     disableKeyboard,
+    enableMultiselect = true,
 }: ListProps<T>): React.ReactElement {
-    const [selectedId, setSelectedId] = useStateControls(selectionControl, undefined);
+    const [selectedIds, setSelectedIds] = useStateControls(selectionControl, { ids: [] });
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
-    const [prevSelectedId, setPrevSelectedId] = useState(selectedId);
-    if (selectedId !== prevSelectedId) {
-        setFocusedId(selectedId);
-        setPrevSelectedId(selectedId);
-    }
     const defaultRef = useRef<EL>(null);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const actualRef = listRoot?.props?.ref || defaultRef;
 
-    const onClick = useIdListener(setSelectedId);
+    // Adapted from MDN as it's similar to the AnchorNode functionality in the DOM Selection API
+    // https://developer.mozilla.org/en-US/docs/Web/API/Selection/anchorNode
+    // A user may make a selection from up to down (in document order) or down to up (reverse of document order).
+    // The anchor is where the user began the selection. This can be visualized by holding the Shift key and
+    // pressing the arrow keys on your keyboard. The selection's anchor does not move,
+    // but the selection's focus, the other end of the selection, does move.
+    // Basically, This helps us determine which element is the starting point of the range selection.
+    const rangeSelectionAnchorId = useRef<string | undefined>(undefined);
+
+    useEffect(() => {
+        if (selectedIds.ids.length === 1) {
+            rangeSelectionAnchorId.current = selectedIds.ids[0];
+        } else if (selectedIds.ids.length === 0) {
+            rangeSelectionAnchorId.current = undefined;
+        }
+    }, [selectedIds]);
+
+    const { current: indexMap } = useRef(new Map<string, number>());
+
+    const itemsToRender = useMemo(() => {
+        indexMap.clear();
+        const jsxElements: JSX.Element[] = [];
+
+        for (const [index, item] of items.entries()) {
+            const id = getId(item);
+            indexMap.set(id, index);
+
+            jsxElements.push(
+                <ItemRendererWrapped
+                    ItemRenderer={ItemRenderer}
+                    onMount={onItemMount}
+                    onUnmount={onItemUnmount}
+                    key={id}
+                    id={id}
+                    data={item}
+                    focus={setFocusedId}
+                    isFocused={focusedId === id}
+                    isSelected={selectedIds.ids.includes(id)}
+                    select={setSelectedIds}
+                />,
+            );
+        }
+
+        return jsxElements;
+    }, [
+        indexMap,
+        items,
+        getId,
+        ItemRenderer,
+        onItemMount,
+        onItemUnmount,
+        setFocusedId,
+        focusedId,
+        selectedIds,
+        setSelectedIds,
+    ]);
+
+    const onClick = useIdListener(
+        useCallback(
+            (id, ev: React.MouseEvent): void => {
+                // allowing to clear selection when providing an empty select ids array
+                if (!id) {
+                    setSelectedIds({ ids: [] });
+                    setFocusedId(undefined);
+                    return;
+                }
+
+                setFocusedId(id);
+
+                const isAlreadySelected = selectedIds.ids.includes(id);
+
+                if (!enableMultiselect) {
+                    if (isAlreadySelected) {
+                        return;
+                    }
+
+                    setSelectedIds({ lastSelectedId: id, ids: [id] });
+                    return;
+                }
+
+                const isCtrlPressed = ev.ctrlKey || ev.metaKey;
+                const isShiftPressed = ev.shiftKey;
+
+                if (isCtrlPressed && isAlreadySelected) {
+                    setSelectedIds({
+                        lastSelectedId: id,
+                        ids: selectedIds.ids.filter((selectedId) => selectedId !== id),
+                    });
+                } else if (isCtrlPressed) {
+                    setSelectedIds({ lastSelectedId: id, ids: [...selectedIds.ids, id] });
+                } else if (isShiftPressed) {
+                    setSelectedIds({
+                        lastSelectedId: id,
+                        ids: getRangeSelection({
+                            items,
+                            id,
+                            indexMap,
+                            selectedIds: selectedIds.ids,
+                            rangeSelectionAnchorId: rangeSelectionAnchorId.current,
+                            getId,
+                        }),
+                    });
+                } else {
+                    setSelectedIds({ lastSelectedId: id, ids: [id] });
+                }
+            },
+            [setFocusedId, selectedIds, enableMultiselect, setSelectedIds, items, indexMap, getId],
+        ),
+    );
+
     const onKeyPress = disableKeyboard
         ? () => {}
         : getHandleKeyboardNav(
               actualRef as React.RefObject<HTMLElement | null>,
               focusedId,
               setFocusedId,
-              setSelectedId,
+              setSelectedIds,
           );
     if (transmitKeyPress) {
         transmitKeyPress(callInternalFirst(onKeyPress, listRoot?.props?.onKeyPress));
@@ -106,23 +213,7 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
                 tabIndex: 0,
             }}
         >
-            {items.map((item) => {
-                const id = getId(item);
-                return (
-                    <ItemRendererWrapped
-                        ItemRenderer={ItemRenderer}
-                        onMount={onItemMount}
-                        onUnmount={onItemUnmount}
-                        key={id}
-                        id={id}
-                        data={item}
-                        focus={setFocusedId}
-                        isFocused={focusedId === id}
-                        isSelected={selectedId === id}
-                        select={setSelectedId}
-                    />
-                );
-            })}
+            {itemsToRender}
         </ListRootSlot>
     );
 }
@@ -146,4 +237,41 @@ function ItemRendererWrapped<T>({
     }, [onMount, onUnmount, props.data]);
 
     return <ItemRenderer {...props} />;
+}
+
+function getRangeSelection<T>({
+    id,
+    indexMap,
+    items,
+    selectedIds,
+    rangeSelectionAnchorId,
+    getId,
+}: {
+    selectedIds: string[];
+    id: string;
+    items: T[];
+    indexMap: Map<string, number>;
+    rangeSelectionAnchorId?: string;
+    getId: (item: T) => string;
+}) {
+    const [first] = selectedIds;
+
+    if (!first) {
+        return [id];
+    }
+
+    // if the `rangeSelectionAnchorId` is not set, we will consider the
+    // first selected item as the starting point of the range selection.
+    const firstIndex = indexMap.get(rangeSelectionAnchorId || first);
+    const selectedIndex = indexMap.get(id);
+
+    if (firstIndex === undefined || selectedIndex === undefined) {
+        return [id];
+    }
+
+    const startIndex = Math.min(firstIndex, selectedIndex);
+    const endIndex = Math.max(firstIndex, selectedIndex);
+
+    // we add 1 to `endIndex` to include the last item in the selection
+    return items.slice(startIndex, endIndex + 1).map(getId);
 }

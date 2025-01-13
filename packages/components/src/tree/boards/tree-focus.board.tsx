@@ -13,6 +13,7 @@ import {
     scenarioPlugin,
 } from '../../board-plugins/index.js';
 import { KeyCodes } from '../../common/index.js';
+import { DEFAULT_STYLE, FOCUSED_STYLE } from './consts.js';
 
 const data: TreeItemData = {
     id: '1',
@@ -31,7 +32,9 @@ export default createBoard({
     Board: () => {
         const openItemsControl = useState<string[]>([]);
         const scrollRef = useRef<HTMLDivElement>(null);
-        const selectionControl = useState<string | undefined>();
+        const focusControl = useState<string | undefined>(undefined);
+        const [, setFocus] = focusControl;
+
         return (
             <div>
                 <Tree<typeof data>
@@ -40,7 +43,6 @@ export default createBoard({
                     ItemRenderer={TreeItemRenderer}
                     getChildren={(it) => it.children || []}
                     openItemsControls={openItemsControl}
-                    selectionControl={selectionControl}
                     overlay={{ el: () => null, props: {} }}
                     listRoot={{
                         props: {
@@ -49,12 +51,13 @@ export default createBoard({
                         },
                     }}
                     eventRoots={[scrollRef]}
+                    focusControl={focusControl}
                 />
-                <button id="clear" onClick={() => selectionControl[1](undefined)}>
-                    clear selection
+                <button id="clear" onClick={() => setFocus(undefined)}>
+                    clear focus
                 </button>
-                <button id="select" onClick={() => selectionControl[1]('5')}>
-                    select 5
+                <button id="focus" onClick={() => setFocus('5')}>
+                    focus 5
                 </button>
             </div>
         );
@@ -64,17 +67,17 @@ export default createBoard({
             title: 'tree focus should follow select and not hover',
             events: [
                 clickAction('[data-id="1"]'),
-                keyDownAction('[data-id="1"]', KeyCodes.ArrowRight, 39),
+                keyDownAction('[data-id="1"]', KeyCodes.ArrowRight, { which: 39 }),
                 expectElement('[data-id="2"]'),
                 hoverAction('[data-id="3"]'),
-                keyDownAction('[data-id="1"]', KeyCodes.ArrowDown, 40),
-                expectElementStyle('[data-id="2"]', { color: 'rgb(0, 0, 255)' }), //blue (focused)
+                keyDownAction('[data-id="1"]', KeyCodes.ArrowDown, { which: 40 }),
+                expectElementStyle('[data-id="2"]', FOCUSED_STYLE), // blue (focused)
                 clickAction('#clear'),
-                expectElementStyle('[data-id="2"]', { color: 'rgb(0, 0, 0)' }), //black (not focused)
-                clickAction('#select'),
+                expectElementStyle('[data-id="2"]', DEFAULT_STYLE), // not focused
+                clickAction('#focus'),
                 focusAction('#LIST'),
-                keyDownAction('[data-id="5"]', KeyCodes.ArrowDown, 40),
-                expectElementStyle('[data-id="6"]', { color: 'rgb(0, 0, 255)' }), //blue (focused)
+                keyDownAction('[data-id="5"]', KeyCodes.ArrowDown, { which: 40 }),
+                expectElementStyle('[data-id="6"]', FOCUSED_STYLE), // blue (focused)
             ],
         }),
     ],

@@ -57,7 +57,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
     } = props;
     const [openItemIds, setOpenItemIds] = useStateControls(openItemsControls, []);
     const [focusedItemId, focus] = useStateControls(focusControl, undefined);
-    const [selectedId, select] = useStateControls(scrollListProps.selectionControl, undefined);
+    const [selectedIds, select] = useStateControls(scrollListProps.selectionControl, { ids: [] });
 
     const { items, treeItemDepths } = useMemo(
         () => getItems({ item: data, getChildren, getId, openItemIds }),
@@ -170,6 +170,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
         select,
         selectionFollowsFocus,
         endNodeExpandSelectsNext,
+        selectedIds: selectedIds.ids,
     });
 
     const overlay = forwardListOverlay(props.overlay, {
@@ -208,7 +209,7 @@ export function Tree<T, EL extends HTMLElement = HTMLElement>(props: TreeProps<T
                 ItemRenderer={itemRenderer}
                 listRoot={listRoot}
                 focusControl={[focusedItemId, focus]}
-                selectionControl={[selectedId, select]}
+                selectionControl={[selectedIds, select]}
                 itemSize={listItemSize}
                 disableKeyboard={true}
             />
