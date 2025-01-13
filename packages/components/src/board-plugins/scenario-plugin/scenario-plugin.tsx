@@ -493,7 +493,18 @@ export const expectElementsStyle = (
         title: title || 'expectElementsStyle ' + Object.keys(elements).join(', '),
         execute() {
             for (const [selector, styles] of Object.entries(elements)) {
-                expectElementStyle(selector, styles, title, timeout);
+                const exp = expectElement(
+                    selector,
+                    (el) => {
+                        const style = window.getComputedStyle(el);
+                        for (const [key, val] of Object.entries(styles)) {
+                            expect(style[key as keyof CSSStyleDeclaration]).to.eql(val);
+                        }
+                    },
+                    title,
+                );
+
+                return exp.execute();
             }
         },
         timeout,

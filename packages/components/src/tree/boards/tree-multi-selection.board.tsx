@@ -103,8 +103,8 @@ export default createBoard({
                 // basic range multi-selection using the shift key
                 keyDownAction('[data-id="1"]', KeyCodes.ArrowDown, { which: 40, shiftKey: true }),
                 expectElementsStyle({
-                    [`data-id="1"`]: SELECTED_STYLE,
-                    [`data-id="2"`]: SELECTED_STYLE,
+                    [`[data-id="1"]`]: SELECTED_STYLE,
+                    [`[data-id="2"]`]: SELECTED_STYLE,
                 }),
                 // checking two sets of ranges
                 // 1 <- selected
@@ -115,54 +115,54 @@ export default createBoard({
                 expectElement('[data-id="3"]'),
                 keyDownAction('[data-id="3"]', KeyCodes.ArrowDown, { which: 40, shiftKey: true }),
                 expectElementsStyle({
-                    [`data-id="1"`]: SELECTED_STYLE,
-                    [`data-id="2"`]: SELECTED_STYLE,
-                    [`data-id="3"`]: DEFAULT_STYLE,
-                    [`data-id="4"`]: SELECTED_STYLE,
+                    [`[data-id="1"]`]: SELECTED_STYLE,
+                    [`[data-id="2"]`]: SELECTED_STYLE,
+                    [`[data-id="3"]`]: DEFAULT_STYLE,
+                    [`[data-id="4"]`]: SELECTED_STYLE,
                 }),
                 // clears multi selection on click
                 clickAction('[data-id="3"]'),
                 expectElementsStyle({
-                    [`data-id="1"`]: DEFAULT_STYLE,
-                    [`data-id="2"`]: DEFAULT_STYLE,
-                    [`data-id="3"`]: SELECTED_STYLE,
-                    [`data-id="4"`]: DEFAULT_STYLE,
-                    [`data-id="5"`]: DEFAULT_STYLE,
-                    [`data-id="6"`]: DEFAULT_STYLE,
+                    [`[data-id="1"]`]: DEFAULT_STYLE,
+                    [`[data-id="2"]`]: DEFAULT_STYLE,
+                    [`[data-id="3"]`]: SELECTED_STYLE,
+                    [`[data-id="4"]`]: DEFAULT_STYLE,
+                    [`[data-id="5"]`]: DEFAULT_STYLE,
+                    [`[data-id="6"]`]: DEFAULT_STYLE,
                 }),
                 // selects the range from up to down using click and shift
                 clickAction('[data-id="5"]', 2000, { shiftKey: true }),
                 expectElementsStyle({
-                    [`data-id="3"`]: SELECTED_STYLE,
-                    [`data-id="4"`]: SELECTED_STYLE,
-                    [`data-id="5"`]: SELECTED_STYLE,
+                    [`[data-id="3"]`]: SELECTED_STYLE,
+                    [`[data-id="4"]`]: SELECTED_STYLE,
+                    [`[data-id="5"]`]: SELECTED_STYLE,
                 }),
                 // validates the anchor functionality
                 // selects the range from down to up using click and shift.
                 clickAction('[data-id="1"]', 2000, { shiftKey: true }),
                 expectElementsStyle({
-                    [`data-id="1"`]: SELECTED_STYLE,
-                    [`data-id="2"`]: SELECTED_STYLE,
-                    [`data-id="3"`]: SELECTED_STYLE,
+                    [`[data-id="1"]`]: SELECTED_STYLE,
+                    [`[data-id="2"]`]: SELECTED_STYLE,
+                    [`[data-id="3"]`]: SELECTED_STYLE,
                 }),
                 // removes already selected element with shift
                 clickAction('[data-id="2"]', 2000, { shiftKey: true }),
                 expectElementsStyle({
-                    [`data-id="1"`]: DEFAULT_STYLE,
-                    [`data-id="2"`]: SELECTED_STYLE,
-                    [`data-id="3"`]: SELECTED_STYLE,
+                    [`[data-id="1"]`]: DEFAULT_STYLE,
+                    [`[data-id="2"]`]: SELECTED_STYLE,
+                    [`[data-id="3"]`]: SELECTED_STYLE,
                 }),
                 // validates multi-selection using click+ctrl key
                 clickAction('[data-id="1"]'),
                 clickAction('[data-id="3"]', 2000, { ctrlKey: true }),
                 clickAction('[data-id="5"]', 2000, { ctrlKey: true }),
                 expectElementsStyle({
-                    [`data-id="1"`]: SELECTED_STYLE,
-                    [`data-id="2"`]: SELECTED_STYLE,
-                    [`data-id="3"`]: DEFAULT_STYLE,
-                    [`data-id="4"`]: SELECTED_STYLE,
-                    [`data-id="5"`]: DEFAULT_STYLE,
-                    [`data-id="6"`]: SELECTED_STYLE,
+                    [`[data-id="1"]`]: SELECTED_STYLE,
+                    [`[data-id="2"]`]: DEFAULT_STYLE,
+                    [`[data-id="3"]`]: SELECTED_STYLE,
+                    [`[data-id="4"]`]: DEFAULT_STYLE,
+                    [`[data-id="5"]`]: SELECTED_STYLE,
+                    [`[data-id="6"]`]: DEFAULT_STYLE,
                 }),
                 // validates clearing selected item using click+ctrl key
                 clickAction('[data-id="1"]', 2000, { ctrlKey: true }),
