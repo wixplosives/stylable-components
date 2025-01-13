@@ -54,10 +54,10 @@ export default createBoard({
                     focusControl={focusControl}
                 />
                 <button id="clear" onClick={() => setFocus(undefined)}>
-                    clear selection
+                    clear focus
                 </button>
-                <button id="select" onClick={() => setFocus('5')}>
-                    select 5
+                <button id="focus" onClick={() => setFocus('5')}>
+                    focus 5
                 </button>
             </div>
         );
@@ -74,7 +74,7 @@ export default createBoard({
                 expectElementStyle('[data-id="2"]', FOCUSED_STYLE), // blue (focused)
                 clickAction('#clear'),
                 expectElementStyle('[data-id="2"]', DEFAULT_STYLE), // not focused
-                clickAction('#select'),
+                clickAction('#focus'),
                 focusAction('#LIST'),
                 keyDownAction('[data-id="5"]', KeyCodes.ArrowDown, { which: 40 }),
                 expectElementStyle('[data-id="6"]', FOCUSED_STYLE), // blue (focused)
