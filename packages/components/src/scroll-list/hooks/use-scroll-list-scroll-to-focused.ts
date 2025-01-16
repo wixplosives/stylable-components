@@ -2,7 +2,7 @@ import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } 
 import scrollIntoViewIfNeeded from 'scroll-into-view-if-needed';
 import type { DimensionsById } from '../../common/index.js';
 import type { ListProps } from '../../list/list.js';
-import type { ScrollListProps } from '../../scroll-list/scroll-list.js';
+import type { ScrollListProps } from '../scroll-list.js';
 
 export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
     scrollToFocused,
