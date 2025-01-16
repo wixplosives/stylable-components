@@ -255,6 +255,7 @@ export function ScrollList<T, EL extends HTMLElement = HTMLDivElement>({
         items,
         getId,
         focused,
+        selected,
         averageItemSize,
         mountedItems,
         isHorizontal,
