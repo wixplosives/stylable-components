@@ -26,7 +26,7 @@ import scenario_renderer from './_codux/boards/scenario-renderer/scenario-render
 import scroll_list from './scroll-list/boards/scroll-list.board.js';
 import scroll_offset from './scroll-list/boards/scroll-offset.board.js';
 import scroll_ref from './scroll-list/boards/scroll-ref.board.js';
-import scroll_to_selection from './scroll-list/boards/scroll-to-selection.board.js';
+import scroll_to_focused from './scroll-list/boards/scroll-to-focused.board.js';
 import searchable_text from './searchable-text/boards/searchable-text.board.js';
 import tree from './tree/boards/tree.board.js';
 import tree_focus from './tree/boards/tree-focus.board.js';
@@ -62,7 +62,7 @@ export default [
     scroll_list,
     scroll_offset,
     scroll_ref,
-    scroll_to_selection,
+    scroll_to_focused,
     searchable_text,
     tree,
     tree_focus,

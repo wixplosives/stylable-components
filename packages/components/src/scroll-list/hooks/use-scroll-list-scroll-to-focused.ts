@@ -2,7 +2,7 @@ import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } 
 import scrollIntoViewIfNeeded from 'scroll-into-view-if-needed';
 import type { DimensionsById } from '../../common/index.js';
 import type { ListProps } from '../../list/list.js';
-import type { ScrollListProps } from '../../scroll-list/scroll-list.js';
+import type { ScrollListProps } from '../scroll-list.js';
 
 export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
     scrollToFocused,
@@ -33,7 +33,7 @@ export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
 }) => {
     const loadingTimeout = useRef(0);
     const timeout = useRef(0);
-    const isScrollingToSelection = useRef(false);
+    const isScrollingToFocused = useRef(false);
     const focusedIndex = useMemo(() => items.findIndex((i) => getId(i) === focused), [items, getId, focused]);
     const calculateDistance = useCallback(
         ({ itemIndex, direction }: { itemIndex: number; direction: 'up' | 'down' }) => {
@@ -62,7 +62,7 @@ export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
         [averageItemSize, extraRenderSize, getId, isHorizontal, items, itemsDimensions, scrollWindowSize, focusedIndex],
     );
     const cleanUp = () => {
-        isScrollingToSelection.current = false;
+        isScrollingToFocused.current = false;
         loadingTimeout.current = 0;
         clearTimeout(timeout.current);
     };
@@ -78,7 +78,7 @@ export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
                 const node = scrollListRef.current?.querySelector(`[data-id='${getId(items[focusedIndex]!)}']`);
                 if (!node) {
                     timeout.current = window.setTimeout(
-                        () => isScrollingToSelection.current && scrollTo(focusedIndex, true),
+                        () => isScrollingToFocused.current && scrollTo(focusedIndex, true),
                     );
                 } else {
                     scrollIntoViewIfNeeded(node, {
@@ -112,8 +112,8 @@ export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
     );
 
     useEffect(() => {
-        if (scrollToFocused && focusedIndex > -1 && mountedItems.current.size > 0 && !isScrollingToSelection.current) {
-            isScrollingToSelection.current = true;
+        if (scrollToFocused && focusedIndex > -1 && mountedItems.current.size > 0 && !isScrollingToFocused.current) {
+            isScrollingToFocused.current = true;
 
             scrollTo(focusedIndex);
         }
