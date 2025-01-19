@@ -76,7 +76,13 @@ export function List<T, EL extends HTMLElement = HTMLDivElement>({
     enableMultiselect = true,
 }: ListProps<T>): React.ReactElement {
     const [selectedIds, setSelectedIds] = useStateControls(selectionControl, { ids: [] });
+    const prevSelectedId = useRef(selectedIds.lastSelectedId);
     const [focusedId, setFocusedId] = useStateControls(focusControl, undefined);
+
+    if (prevSelectedId.current !== selectedIds.lastSelectedId) {
+        setFocusedId(selectedIds.lastSelectedId);
+        prevSelectedId.current = selectedIds.lastSelectedId;
+    }
 
     const defaultRef = useRef<EL>(null);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

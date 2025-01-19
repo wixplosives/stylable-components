@@ -3,7 +3,6 @@ import scrollIntoViewIfNeeded from 'scroll-into-view-if-needed';
 import type { DimensionsById } from '../../common/index.js';
 import type { ListProps } from '../../list/list.js';
 import type { ScrollListProps } from '../scroll-list.js';
-import { ListSelection } from '../../list/types.js';
 
 export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
     scrollToFocused,
@@ -12,7 +11,6 @@ export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
     items,
     getId,
     focused,
-    selected,
     averageItemSize,
     itemsDimensions,
     mountedItems,
@@ -26,7 +24,6 @@ export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
     items: ListProps<T>['items'];
     getId: ListProps<T>['getId'];
     focused?: string;
-    selected?: ListSelection;
     averageItemSize: number;
     itemsDimensions: MutableRefObject<DimensionsById>;
     mountedItems: MutableRefObject<Set<string>>;
@@ -37,11 +34,7 @@ export const useScrollListScrollToFocused = <T, EL extends HTMLElement>({
     const loadingTimeout = useRef(0);
     const timeout = useRef(0);
     const isScrollingToFocused = useRef(false);
-    const focusedIndex = useMemo(() => {
-        const focusedIndex = items.findIndex((i) => getId(i) === focused);
-        return focusedIndex !== -1 ? focusedIndex : items.findIndex((i) => getId(i) === selected?.lastSelectedId);
-    }, [items, getId, focused, selected?.lastSelectedId]);
-
+    const focusedIndex = useMemo(() => items.findIndex((i) => getId(i) === focused), [items, getId, focused]);
     const calculateDistance = useCallback(
         ({ itemIndex, direction }: { itemIndex: number; direction: 'up' | 'down' }) => {
             let distance = 0;
