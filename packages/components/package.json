@@ -1,6 +1,6 @@
 {
   "name": "stylable-components",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "type": "module",
   "description": "React components that use Stylable.",
   "exports": "./dist/index.js",
