@@ -22,7 +22,7 @@
     "@stylable/cli": "^6.1.1",
     "@stylable/esbuild": "^6.1.1",
     "@testing-library/react": "^16.2.0",
-    "@types/chai": "^5.0.1",
+    "@types/chai": "^5.2.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "20",
     "@types/react": "^19.0.10",
