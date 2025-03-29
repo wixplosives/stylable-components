@@ -41,8 +41,8 @@
     "mocha-web": "^2.0.1",
     "prettier": "^3.5.3",
     "promise-assist": "^2.0.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "rimraf": "^6.0.1",
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.28.0"
