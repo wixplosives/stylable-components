@@ -31,7 +31,7 @@
     "@wixc3/react-board": "^4.6.2",
     "chai": "^5.2.0",
     "esbuild": "^0.25.2",
-    "eslint": "^9.23.0",
+    "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-react": "^7.37.5",
@@ -44,7 +44,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "rimraf": "^6.0.1",
-    "typescript": "~5.8.2",
+    "typescript": "~5.8.3",
     "typescript-eslint": "^8.29.0"
   },
   "license": "MIT"
