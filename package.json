@@ -18,7 +18,7 @@
     "test:spec": "mocha-web \"packages/*/dist/test/**/*.spec.js\""
   },
   "devDependencies": {
-    "@playwright/browser-chromium": "^1.51.1",
+    "@playwright/browser-chromium": "^1.52.0",
     "@stylable/cli": "^6.1.1",
     "@stylable/esbuild": "^6.1.1",
     "@testing-library/react": "^16.3.0",
